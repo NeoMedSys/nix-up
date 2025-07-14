@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, user ? "algol", ... }:
 {
 	# i3 window manager configuration
 	services.xserver = {
@@ -19,6 +19,15 @@
 			lightdm.enable = true;
 		};
 	};
+	
+	# Copy i3 configuration files to system
+	environment.etc."i3/config".source = "${inputs.self}/i3-config/config";
+	
+	# Create user i3 config directory and link files
+	system.userActivationScripts.i3 = ''
+		mkdir -p ~/.config/i3
+		ln -sf /etc/i3/config ~/.config/i3/config
+	'';
 	
 	# Enable compositor for transparency effects
 	services.picom = {

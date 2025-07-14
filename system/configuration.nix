@@ -13,8 +13,9 @@
 		"${inputs.self}/modules/ssh-config.nix"
 		
 		# Desktop environment
-		# "${inputs.self}/modules/i3.nix"
-		# "${inputs.self}/modules/polybar.nix"
+		"${inputs.self}/modules/login.nix"
+		"${inputs.self}/modules/i3.nix"
+		"${inputs.self}/modules/polybar.nix"
 		
 		# Gaming and graphics (conditional)
 		# "${inputs.self}/modules/steam.nix"

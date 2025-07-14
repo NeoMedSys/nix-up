@@ -22,6 +22,7 @@
 		playerctl
 		pavucontrol
 		networkmanagerapplet
+                xorg.xrandr 
 		
 		# Window manager tools (moved from i3.nix)
 		i3
