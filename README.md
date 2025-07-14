@@ -2,7 +2,7 @@
 
 Use the included deployment script for the easiest experience:
 
-````bash
+```bash
 # Download and run the deployment helper
 curl -sSL https://raw.githubusercontent.com/yourusername/perseus/main/deploy-perseus.sh | bash -s -- yourusername/perseus root@target
 
@@ -17,7 +17,9 @@ chmod +x deploy-perseus.sh
 ./deploy-perseus.sh -d python,go,rust,nextjs -b firefox,brave yourusername/perseus root@workstation  # Full dev
 ./deploy-perseus.sh -c perseus-server -d python,go yourusername/perseus root@server  # Server deployment
 ./deploy-perseus.sh --help  # Show all options
-```### Example: Custom User Configuration
+```
+
+### Example: Custom User Configuration
 
 ```nix
 # Example customization in flake.nix for user "alice"
@@ -36,7 +38,7 @@ perseus-alice = nixpkgs.lib.nixosSystem {
     disko.nixosModules.disko
   ];
 };
-````
+```
 
 Then deploy with: `sudo nixos-rebuild switch --flake .#perseus-alice`├── polybar-config/ # Polybar configuration
 │ ├── config.ini # Polybar main configuration
