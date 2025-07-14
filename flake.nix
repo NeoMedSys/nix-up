@@ -8,7 +8,7 @@
 	Use kernel 6.12 LTS or 6.14 for Nvidia compatibility.
 	
 	Configurable via environment variables:
-	- PERSEUS_USER: username (default: 'algol')
+	- PERSEUS_USER: username (default: 'jon')
 	- PERSEUS_BROWSERS: comma-separated browsers (default: 'brave')
 	- PERSEUS_DEV_TOOLS: comma-separated dev tools (default: '', options: python,go,rust,nextjs)
 	- PERSEUS_LAPTOP: enable laptop optimizations (default: 'true')
@@ -49,13 +49,13 @@
 			if boolString == "false" then false else true;
 		
 		# Get configuration from environment variables
-		user = getEnvWithDefault "PERSEUS_USER" "algol";
+		user = getEnvWithDefault "PERSEUS_USER" "jon";
 		browsersString = getEnvWithDefault "PERSEUS_BROWSERS" "brave";
 		devToolsString = getEnvWithDefault "PERSEUS_DEV_TOOLS" "";
 		userSpecifiedBrowsers = parseBrowsers browsersString;
 		devTools = parseDevTools devToolsString;
 		isLaptop = parseBool (getEnvWithDefault "PERSEUS_LAPTOP" "true");
-		hasGPU = parseBool (getEnvWithDefault "PERSEUS_GPU" "true");
+		hasGPU = parseBool (getEnvWithDefault "PERSEUS_GPU" "false");
 		
 	in {
 		nixosConfigurations = {
@@ -77,7 +77,7 @@
 				system = "x86_64-linux";
 				specialArgs = { 
 					inherit inputs; 
-					user = "algol";
+					user = "jon";
 					userSpecifiedBrowsers = [ "brave" ];
 					devTools = [ "python" "go" "rust" "nextjs" ];  # Full dev setup
 					isLaptop = false;  # Desktop optimizations
@@ -94,7 +94,7 @@
 				system = "x86_64-linux";
 				specialArgs = { 
 					inherit inputs; 
-					user = "algol";
+					user = "jon";
 					userSpecifiedBrowsers = [ ];  # No browsers for server
 					devTools = [ "python" "go" ];  # Server-side development only
 					isLaptop = false;

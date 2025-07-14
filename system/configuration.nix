@@ -3,7 +3,7 @@
 	imports = [
 		# Hardware and disk configuration
 		"${inputs.self}/system/hardware-configuration.nix"
-		"${inputs.self}/system/disko-config.nix"
+		# "${inputs.self}/system/disko-config.nix"
 		
 		# Core system modules
 		"${inputs.self}/modules/environment.nix"
@@ -13,16 +13,16 @@
 		"${inputs.self}/modules/ssh-config.nix"
 		
 		# Desktop environment
-		"${inputs.self}/modules/i3.nix"
-		"${inputs.self}/modules/polybar.nix"
+		# "${inputs.self}/modules/i3.nix"
+		# "${inputs.self}/modules/polybar.nix"
 		
 		# Gaming and graphics (conditional)
-		"${inputs.self}/modules/steam.nix"
-	] ++ lib.optionals hasGPU [
-		"${inputs.self}/modules/nvidia.nix"
-	] ++ [
+		# "${inputs.self}/modules/steam.nix"
+	#] ++ lib.optionals hasGPU [
+	#	"${inputs.self}/modules/nvidia.nix"
+	#] ++ [
 		# VPN
-		"${inputs.self}/modules/expressvpn.nix"
+#		"${inputs.self}/modules/expressvpn.nix"
 	];
 
 	# System identification

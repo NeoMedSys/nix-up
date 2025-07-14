@@ -41,8 +41,8 @@
 			users = [ user ];
 			commands = [
 				{
-					command = "ALL";
-					options = [ "NOPASSWD" "NOSETENV" ];
+				command = "ALL";
+				options = [ "NOPASSWD" "NOSETENV" ];
 				}
 			];
 		}

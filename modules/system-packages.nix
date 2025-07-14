@@ -14,7 +14,7 @@
 		fastfetch
 		fzf
 		ripgrep
-		tmux
+		# tmux
 		xsel
 		
 		# Desktop utilities (moved from other modules)
@@ -22,7 +22,6 @@
 		playerctl
 		pavucontrol
 		networkmanagerapplet
-		xrandr
 		
 		# Window manager tools (moved from i3.nix)
 		i3
@@ -41,14 +40,8 @@
 		scrot
 		flameshot
 		
-		# File manager
-		thunar
-		
 		# Terminal emulator
 		alacritty
-		
-		# System monitoring
-		conky
 		
 		# Gaming utilities (moved from steam.nix)
 		gamemode
@@ -57,10 +50,10 @@
 		antimicrox
 		
 		# VPN and network tools (moved from expressvpn.nix)
-		openvpn
-		networkmanager-openvpn
+		#openvpn
+		#networkmanager-openvpn
 		dig
-		wget
+		#wget
 		
 		# Zsh and theme
 		zsh
