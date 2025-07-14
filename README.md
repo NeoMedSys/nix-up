@@ -116,7 +116,7 @@ reboot
 
 ### 3. Deploy Full Configuration
 
-After rebooting and logging in as jon:
+After rebooting and logging in with the username:
 
 ```bash
 # Clone the config
