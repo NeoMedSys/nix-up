@@ -22,7 +22,6 @@
 		
 		# Enable i3 window manager
 		windowManager.i3.enable = true;
-		displayManager.defaultSession = "none+i3";
 	};
 
 	# User configuration
@@ -41,8 +40,8 @@
 			users = [ user ];
 			commands = [
 				{
-				command = "ALL";
-				options = [ "NOPASSWD" "NOSETENV" ];
+					command = "ALL";
+					options = [ "NOPASSWD" "NOSETENV" ];
 				}
 			];
 		}

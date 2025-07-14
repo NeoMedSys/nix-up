@@ -1,11 +1,9 @@
 { config, pkgs, ... }:
 {
-  # Enable X11 and display manager
-  services.xserver = {
-    enable = true;
-    
-    # Display manager - lightweight and works well with i3
-    displayManager.lightdm = {
+  # Display manager configuration
+  services.xserver.displayManager = {
+    defaultSession = "none+i3";
+    lightdm = {
       enable = true;
       greeters.gtk = {
         enable = true;
@@ -17,11 +15,7 @@
           package = pkgs.arc-icon-theme;
           name = "Arc";
         };
-        cursorTheme = {
-          package = pkgs.bibata-cursors;
-          name = "Bibata-Modern-Classic";
-        };
       };
     };
   };
-  
+}
