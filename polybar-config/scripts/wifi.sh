@@ -26,10 +26,10 @@ get_wifi_icon() {
             echo "%{F#4a90e2} %{F-}"
             ;;
         disconnected)
-            echo "%{F#707880} %{F-}"
+            echo "%{F#B0B0B0} %{F-}"
             ;;
         disabled)
-            echo "%{F#707880} %{F-}"
+            echo "%{F#B0B0B0} %{F-}"
             ;;
         ERROR:*)
             echo "%{F#A54242} %{F-}"
@@ -81,7 +81,7 @@ show_wifi_menu() {
         if connect_wifi "$ssid"; then
             echo "%{F#4a90e2} %{F-}" > /tmp/polybar_wifi_status
         else
-            echo "%{F#707880} %{F-}" > /tmp/polybar_wifi_status
+            echo "%{F#B0B0B0} %{F-}" > /tmp/polybar_wifi_status
             rofi -e "Failed to connect to $ssid"
         fi
     fi

@@ -22,7 +22,7 @@
 		playerctl
 		pavucontrol
 		networkmanagerapplet
-                xorg.xrandr 
+                xorg.xrandr
 		
 		# Window manager tools (moved from i3.nix)
 		i3
@@ -55,6 +55,10 @@
 		#networkmanager-openvpn
 		dig
 		#wget
+		
+		# Bluetooth tools
+		bluez
+		bluez-tools
 		
 		# Zsh and theme
 		zsh

@@ -27,10 +27,10 @@ get_bluetooth_icon() {
             echo "%{F#4a90e2} %{F-}"
             ;;
         on)
-            echo "%{F#C5C8C6} %{F-}"
+            echo "%{F#B0B0B0} %{F-}"
             ;;
         off)
-            echo "%{F#707880} %{F-}"
+            echo "%{F#B0B0B0} %{F-}"
             ;;
         ERROR:*)
             echo "%{F#A54242} %{F-}"
