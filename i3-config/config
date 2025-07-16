@@ -5,7 +5,7 @@
 set $mod Mod4
 
 # Font for window titles
-font pango:Fira Code 8
+font pango:MesloLGS NF 10
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod

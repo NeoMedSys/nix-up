@@ -1,10 +1,15 @@
+icons_format = " {icon} "
+
+[theme]
 theme = "nord-dark"
+
+[icons]
 icons = "awesome6"
 
 [[block]]
 block = "net"
 device = "wlp9s0"
-format = " {ssid} {signal_strength}"
+format = " $ssid $signal_strength"
 interval = 3
 click = [
     { button = "left", cmd = "nm-connection-editor" }
@@ -12,8 +17,8 @@ click = [
 
 [[block]]
 block = "bluetooth"
-format = " {percentage}"
-interval = 3
+format = "{icon} $name"
+interval = 5
 click = [
     { button = "left", cmd = "overskride" }
 ]
@@ -22,27 +27,26 @@ click = [
 block = "disk_space"
 path = "/"
 info_type = "available"
-format = " {available}"
+format = " $available"
 interval = 20
 
 [[block]]
 block = "memory"
-format = " {mem_used_percents}"
+format = " $mem_used_percents"
 interval = 5
 
 [[block]]
 block = "cpu"
 interval = 1
-format = " {utilization}"
+format = " $utilization"
 
 [[block]]
 block = "sound"
-format = " {volume}"
+format = " $volume"
 click = [
     { button = "left", cmd = "pavucontrol" }
 ]
 
 [[block]]
 block = "time"
-interval = 60
 format = " %a %d/%m %R"

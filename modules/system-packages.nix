@@ -76,4 +76,14 @@
 		liberation_ttf
 		fira-code-symbols
 	];
+
+  	# This registers the fonts with your system so applications can find them.
+	fonts.packages = with pkgs; [
+		fira-code
+		meslo-lgs-nf
+		font-awesome_6
+		dejavu_fonts
+		liberation_ttf
+		fira-code-symbols
+	];
 }
