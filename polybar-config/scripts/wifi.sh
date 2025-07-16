@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 get_wifi_status() {
     if ! command -v nmcli &> /dev/null; then

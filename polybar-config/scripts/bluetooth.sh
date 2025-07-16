@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 get_bluetooth_status() {
     if ! command -v bluetoothctl &> /dev/null; then
@@ -6,23 +6,17 @@ get_bluetooth_status() {
         exit 1
     fi
     
-    bt_power=$(bluetoothctl show | grep "Powered" | awk '{print $2}')
-    
-    if [ "$bt_power" = "yes" ]; then
-        connected=$(bluetoothctl devices Connected | wc -l)
-        if [ "$connected" -gt 0 ]; then
-            echo "connected"
-        else
-            echo "on"
-        fi
+    # Simple check - just see if bluetooth is powered
+    if bluetoothctl show 2>/dev/null | grep -q "Powered: yes"; then
+        echo "on"
     else
         echo "off"
     fi
 }
 
 get_bluetooth_icon() {
-    status=$(get_bluetooth_status)
-    case "$status" in
+    bt_status=$(get_bluetooth_status)
+    case "$bt_status" in
         connected)
             echo "%{F#4a90e2} %{F-}"
             ;;
@@ -63,46 +57,24 @@ show_bluetooth_menu() {
         return
     fi
     
-    # Get paired devices
-    paired=$(bluetoothctl devices Paired | awk '{print $2 " " substr($0, index($0,$3))}' | filter_devices)
+    # Just show paired devices for now - no scanning to avoid hanging
+    paired=$(bluetoothctl devices Paired 2>/dev/null | awk '{print $2 " " substr($0, index($0,$3))}' | head -10)
     
-    # Start scan for available devices
-    bluetoothctl scan on &
-    scan_pid=$!
-    sleep 2
-    
-    # Get discoverable devices (not paired)
-    available=$(bluetoothctl devices | awk '{print $2 " " substr($0, index($0,$3))}' | filter_devices)
-    available=$(echo "$available" | grep -v -F "$paired" | head -10)
-    
-    kill $scan_pid 2>/dev/null
-    bluetoothctl scan off
-    
-    # Create menu
-    menu=""
-    if [ -n "$paired" ]; then
-        menu="$menu--- PAIRED DEVICES ---\n$paired\n"
-    fi
-    if [ -n "$available" ]; then
-        menu="$menu--- AVAILABLE DEVICES ---\n$available"
-    fi
-    
-    if [ -z "$menu" ]; then
-        rofi -e "No Bluetooth devices found"
+    if [ -z "$paired" ]; then
+        rofi -e "No paired Bluetooth devices found"
         return
     fi
     
-    selected=$(echo -e "$menu" | rofi -dmenu -p "Select Bluetooth Device:" -i)
+    selected=$(echo "$paired" | rofi -dmenu -p "Select Bluetooth Device:" -i)
     
-    if [ -n "$selected" ] && [[ "$selected" != "---"* ]]; then
+    if [ -n "$selected" ]; then
         device_mac=$(echo "$selected" | awk '{print $1}')
-        device_name=$(echo "$selected" | cut -d' ' -f2-)
         
-        # Check if already connected
-        if bluetoothctl info "$device_mac" | grep -q "Connected: yes"; then
+        # Simple connect/disconnect toggle
+        if bluetoothctl info "$device_mac" 2>/dev/null | grep -q "Connected: yes"; then
             bluetoothctl disconnect "$device_mac"
         else
-            connect_bluetooth "$device_mac"
+            bluetoothctl connect "$device_mac"
         fi
     fi
 }

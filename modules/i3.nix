@@ -2,11 +2,14 @@
 {
       # Copy i3 configuration files to system
       environment.etc."i3/config".source = "${inputs.self}/i3-config/config";
+      environment.etc."i3status-rust/config.toml".source = "${inputs.self}/i3status-rust-config/config.toml";
       
       # Create user i3 config directory and link files
       system.userActivationScripts.i3 = ''
               mkdir -p ~/.config/i3
+              mkdir -p ~/.config/i3status-rust
               ln -sf /etc/i3/config ~/.config/i3/config
+              ln -sf /etc/i3status-rust/config.toml ~/.config/i3status-rust/config.toml
       '';
       
       # Enable compositor for transparency effects

@@ -147,7 +147,22 @@ gaps inner 5
 gaps outer 2
 
 # Start polybar
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+bar {
+    status_command i3status-rs ~/.config/i3status-rust/config.toml
+    position top
+    font pango:Fira Code 10
+    
+    colors {
+        background #282A2E
+        statusline #C5C8C6
+        separator #373B41
+        
+        focused_workspace  #4a90e2 #4a90e2 #ffffff
+        active_workspace   #373B41 #373B41 #ffffff
+        inactive_workspace #282A2E #282A2E #888888
+        urgent_workspace   #A54242 #A54242 #ffffff
+    }
+}
 
 # Start compositor for transparency
 exec --no-startup-id picom
