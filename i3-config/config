@@ -150,7 +150,7 @@ gaps outer 2
 bar {
     status_command i3status-rs ~/.config/i3status-rust/config.toml
     position top
-    font pango:Fira Code 10
+    font pango:MesloLGS NF 10
     
     colors {
         background #282A2E
