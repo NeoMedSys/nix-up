@@ -1,4 +1,4 @@
-icons_format = " <span font_family='MesloLGS NF'>{icon}</span> "
+icons_format = " {icon}"
 
 [theme]
 theme = "nord-dark"
