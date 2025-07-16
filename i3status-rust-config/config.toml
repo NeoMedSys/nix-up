@@ -4,7 +4,7 @@ icons_format = " <span font_family='MesloLGS NF'>{icon}</span> "
 theme = "nord-dark"
 
 [icons]
-icons = "awesome6"
+icons = "material-nf"
 
 [[block]]
 block = "net"
