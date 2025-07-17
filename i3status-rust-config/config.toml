@@ -66,16 +66,21 @@ block = "custom"
 command = '''
 capacity=$(cat /sys/class/power_supply/BAT0/capacity)
 status=$(cat /sys/class/power_supply/BAT0/status)
+
 if [ "$status" = "Charging" ]; then
     echo " $capacity%"
 else
-    case $capacity in
-        100)      icon="";;
-        75|8*|9*) icon="";;
-        50|6*|7*) icon="";;
-        25|3*|4*) icon="";;
-        *)        icon="";;
-    esac
+    if [ "$capacity" -ge 95 ]; then
+        icon=""
+    elif [ "$capacity" -ge 70 ]; then
+        icon=""
+    elif [ "$capacity" -ge 45 ]; then
+        icon=""
+    elif [ "$capacity" -ge 10 ]; then
+        icon=""
+    else
+        icon=""
+    fi
     echo "$icon $capacity%"
 fi
 '''

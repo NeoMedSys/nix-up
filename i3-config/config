@@ -133,15 +133,6 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+r mode "resize"
-
-# Direct volume control with Control + Mouse Scroll Wheel
-bindsym --whole-window Control+button4 exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym --whole-window Control+button5 exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-
-# Optional: Keyboard alternative with Control + Up/Down arrow keys
-bindsym Control+Up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym Control+Down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
 
 # Window colors
 client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
