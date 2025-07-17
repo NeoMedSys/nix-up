@@ -12,8 +12,8 @@
     open = false;
     prime = {
       offload.enable = true;
-      sync.enable = true;
-        }
+      sync.enable = false;
+    };
   };
 	
   # NVIDIA container support for Docker/Podman

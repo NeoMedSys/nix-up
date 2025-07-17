@@ -1,22 +1,5 @@
 {
-	description = "
-	Perseus v0.1.0 - NixOS Laptop Configuration
-	------------------------------------------
-	
-	Complete NixOS setup for development and gaming laptop.
-	Includes i3, polybar, steam, NVIDIA drivers, and dev tools.
-	Use kernel 6.12 LTS or 6.14 for Nvidia compatibility.
-	
-	Configurable via environment variables:
-	- PERSEUS_USER: username (default: 'jon')
-	- PERSEUS_BROWSERS: comma-separated browsers (default: 'brave')
-	- PERSEUS_DEV_TOOLS: comma-separated dev tools (default: '', options: python,go,rust,nextjs)
-	- PERSEUS_LAPTOP: enable laptop optimizations (default: 'true')
-	- PERSEUS_GPU: enable NVIDIA support (default: 'true')
-	
-	Example usage:
-	PERSEUS_USER=alice PERSEUS_BROWSERS=firefox,chromium PERSEUS_DEV_TOOLS=python,rust,nextjs nixos-anywhere --flake github:user/perseus#perseus root@target
-	";
+	description = "Perseus v0.1.0 - NixOS Laptop Configuration";
 
 	inputs = {
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -26,12 +9,10 @@
 	};
 
 	outputs = { self, nixpkgs, nixvim, disko, ... }@inputs: let
-		pkgs = import nixpkgs { system = "x86_64-linux"; };
-		
 		# Helper function to get environment variables with defaults
-		getEnvWithDefault = varName: defaultValue: 
-			if builtins.getEnv varName != "" 
-			then builtins.getEnv varName 
+		getEnvWithDefault = varName: defaultValue:
+			if builtins.getEnv varName != ""
+			then builtins.getEnv varName
 			else defaultValue;
 		
 		# Parse comma-separated browsers
@@ -48,57 +29,18 @@
 		parseBool = boolString:
 			if boolString == "false" then false else true;
 		
-		# Get configuration from environment variables
-		user = getEnvWithDefault "PERSEUS_USER" "jon";
-		browsersString = getEnvWithDefault "PERSEUS_BROWSERS" "brave";
-		devToolsString = getEnvWithDefault "PERSEUS_DEV_TOOLS" "";
-		userSpecifiedBrowsers = parseBrowsers browsersString;
-		devTools = parseDevTools devToolsString;
-		isLaptop = parseBool (getEnvWithDefault "PERSEUS_LAPTOP" "true");
-		hasGPU = parseBool (getEnvWithDefault "PERSEUS_GPU" "false");
-		
 	in {
 		nixosConfigurations = {
-			# Main Perseus configuration with environment variable support
+			# The one and only configuration for your machine
 			perseus = nixpkgs.lib.nixosSystem {
 				system = "x86_64-linux";
-				specialArgs = { 
-					inherit inputs user userSpecifiedBrowsers devTools isLaptop hasGPU;
-				};
-				modules = [
-					./system/configuration.nix
-					nixvim.nixosModules.nixvim
-					disko.nixosModules.disko
-				];
-			};
-			
-			# Static configuration examples for common setups
-			perseus-desktop = nixpkgs.lib.nixosSystem {
-				system = "x86_64-linux";
-				specialArgs = { 
-					inherit inputs; 
-					user = "jon";
-					userSpecifiedBrowsers = [ "brave" ];
-					devTools = [ "python" "go" "rust" "nextjs" ];  # Full dev setup
-					isLaptop = false;  # Desktop optimizations
-					hasGPU = true;
-				};
-				modules = [
-					./system/configuration.nix
-					nixvim.nixosModules.nixvim
-					disko.nixosModules.disko
-				];
-			};
-			
-			perseus-server = nixpkgs.lib.nixosSystem {
-				system = "x86_64-linux";
-				specialArgs = { 
-					inherit inputs; 
-					user = "jon";
-					userSpecifiedBrowsers = [ ];  # No browsers for server
-					devTools = [ "python" "go" ];  # Server-side development only
-					isLaptop = false;
-					hasGPU = false;  # No GPU for server
+				specialArgs = {
+					inherit inputs;
+					user = getEnvWithDefault "PERSEUS_USER" "jon";
+					userSpecifiedBrowsers = parseBrowsers (getEnvWithDefault "PERSEUS_BROWSERS" "brave");
+					devTools = parseDevTools (getEnvWithDefault "PERSEUS_DEV_TOOLS" "");
+					isLaptop = parseBool (getEnvWithDefault "PERSEUS_LAPTOP" "true");
+					hasGPU = parseBool (getEnvWithDefault "PERSEUS_GPU" "false"); # Defaulting to true
 				};
 				modules = [
 					./system/configuration.nix
