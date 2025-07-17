@@ -135,6 +135,14 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# Direct volume control with Control + Mouse Scroll Wheel
+bindsym --whole-window Control+button4 exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym --whole-window Control+button5 exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+# Optional: Keyboard alternative with Control + Up/Down arrow keys
+bindsym Control+Up exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym Control+Down exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+
 # Window colors
 client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
 client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
@@ -145,6 +153,30 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 # Gaps (optional)
 gaps inner 5
 gaps outer 2
+
+# THIS BLOCK IS NOW RESTORED WITH THE CORRECT SETTINGS
+bar {
+    # Use the reliable absolute path
+    status_command i3status-rs /etc/i3status-rust/config.toml
+    
+    position top
+    
+    # Use pango and the correct Nerd Font name
+    font pango:MesloLGS NF 10
+
+    colors {
+        background            #282A2E
+        statusline            #C5C8C6
+        separator             #373B41
+
+        #                     border    background   text
+        focused_workspace     #4a90e2   #4a90e2      #ffffff
+        active_workspace      #373B41   #373B41      #ffffff
+        inactive_workspace    #282A2E   #282A2E      #888888
+        urgent_workspace      #A54242   #A54242      #ffffff
+    }
+}
+
 
 # Start compositor for transparency
 exec --no-startup-id picom
