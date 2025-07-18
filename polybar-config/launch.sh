@@ -2,13 +2,10 @@
 
 # Terminate already running bar instances
 killall -q polybar
-# If all your bars have ipc enabled, you can also use 
-# polybar-msg cmd quit
-
-# Wait until the processes have been shut down
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-# Launch the dock
-polybar dock &
+# Find the primary monitor and launch the dock there
+PRIMARY_MONITOR=$(xrandr --query | grep " primary" | cut -d" " -f1)
+MONITOR=$PRIMARY_MONITOR polybar dock &
 
 echo "Polybar launched..."

@@ -11,7 +11,8 @@ font pango:MesloLGS NF 10
 floating_modifier $mod
 
 # Show/hide the Polybar dock
-bindsym $mod+Shift+d bar mode toggle dock
+bindsym $mod+Shift+d exec --no-startup-id /run/current-system/sw/bin/polybar-msg cmd toggle
+
 
 # Start a terminal
 bindsym $mod+Return exec alacritty
@@ -181,6 +182,10 @@ bar {
 
 # Start compositor for transparency
 exec --no-startup-id picom
+
+# polybar launch
+exec_always --no-startup-id /etc/polybar/launch.sh
+
 
 # Set wallpaper (optional)
 # exec --no-startup-id feh --bg-scale ~/Pictures/wallpaper.jpg

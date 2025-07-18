@@ -33,6 +33,7 @@
 		rofi
 		feh
 		picom
+                polybar
 		nitrogen
 		arandr
 		

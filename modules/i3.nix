@@ -8,7 +8,7 @@
   environment.etc."polybar/config.ini".source = "${inputs.self}/polybar-config/config.ini";
   environment.etc."polybar/launch.sh" = { 
     source = "${inputs.self}/polybar-config/launch.sh";
-    executable = true; 
+    mode = "0755"; 
   };
 
   # Create user i3 config directory and link files
