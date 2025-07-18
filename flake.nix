@@ -38,7 +38,7 @@
 					inherit inputs;
 					user = getEnvWithDefault "PERSEUS_USER" "jon";
 					userSpecifiedBrowsers = parseBrowsers (getEnvWithDefault "PERSEUS_BROWSERS" "brave");
-					devTools = parseDevTools (getEnvWithDefault "PERSEUS_DEV_TOOLS" "");
+					devTools = parseDevTools (getEnvWithDefault "PERSEUS_DEV_TOOLS" "python,go");
 					isLaptop = parseBool (getEnvWithDefault "PERSEUS_LAPTOP" "true");
 					hasGPU = parseBool (getEnvWithDefault "PERSEUS_GPU" "false"); # Defaulting to true
 				};

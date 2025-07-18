@@ -19,6 +19,10 @@
     # Gaming
     "${inputs.self}/modules/steam.nix"
 
+    # General programming languages
+    "${inputs.self}/modules/gpl.nix"
+
+
   # Conditionally import nvidia.nix based on the hasGPU flag
   ] ++ lib.optionals hasGPU [
     "${inputs.self}/modules/nvidia.nix"
