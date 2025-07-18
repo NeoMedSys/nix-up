@@ -12,6 +12,7 @@
     htop
     jq
     fastfetch
+    flakehub
     fzf
     ripgrep
     rofi
