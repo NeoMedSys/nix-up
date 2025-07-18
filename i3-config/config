@@ -21,13 +21,15 @@ bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill
 
 # Start dmenu (program launcher)
-bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec rofi -show drun
 
 # Start browser
 bindsym $mod+b exec brave
 
 # Start slack -- c for chat
 bindsym $mod+c exec slack
+
+
 
 # Switch keyboard layout
 bindsym $mod+u exec --no-startup-id setxkbmap us
@@ -183,6 +185,9 @@ bar {
 
 # Start compositor for transparency
 exec --no-startup-id picom
+
+# Start dunst
+exec_always --no-startup-id dunst
 
 # polybar launch
 exec_always --no-startup-id /etc/polybar/launch.sh
