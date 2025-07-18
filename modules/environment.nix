@@ -106,4 +106,7 @@
 		enable = true;
 		enableNvidia = hasGPU;
 	};
+
+        hardware.bluetooth.enable = true;
+
 }

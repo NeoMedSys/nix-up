@@ -22,11 +22,11 @@
 		playerctl
 		pavucontrol
 		networkmanagerapplet
-                xorg.xrandr 
+                xorg.xrandr
 		
 		# Window manager tools (moved from i3.nix)
 		i3
-		i3status
+		i3status-rust
 		i3lock
 		i3blocks
 		dmenu
@@ -35,7 +35,10 @@
 		picom
 		nitrogen
 		arandr
-		polybar
+		
+		# Network and Bluetooth GUI tools
+		networkmanagerapplet
+		overskride  # Modern Rust+GTK4 Bluetooth manager
 		
 		# Screenshot tools
 		scrot
@@ -56,6 +59,10 @@
 		dig
 		#wget
 		
+		# Bluetooth tools
+		bluez
+		bluez-tools
+		
 		# Zsh and theme
 		zsh
 		zsh-powerlevel10k
@@ -64,7 +71,17 @@
 		# Fonts
 		fira-code
 		meslo-lgs-nf
-		font-awesome
+		font-awesome_6
+		dejavu_fonts
+		liberation_ttf
+		fira-code-symbols
+	];
+
+  	# This registers the fonts with your system so applications can find them.
+	fonts.packages = with pkgs; [
+		fira-code
+		meslo-lgs-nf
+		font-awesome_6
 		dejavu_fonts
 		liberation_ttf
 		fira-code-symbols

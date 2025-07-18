@@ -5,7 +5,7 @@
 set $mod Mod4
 
 # Font for window titles
-font pango:Fira Code 8
+font pango:MesloLGS NF 10
 
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
@@ -133,7 +133,6 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+r mode "resize"
 
 # Window colors
 client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
@@ -146,8 +145,29 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 gaps inner 5
 gaps outer 2
 
-# Start polybar
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+# THIS BLOCK IS NOW RESTORED WITH THE CORRECT SETTINGS
+bar {
+    # Use the reliable absolute path
+    status_command i3status-rs /etc/i3status-rust/config.toml
+    
+    position top
+    
+    # Use pango and the correct Nerd Font name
+    font pango:MesloLGS NF 10
+
+    colors {
+        background            #282A2E
+        statusline            #C5C8C6
+        separator             #373B41
+
+        #                     border    background   text
+        focused_workspace     #4a90e2   #4a90e2      #ffffff
+        active_workspace      #373B41   #373B41      #ffffff
+        inactive_workspace    #282A2E   #282A2E      #888888
+        urgent_workspace      #A54242   #A54242      #ffffff
+    }
+}
+
 
 # Start compositor for transparency
 exec --no-startup-id picom
@@ -159,6 +179,8 @@ exec --no-startup-id picom
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+bindsym $mod+g exec steam
 
 # Brightness controls
 bindsym XF86MonBrightnessUp exec brightnessctl set +5%

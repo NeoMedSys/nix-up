@@ -1,0 +1,95 @@
+[theme]
+theme = "nord-dark"
+
+[icons]
+icons = "none"
+
+# --- BLOCKS ---
+
+[[block]]
+block = "custom"
+# More robust command using nmcli to get Wi-Fi SSID
+command = '''ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2); if [ -n "$ssid" ]; then echo "󰖩 $ssid"; fi'''
+shell = "bash"
+interval = 5
+
+[[block]]
+block = "custom"
+# Corrected command to show connected device or "Off"
+command = '''
+connected_device=$(bluetoothctl devices Connected | head -n1 | cut -d ' ' -f 3-)
+if [ -n "$connected_device" ]; then
+    echo " $connected_device"
+else
+    echo " Off"
+fi
+'''
+shell = "bash"
+interval = 5
+
+[[block.click]]
+button = "left"
+cmd = "overskride"
+
+[[block]]
+block = "custom"
+command = '''echo " $(df -h / | awk 'END{print $4}')"'''
+shell = "bash"
+interval = 60
+
+[[block]]
+block = "custom"
+# Simplified memory command
+command = '''echo "󰍛 $(free -m | awk '/Mem:/ {print int($3/$2*100) "%"}')"'''
+shell = "bash"
+interval = 5
+
+[[block]]
+block = "custom"
+command = '''echo "󰻠 $(vmstat 1 2 | tail -1 | awk '{print 100-$15}')%"'''
+shell = "bash"
+interval = 1
+
+[[block]]
+block = "custom"
+# Simplified command to get the volume percentage
+command = '''echo " $(pactl get-sink-volume @DEFAULT_SINK@ | grep -Po '\\d+%' | head -n1)"'''
+shell = "bash"
+interval = 1
+
+[[block.click]]
+button = "left"
+cmd = "pavucontrol"
+
+[[block]]
+block = "custom"
+command = '''
+capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+status=$(cat /sys/class/power_supply/BAT0/status)
+
+if [ "$status" = "Charging" ]; then
+    echo " $capacity%"
+else
+    if [ "$capacity" -ge 95 ]; then
+        icon=""
+    elif [ "$capacity" -ge 70 ]; then
+        icon=""
+    elif [ "$capacity" -ge 45 ]; then
+        icon=""
+    elif [ "$capacity" -ge 10 ]; then
+        icon=""
+    else
+        icon=""
+    fi
+    echo "$icon $capacity%"
+fi
+'''
+shell = "bash"
+interval = 10
+
+[[block]]
+block = "custom"
+command = "date +'%Y-%m-%d %H:%M:%S'"
+interval = 1
+
+
