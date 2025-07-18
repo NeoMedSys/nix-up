@@ -155,6 +155,7 @@ client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 # Gaps (optional)
 gaps inner 5
 gaps outer 2
+gaps bottom 50
 
 # THIS BLOCK IS NOW RESTORED WITH THE CORRECT SETTINGS
 bar {
