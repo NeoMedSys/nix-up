@@ -33,6 +33,7 @@
 		rofi
 		feh
 		picom
+                polybar
 		nitrogen
 		arandr
 		
@@ -46,6 +47,12 @@
 		
 		# Terminal emulator
 		alacritty
+
+                # comms
+                slack
+                
+                # Muzicha
+                spotify
 		
 		# Gaming utilities (moved from steam.nix)
 		gamemode
