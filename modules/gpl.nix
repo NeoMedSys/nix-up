@@ -7,7 +7,7 @@ let
   # This creates the pyenv command
   pyenv = pkgs.writeShellScriptBin "pyenv" ''
     #!${pkgs.stdenv.shell}
-    nix-shell --pure pyenv-shell.nix
+    nix-shell pyenv-shell.nix
   '';
 
   # Language-specific package sets

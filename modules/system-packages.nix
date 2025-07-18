@@ -50,6 +50,9 @@
 
                 # comms
                 slack
+                
+                # Muzicha
+                spotify
 		
 		# Gaming utilities (moved from steam.nix)
 		gamemode
