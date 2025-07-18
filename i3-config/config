@@ -186,6 +186,9 @@ bar {
 # Start compositor for transparency
 exec --no-startup-id picom
 
+# Start dunst
+exec_always --no-startup-id dunst
+
 # polybar launch
 exec_always --no-startup-id /etc/polybar/launch.sh
 

@@ -9,6 +9,9 @@
   environment.etc."polybar/launch.sh" = { 
     source = "${inputs.self}/polybar-config/launch.sh";
     mode = "0755"; 
+
+  environment.etc."dunst/dunstrc".source = "${inputs.self}/dunst-config/dunstrc";
+
   };
 
   # Create user i3 config directory and link files
@@ -17,6 +20,7 @@
     mkdir -p ~/.config/i3status-rust
     ln -sf /etc/i3/config ~/.config/i3/config
     ln -sf /etc/i3status-rust/config.toml ~/.config/i3status-rust/config.toml
+    ln -sf /etc/dunst/dunstrc ~/.config/dunst/dunstrc
   '';
 
   # Enable compositor for transparency effects

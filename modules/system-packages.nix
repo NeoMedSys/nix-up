@@ -22,6 +22,7 @@
     brightnessctl
     playerctl
     pavucontrol
+    dunst
     networkmanagerapplet
     xorg.xrandr
     

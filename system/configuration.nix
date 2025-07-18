@@ -11,7 +11,6 @@
     "${inputs.self}/modules/zsh.nix"
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
-    "${inputs.self}/modules/dunst.nix"
 
     # Desktop environment
     "${inputs.self}/modules/login.nix"
