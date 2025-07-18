@@ -4,8 +4,7 @@
 killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-# Find the primary monitor and launch the dock there
-PRIMARY_MONITOR=$(xrandr --query | grep " primary" | cut -d" " -f1)
-MONITOR=$PRIMARY_MONITOR polybar dock &
+# Launch the dock, explicitly specifying the correct config file with -c
+polybar -c /etc/polybar/config.ini dock &
 
 echo "Polybar launched..."
