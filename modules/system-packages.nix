@@ -46,6 +46,9 @@
 		
 		# Terminal emulator
 		alacritty
+
+                # comms
+                slack
 		
 		# Gaming utilities (moved from steam.nix)
 		gamemode

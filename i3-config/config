@@ -10,6 +10,9 @@ font pango:MesloLGS NF 10
 # Use Mouse+$mod to drag floating windows
 floating_modifier $mod
 
+# Show/hide the Polybar dock
+bindsym $mod+Shift+d bar mode toggle dock
+
 # Start a terminal
 bindsym $mod+Return exec alacritty
 
@@ -21,6 +24,9 @@ bindsym $mod+d exec dmenu_run
 
 # Start browser
 bindsym $mod+b exec brave
+
+# Start slack -- c for chat
+bindsym $mod+c exec slack
 
 # Switch keyboard layout
 bindsym $mod+u exec --no-startup-id setxkbmap us
