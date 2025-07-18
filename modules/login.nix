@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 {
+  services.displayManager.defaultSession = "none+i3";
   # Display manager configuration
   services.xserver.displayManager = {
-    defaultSession = "none+i3";
     lightdm = {
       enable = true;
       greeters.gtk = {

@@ -22,6 +22,10 @@ bindsym $mod+d exec dmenu_run
 # Start browser
 bindsym $mod+b exec brave
 
+# Switch keyboard layout
+bindsym $mod+u exec --no-startup-id setxkbmap us
+bindsym $mod+n exec --no-startup-id setxkbmap no
+
 # Change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
