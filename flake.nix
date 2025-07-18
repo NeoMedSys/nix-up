@@ -6,18 +6,18 @@
     nixvim.url = "github:nix-community/nixvim/nixos-25.05";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    flakehub.url = "github:DeterminateSystems/fh";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
+  outputs = { self, nixpkgs, flakehub, ... }@inputs:
   let
-    version = "0.1.0";
+    version = "1.0.0";
 
-    # Define a function to build a system, avoiding duplication
-    mkSystem = { hasGPU ? true, devTools ? [], ... }:
+    mkSystem = { hasGPU, devTools ? [], ... }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs version;
+          inherit inputs version flakehub;
           user = "jon";
           userSpecifiedBrowsers = [ "brave" ];
           isLaptop = true;
@@ -32,8 +32,15 @@
   in
   {
     nixosConfigurations = {
+      # Default configuration WITHOUT GPU
       perseus = mkSystem {
         hasGPU = false;
+        devTools = [ "python" "go" ];
+      };
+
+      # A second configuration WITH GPU
+      "perseus-gpu" = mkSystem {
+        hasGPU = true;
         devTools = [ "python" "go" ];
       };
     };
