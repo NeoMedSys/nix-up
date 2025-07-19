@@ -15,6 +15,6 @@ services.xserver.displayManager.lightdm = {
       package = pkgs.arc-icon-theme;
       name = "Arc";
     };
-    # background = "${inputs.self}/assets/wallpaper.png";
+    background = "${inputs.self}/assets/wallpaper.png";
   };
 };
