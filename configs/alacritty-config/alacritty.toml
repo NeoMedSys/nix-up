@@ -1,0 +1,8 @@
+[window]
+opacity = 0.80
+
+[font]
+size = 11
+
+[font.normal]
+family = "MesloLGS NF"
