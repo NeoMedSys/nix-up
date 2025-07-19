@@ -1,4 +1,4 @@
-{ config, pkgs, lib, isLaptop ? true, hasGPU ? true, user ? "algol", userSpecifiedBrowsers ? [ "brave" ], ... }:
+{ config, pkgs, lib, inputs, isLaptop ? true, hasGPU ? true, user ? "algol", userSpecifiedBrowsers ? [ "brave" ], ... }:
 {
   # Use the systemd-boot EFI boot loader
   boot.loader.systemd-boot.enable = true;
