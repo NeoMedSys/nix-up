@@ -184,7 +184,8 @@ bar {
 
 
 # Start compositor for transparency
-exec --no-startup-id picom
+exec_always --no-startup-id picom
+
 
 # Start dunst
 exec_always --no-startup-id dunst
