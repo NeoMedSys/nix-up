@@ -115,6 +115,7 @@
   # Avatar image for login 
   environment.etc."user-avatars/jon.png".source = "${inputs.self}/assets/king.png";
 
+
   system.userActivationScripts.avatar = ''
     ln -sf /etc/user-avatars/jon.png /home/${user}/.face
   '';
