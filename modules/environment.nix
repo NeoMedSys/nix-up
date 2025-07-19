@@ -116,7 +116,13 @@ in
     enableNvidia = hasGPU;
   };
 
-  hardware.bluetooth.enable = true;
+  hardware = {
+    bluetooth.enable = true;
+    opengl = {
+        enable = true;
+        driSupport32Bit = true;
+      };
+  };
 
   environment.etc."user-avatars/king-${user}.png".source = processedKing;
 
@@ -124,4 +130,5 @@ in
     cp ${config.environment.etc."user-avatars/king-${user}.png".source} /home/${user}/.face
     chmod 644 /home/${user}/.face
   '';
+
 }

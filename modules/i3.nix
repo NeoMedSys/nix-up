@@ -12,7 +12,6 @@
     "dunst/dunstrc".source = "${inputs.self}/configs/dunst-config/dunstrc";
     "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
     "alacritty/alacritty.yaml".source = "${inputs.self}/configs/alacritty-config/alacritty.yaml";
-
   };
 
   # This script creates symlinks in your home directory
@@ -25,13 +24,16 @@
     ln -sf /etc/dunst/dunstrc ~/.config/dunst/dunstrc
     ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
     ln -sf /etc/alacritty/alacritty.yaml ~/.config/alacritty/alacritty.yaml
-
   '';
 
   # Enable the picom compositor service
   services.picom = {
     enable = true;
+    backend = "glx";
     fade = true;
     shadow = true;
+    settings = {
+      "inactive-opacity-override" = false;
+    };
   };
 }
