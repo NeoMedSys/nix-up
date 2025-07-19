@@ -1,8 +1,11 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, flakehub, ... }:
+
 {
   # Global software packages to install
   environment.systemPackages = with pkgs; [
     # Development tools
+    flakehub.packages.${pkgs.system}.default
+
     curl
     git
     gcc

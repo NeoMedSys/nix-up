@@ -1,0 +1,70 @@
+configuration {
+  modi: "drun";
+  font: "MesloLGS NF 12";
+  show-icons: true;
+  icon-theme: "Arc";
+  terminal: "alacritty";
+}
+
+* {
+  /* Nord Theme Colors */
+  nord0:  #2E3440;
+  nord1:  #3B4252;
+  nord3:  #4C566A;
+  nord4:  #D8DEE9;
+  nord10: #5E81AC;
+
+  background-color: transparent;
+  text-color: @nord4;
+}
+
+window {
+  background-color: @nord0;
+  border: 2px;
+  border-color: @nord10;
+  border-radius: 8px;
+  padding: 16px;
+  width: 50%;
+}
+
+mainbox {
+  children: [ inputbar, listview ];
+  spacing: 12px;
+}
+
+inputbar {
+  children: [ prompt, entry ];
+  padding: 8px;
+  background-color: @nord1;
+  border-radius: 6px;
+}
+
+prompt {
+  text-color: @nord10;
+  margin: 0 8px 0 0;
+}
+
+entry {
+  placeholder: "Search...";
+  placeholder-color: @nord3;
+}
+
+listview {
+  lines: 8;
+  columns: 1;
+  spacing: 8px;
+}
+
+element {
+  padding: 8px;
+  border-radius: 6px;
+}
+
+element-text {
+  vertical-align: 0.5;
+}
+
+element selected {
+  background-color: @nord10;
+  text-color: @nord0;
+}
