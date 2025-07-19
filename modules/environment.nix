@@ -118,12 +118,10 @@ in
 
   hardware.bluetooth.enable = true;
 
-  environment.etc."user-avatars/king-jon.png".source = processedKing;
+  environment.etc."user-avatars/king-${user}.png".source = processedKing;
 
   system.userActivationScripts.king = ''
-    cp ${config.environment.etc."user-avatars/king-jon.png".source} /home/${user}/.face
+    cp ${config.environment.etc."user-avatars/king-${user}.png".source} /home/${user}/.face
     chmod 644 /home/${user}/.face
   '';
-
-
 }
