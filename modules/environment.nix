@@ -7,11 +7,6 @@
   # Set time zone
   time.timeZone = "Europe/Amsterdam";
 
-  # Internationalization
-  # i18n = {
-  #   defaultLocale = "en_US.UTF-8";
-  #   extraLocales = [ "nb_NO.UTF-8" ];
-  # };
   i18n.supportedLocales = [
     "en_US.UTF-8/UTF-8"
     "nb_NO.UTF-8/UTF-8"
@@ -115,5 +110,13 @@
   };
 
   hardware.bluetooth.enable = true;
+
+
+  # Avatar image for login 
+  environment.etc."user-avatars/jon.png".source = "${inputs.self}/assets/king.png";
+
+  system.userActivationScripts.avatar = ''
+    ln -sf /etc/user-avatars/jon.png /home/${user}/.face
+  '';
 
 }
