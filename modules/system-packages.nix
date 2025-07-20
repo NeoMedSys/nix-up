@@ -1,5 +1,7 @@
 { lib, pkgs, config, flakehub, ... }:
-
+let
+  sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
+in
 {
   # Global software packages to install
   environment.systemPackages = with pkgs; [
@@ -19,6 +21,7 @@
     fzf
     ripgrep
     rofi
+    sandboxed-teams
     # tmux
     xsel
     

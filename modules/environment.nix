@@ -43,10 +43,10 @@ in
       windowManager.i3.enable = true;
 
       displayManager = {
-        lightdm = {
-          enable = true;
-          greeters.gtk.enable = true;
-        };
+          lightdm = {
+            enable = true;
+            greeters.gtk.enable = true;
+          };
       };
     };
 
