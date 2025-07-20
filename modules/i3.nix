@@ -17,10 +17,12 @@
       src = "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
       wallpaper = "${inputs.self}/assets/wallpaper.png";
     });
+
+    "lightdm-greeter-theme-override" = {
+      target = "gsettings/schemas/lightdm.gschema.override/99_greeter-theme.gschema.override";
+      source = "${inputs.self}/configs/lightdm/greeter-theme.gschema.override";
+    };
   };
-
-  "gsettings/schemas/lightdm.gschema.override/99_greeter-theme.gschema.override".source = "${inputs.self}/configs/lightdm/greeter-theme.gschema.override";
-
 
   # This script creates symlinks in your home directory
   system.userActivationScripts.i3-configs = ''
