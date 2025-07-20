@@ -13,9 +13,14 @@
     "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
     "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
     "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
-    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
-
+    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.substituteAll {
+      src = "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
+      wallpaper = "${inputs.self}/assets/wallpaper.png";
+    });
   };
+
+  "gsettings/schemas/lightdm.gschema.override/99_greeter-theme.gschema.override".source = "${inputs.self}/configs/lightdm/greeter-theme.gschema.override";
+
 
   # This script creates symlinks in your home directory
   system.userActivationScripts.i3-configs = ''

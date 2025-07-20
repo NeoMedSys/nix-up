@@ -143,4 +143,14 @@ in
     cp ${config.environment.etc."user-avatars/king-${user}.png".source} /home/${user}/.face
     chmod 644 /home/${user}/.face
   '';
+
+  systemd.services.display-manager.serviceConfig = {
+    Environment = [
+    "XDG_DATA_DIRS=/etc/gsettings/schemas/lightdm.gschema.override"
+    "XDG_DATA_DIRS+=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+    "XDG_DATA_DIRS+=${pkgs.arc-theme}/share"
+    "XDG_DATA_DIRS+=${pkgs.arc-icon-theme}/share"
+    "XDG_DATA_DIRS+=/run/current-system/sw/share"
+    ];
+  };
 }
