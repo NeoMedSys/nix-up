@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 {
   # This section declaratively manages all your config files
   environment.etc = {
@@ -13,7 +13,7 @@
     "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
     "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
     "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
-    "lightdm/lightdm-gtk-greeter.conf".source = "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
+    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
 
   };
 

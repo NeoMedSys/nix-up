@@ -13,7 +13,6 @@
     "${inputs.self}/modules/ssh-config.nix"
 
     # Desktop environment
-    "${inputs.self}/modules/login.nix"
     "${inputs.self}/modules/i3.nix"
 
     # Gaming
