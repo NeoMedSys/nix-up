@@ -12,6 +12,7 @@
     openssl
     
     # System utilities
+    direnv
     htop
     jq
     fastfetch

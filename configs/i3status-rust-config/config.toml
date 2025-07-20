@@ -13,6 +13,10 @@ command = '''ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2
 shell = "bash"
 interval = 5
 
+[[block.click]]
+button = "left"
+cmd = "nm-connection-editor"
+
 [[block]]
 block = "custom"
 # Corrected command to show connected device or "Off"

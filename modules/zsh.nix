@@ -31,6 +31,7 @@
       # Add the custom function to the right-side of your prompt.
       typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS
       POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=(custom_prompt_nix_shell)
+      eval "$(direnv hook zsh)"
     '';
     loginShellInit = ''
       fastfetch

@@ -9,8 +9,10 @@
 	};
 	
 	# GameMode for performance optimization
-	programs.gamemode.enable = true;
-	
+        programs.gamemode = {
+          enable = true;
+        };	
+
 	# 32-bit libraries for gaming compatibility
 	hardware.graphics = {
 		enable = true;

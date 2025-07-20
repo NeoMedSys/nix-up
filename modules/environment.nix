@@ -29,8 +29,10 @@ in
   };
 
   # Services
-  # Services
   services = {
+    tlp.enable = true;
+    # fingerprint
+    fprintd.enable = true;
     # X-Server and Window Manager
     xserver = {
       enable = true;
@@ -121,7 +123,6 @@ in
   # Hardware and Power Management
   powerManagement = lib.mkIf isLaptop {
     enable = true;
-    cpuFreqGovernor = "powersave";
   };
 
   hardware = {
@@ -136,6 +137,15 @@ in
   virtualisation.docker = {
     enable = true;
     enableNvidia = hasGPU;
+  };
+
+  # change this accordingly
+  programs.git = {
+    enable = true;
+    config = {
+      user.name = "JonNesvold";
+      user.email = "jnesvold@neomedsys.io";
+    };
   };
 
   # System Scripts
