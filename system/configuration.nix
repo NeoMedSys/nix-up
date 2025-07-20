@@ -23,7 +23,7 @@
 
     # Privacy matter
     "${inputs.self}/modules/privacy.nix"
-    "${inputs.self}/modules/nasty_tech_overlords.nix"
+    "${inputs.self}/modules/techoverlord_protection.nix"
 
 
   # Conditionally import nvidia.nix based on the hasGPU flag
