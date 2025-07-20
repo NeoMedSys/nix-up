@@ -159,6 +159,8 @@ gaps inner 5
 gaps outer 2
 gaps bottom 50
 
+for_window [class="^.*"] border none
+
 # THIS BLOCK IS NOW RESTORED WITH THE CORRECT SETTINGS
 bar {
     # Use the reliable absolute path
