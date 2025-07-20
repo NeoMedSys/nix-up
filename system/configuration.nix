@@ -14,6 +14,7 @@
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"
+    "${inputs.self}/modules/redshift.nix"
 
     # Gaming
     "${inputs.self}/modules/steam.nix"

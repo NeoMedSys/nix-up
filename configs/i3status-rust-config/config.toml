@@ -7,6 +7,15 @@ icons = "none"
 # --- BLOCKS ---
 
 [[block]]
+block = "hueshift"
+hue_shifter = "redshift"
+step = 100
+click_temp = 3500
+max_temp = 6500
+min_temp = 2500
+format = " $temperature K"
+
+[[block]]
 block = "custom"
 # More robust command using nmcli to get Wi-Fi SSID
 command = '''ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2); if [ -n "$ssid" ]; then echo "󰖩 $ssid"; fi'''
