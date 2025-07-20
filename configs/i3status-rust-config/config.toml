@@ -7,13 +7,20 @@ icons = "none"
 # --- BLOCKS ---
 
 [[block]]
-block = "hueshift"
+block       = "hueshift"
 hue_shifter = "redshift"
-step = 100
-click_temp = 3500
-max_temp = 6500
-min_temp = 2500
-format = " $temperature K"
+step        = 100
+click_temp  = 3500
+max_temp    = 6500
+min_temp    = 2500
+# add a sun icon, show the Kelvin, and keep the space before it
+format      = " $temperature K"
+
+[[block.click]]
+button = "left"
+# open the Redshift GTK UI; install `redshift-gtk` if you don’t have it
+cmd    = "redshift-gtk"
+
 
 [[block]]
 block = "custom"

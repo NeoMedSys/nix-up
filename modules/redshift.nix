@@ -11,9 +11,6 @@
 			day = "1.0";
 			night = "0.9";
 		};
-		# Start transitioning at 10 PM, fully warm by 11 PM
-		dawnTime = "6:00-7:00";
-		duskTime = "22:00-23:00";  # 10 PM to 11 PM
 	};
 	
 	# Amsterdam coordinates (adjust to your location)
@@ -27,10 +24,6 @@
 		redshift
 	];
 	
-	# Disable the default systemd service since we'll control it manually
-	systemd.services.redshift.enable = false;
-	systemd.user.services.redshift.enable = false;
-	
 	# Create a custom redshift config
 	environment.etc."redshift.conf" = {
 		text = ''
@@ -42,6 +35,8 @@
 			brightness-night=0.9
 			location-provider=manual
 			adjustment-method=randr
+                        dawn-time=06:00-07:00
+                        dusk-time=22:00-23:00
 			
 			[manual]
 			lat=52.37
