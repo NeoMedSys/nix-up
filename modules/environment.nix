@@ -31,6 +31,7 @@ in
   # Services
   services = {
     tlp.enable = true;
+    opensnitch.enable = true;
     # fingerprint
     fprintd.enable = true;
     # X-Server and Window Manager
