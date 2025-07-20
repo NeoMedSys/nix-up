@@ -20,8 +20,10 @@
 
     # General programming languages
     "${inputs.self}/modules/gpl.nix"
+
     # Privacy matter
     "${inputs.self}/modules/privacy.nix"
+    "${inputs.self}/modules/nasty_tech_overlords.nix"
 
 
   # Conditionally import nvidia.nix based on the hasGPU flag

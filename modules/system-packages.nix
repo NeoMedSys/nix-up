@@ -98,7 +98,7 @@ in
     
     # System security
     lynis  # Security auditing tool
-    rkhunter  # Rootkit scanner
+    chkrootkit
     fail2ban
 
     # Bluetooth tools

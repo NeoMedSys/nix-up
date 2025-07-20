@@ -41,20 +41,17 @@
       # Enable MAC address randomization
       wifi.macAddress = "random";
       ethernet.macAddress = "random";
-      
-      # Additional privacy settings
-      extraConfig = ''
-              [connection]
-              wifi.cloned-mac-address=random
-              ethernet.cloned-mac-address=random
-              
-              [device]
-              wifi.scan-rand-mac-address=yes
-      '';
+      settings = {
+        connection = {
+          "wifi.cloned-mac-address" = "random";
+          "ethernet.cloned-mac-address" = "random";
+        };
+        device = {
+          "wifi.scan-rand-mac-address" = "yes";
+        };
+      };
     };
     
-    # Disable swap entirely
-    zramSwap.enable = false;
     
     # Additional firewall hardening
     firewall = {
@@ -86,15 +83,12 @@
     bantime = "24h";
     bantime-increment.enable = true;
     
-    jails = {
-      # SSH jail (using your custom port)
-      ssh = {
-        enabled = true;
-        port = 7889;
-        filter = "sshd";
-        maxretry = 3;
-      };
-    };
+    jails.sshd = lib.mkForce ''
+      enabled = true
+      port = 7889
+      filter = sshd
+      maxretry = 3
+    '';
   };
   
   # Disable telemetry in various applications
@@ -172,6 +166,9 @@
   
   # Ensure no swap file/partition is created
   swapDevices = lib.mkForce [ ];
+
+  # Disable swap entirely
+  zramSwap.enable = false;
   
   # Privacy-focused browser settings (for when browsers are launched)
   programs.firefox = {
