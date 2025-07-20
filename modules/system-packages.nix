@@ -23,6 +23,7 @@
     
     # Desktop utilities (moved from other modules)
     brightnessctl
+    i3lock-fancy
     playerctl
     pavucontrol
     dunst

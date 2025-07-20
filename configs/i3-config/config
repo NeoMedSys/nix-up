@@ -13,7 +13,6 @@ floating_modifier $mod
 # Show/hide the Polybar dock
 bindsym $mod+Shift+d exec --no-startup-id /run/current-system/sw/bin/polybar-msg cmd toggle
 
-
 # Start a terminal
 bindsym $mod+Return exec alacritty
 
@@ -25,6 +24,12 @@ bindsym $mod+d exec rofi -show drun
 
 # Start browser
 bindsym $mod+b exec brave
+
+# Lock screen
+bindsym $mod+l exec i3lock-fancy
+
+# reboot machine
+bindsym $mod+Shift+r exec sudo systemctl reboot
 
 # Start slack -- c for chat
 bindsym $mod+c exec slack
@@ -38,7 +43,7 @@ bindsym $mod+n exec --no-startup-id setxkbmap no
 # Change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down
-bindsym $mod+l focus up
+bindsym $mod+i focus up
 bindsym $mod+semicolon focus right
 
 # Alternatively, you can use the cursor keys:
@@ -122,7 +127,7 @@ bindsym $mod+Shift+0 move container to workspace number $ws10
 bindsym $mod+Shift+c reload
 
 # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+# bindsym $mod+Shift+q restart
 
 # Exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"

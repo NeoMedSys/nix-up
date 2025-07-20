@@ -153,4 +153,9 @@ in
     "XDG_DATA_DIRS+=/run/current-system/sw/share"
     ];
   };
+
+  system.activationScripts.compileGreeterGSettings = ''
+    echo "Compiling GSettings schemas for LightDM Greeter..."
+    ${pkgs.glib}/bin/glib-compile-schemas /etc/gsettings/schemas/lightdm.gschema.override/ &> /dev/null || true
+  '';
 }
