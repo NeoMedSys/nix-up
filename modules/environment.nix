@@ -81,6 +81,15 @@ in
       }];
     }];
     rtkit.enable = true;
+    pam.services.lightdm = {
+      text = ''
+        auth      sufficient  pam_fprintd.so
+        auth      substack    login
+        account   include     login
+        password  substack    login
+        session   include     login
+      '';
+    };
   };
 
   # Networking
