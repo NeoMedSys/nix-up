@@ -76,6 +76,31 @@ in
     dig
     #wget
     
+    # Privacy and security tools
+    dnscrypt-proxy2
+    opensnitch
+    iftop
+    nethogs
+    
+    # Encryption tools
+    gnupg
+    age
+    sops
+    
+    # Secure communication
+    signal-desktop
+    element-desktop
+    
+    # Privacy utilities
+    tor
+    torsocks
+    proxychains-ng
+    
+    # System security
+    lynis  # Security auditing tool
+    rkhunter  # Rootkit scanner
+    fail2ban
+
     # Bluetooth tools
     bluez
     bluez-tools
