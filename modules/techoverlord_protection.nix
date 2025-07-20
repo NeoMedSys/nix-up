@@ -8,7 +8,29 @@ let
           RED='\033[0;31m'
           GREEN='\033[0;32m'
           YELLOW='\033[1;33m'
+          BLUE='\033[0;34m'
           NC='\033[0m' # No Color
+          
+          # Progress indicator
+          TOTAL_STEPS=8
+          CURRENT_STEP=0
+          
+          show_progress() {
+                  CURRENT_STEP=$((CURRENT_STEP + 1))
+                  local PERCENT=$((CURRENT_STEP * 100 / TOTAL_STEPS))
+                  local FILLED=$((CURRENT_STEP * 20 / TOTAL_STEPS))
+                  local EMPTY=$((20 - FILLED))
+                  
+                  printf "\r[%s%s] %3d%% - %s" \
+                          "$(printf '▓%.0s' $(seq 1 $FILLED))" \
+                          "$(printf '░%.0s' $(seq 1 $EMPTY))" \
+                          "$PERCENT" \
+                          "$1"
+                  
+                  if [ "$CURRENT_STEP" -eq "$TOTAL_STEPS" ]; then
+                          echo ""  # New line after completion
+                  fi
+          }
           
           # Log file locations
           REPORT_DIR="/var/log/nastyTechLords"
@@ -42,6 +64,7 @@ let
           }
           
           # Check for rootkits
+          show_progress "Checking for rootkits..."
           echo "=== Rootkit Check ===" >> "$REPORT_FILE"
           if command -v chkrootkit >/dev/null 2>&1; then
                   echo "Running chkrootkit..." >> "$REPORT_FILE"
@@ -73,6 +96,7 @@ let
           fi
           
           # Check for suspicious network connections
+          show_progress "Scanning network connections..."
           echo -e "\n=== Suspicious Network Connections ===" >> "$REPORT_FILE"
           SUSPICIOUS_PORTS=$(${pkgs.nettools}/bin/netstat -tulpn 2>/dev/null | grep -E ':(6666|6667|31337|12345|4444|5555|9999)')
           if [ -n "$SUSPICIOUS_PORTS" ]; then
@@ -85,6 +109,7 @@ let
           fi
           
           # Check for unauthorized SSH keys
+          show_progress "Auditing SSH keys..."
           echo -e "\n=== SSH Key Audit ===" >> "$REPORT_FILE"
           for user_home in /home/*; do
                   if [ -f "$user_home/.ssh/authorized_keys" ]; then
@@ -100,6 +125,7 @@ let
           done
           
           # Check failed login attempts
+          show_progress "Checking login attempts..."
           echo -e "\n=== Failed Login Attempts ===" >> "$REPORT_FILE"
           FAILED_LOGINS=$(journalctl -u sshd --since "24 hours ago" 2>/dev/null | grep -c "Failed password")
           echo "Failed SSH logins in last 24h: $FAILED_LOGINS" >> "$REPORT_FILE"
@@ -109,6 +135,7 @@ let
           fi
           
           # Check for suspicious processes
+          show_progress "Scanning processes..."
           echo -e "\n=== Process Audit ===" >> "$REPORT_FILE"
           SUSPICIOUS_PROCS=$(ps aux | grep -E "(nc -l|/dev/tcp/|sh -i|bash -i)" | grep -v grep)
           if [ -n "$SUSPICIOUS_PROCS" ]; then
@@ -121,6 +148,7 @@ let
           fi
           
           # Check for world-writable files in sensitive directories
+          show_progress "Checking file permissions..."
           echo -e "\n=== File Permission Audit ===" >> "$REPORT_FILE"
           WRITABLE_FILES=$(find /etc /usr/bin /usr/sbin -type f -perm -002 2>/dev/null | head -20)
           if [ -n "$WRITABLE_FILES" ]; then
@@ -132,6 +160,7 @@ let
           fi
           
           # Run Lynis audit (if available)
+          show_progress "Running Lynis security audit..."
           if command -v lynis >/dev/null 2>&1; then
                   echo -e "\n=== Lynis Security Audit ===" >> "$REPORT_FILE"
                   ${pkgs.lynis}/bin/lynis audit system --quiet --no-colors >> "$REPORT_FILE" 2>&1
@@ -144,6 +173,7 @@ let
           fi
           
           # NixOS-specific security checks
+          show_progress "Running NixOS-specific checks..."
           echo -e "\n=== NixOS Security Checks ===" >> "$REPORT_FILE"
           
           # Check for unsigned Nix store paths
@@ -194,6 +224,7 @@ let
           echo "System generations available: $(ls -1 /nix/var/nix/profiles/system-*-link 2>/dev/null | wc -l)" >> "$REPORT_FILE"
           
           # Generate summary
+          show_progress "Generating report..."
           echo "=== AUDIT SUMMARY ===" > "$SUMMARY_FILE"
           echo "Date: $(date)" >> "$SUMMARY_FILE"
           echo "Critical Issues: $CRITICAL" >> "$SUMMARY_FILE"
@@ -243,8 +274,9 @@ let
                   echo -e "''${YELLOW}Commands:''${NC}"
                   echo -e "  ''${BLUE}run''${NC}        Run security audit now"
                   echo -e "  ''${BLUE}status''${NC}     Show daemon status and next run time"
-                  echo -e "  ''${BLUE}logs''${NC}       Follow live logs (Ctrl-C to exit)"
+                  echo -e "  ''${BLUE}logs''${NC}       Follow live logs (shows past + new logs)"
                   echo -e "  ''${BLUE}report''${NC}     View latest audit summary"
+                  echo -e "  ''${BLUE}full''${NC}       View full latest audit report"
                   echo -e "  ''${BLUE}history''${NC}    List all audit reports"
                   echo -e "  ''${BLUE}enable''${NC}     Enable automatic monitoring"
                   echo -e "  ''${BLUE}disable''${NC}    Disable automatic monitoring"
@@ -258,8 +290,10 @@ let
           
           case "$1" in
                   run)
-                          echo -e "''${GREEN}Running NastyTechLords security audit...''${NC}"
+                          echo -e "''${GREEN}🛡️  NastyTechLords Security Audit''${NC}"
+                          echo -e "''${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━''${NC}"
                           sudo ${nastyTechLordsScript}/bin/nastyTechLords
+                          echo -e "\n''${GREEN}✓ Audit complete!''${NC} View report with: ''${YELLOW}ntl report''${NC}"
                           ;;
                   status)
                           echo -e "''${GREEN}NastyTechLords Daemon Status:''${NC}"
@@ -269,7 +303,9 @@ let
                           sudo systemctl list-timers nastyTechLords.timer --no-pager | grep nastyTechLords || echo "Timer not active"
                           ;;
                   logs)
-                          echo -e "''${GREEN}Following NastyTechLords logs (Ctrl-C to exit)...''${NC}"
+                          echo -e "''${GREEN}📋 NastyTechLords Service Logs''${NC}"
+                          echo -e "''${YELLOW}Shows past runs + follows new logs (Ctrl-C to exit)''${NC}"
+                          echo -e "''${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━''${NC}"
                           sudo journalctl -u nastyTechLords -f
                           ;;
                   report)
@@ -278,6 +314,16 @@ let
                                   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
                                   sudo cat /var/log/nastyTechLords/latest-summary.txt
                                   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                          else
+                                  echo -e "''${YELLOW}No audit reports found yet. Run 'ntl run' to generate one.''${NC}"
+                          fi
+                          ;;
+                  full)
+                          LATEST_REPORT=$(sudo ls -t /var/log/nastyTechLords/audit-*.log 2>/dev/null | head -1)
+                          if [ -n "$LATEST_REPORT" ]; then
+                                  echo -e "''${GREEN}Full Security Audit Report:''${NC}"
+                                  echo -e "''${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━''${NC}"
+                                  sudo less "$LATEST_REPORT"
                           else
                                   echo -e "''${YELLOW}No audit reports found yet. Run 'ntl run' to generate one.''${NC}"
                           fi
