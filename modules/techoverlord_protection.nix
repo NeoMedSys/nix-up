@@ -56,7 +56,7 @@ let
     
     # Check for suspicious network connections
     echo -e "\n=== Suspicious Network Connections ===" >> "$REPORT_FILE"
-    SUSPICIOUS_PORTS=$(${pkgs.netstat}/bin/netstat -tulpn 2>/dev/null | grep -E ':(6666|6667|31337|12345|4444|5555|9999)')
+    SUSPICIOUS_PORTS=$(${pkgs.nettools}/bin/netstat -tulpn 2>/dev/null | grep -E ':(6666|6667|31337|12345|4444|5555|9999)')
     if [ -n "$SUSPICIOUS_PORTS" ]; then
       echo "WARNING: Suspicious ports detected:" >> "$REPORT_FILE"
       echo "$SUSPICIOUS_PORTS" >> "$REPORT_FILE"
@@ -150,7 +150,10 @@ let
 in
 {
   # Install the script
-  environment.systemPackages = [ nastyTechLordsScript ];
+  environment.systemPackages = [ 
+    nastyTechLordsScript
+    pkgs.nettools
+  ];
   
   # Create systemd service
   systemd.services.nastyTechLords = {
