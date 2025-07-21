@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 {
   programs.nixvim = {
     enable = true;
@@ -91,22 +91,22 @@
         action = "<Cmd>BufferLinePick<CR>";
       }
       {
-	mode = "n";
-	key = "<leader>mp";
-	action = "<Cmd>MarkdownPreview<CR>";
-      }
-      {
-	mode = "n";
-	key = "<leader>ms";
-	action = "<Cmd>MarkdownPreviewStop<CR>";
+        mode = "n";
+        key = "<leader>p";
+        action = "<Cmd>:MarkdownPreviewToggle<CR>";
       }
     ];
 
+        # Plugin-specific Lua configuration
     extraConfigLua = ''
-      vim.g.mkdp_browser = 'brave'
-      vim.g.mkdp_theme = 'dark'
+      -- markdown-preview.nvim settings
+      vim.g.mkdp_auto_start = 0    -- do not automatically open
+      vim.g.mkdp_auto_close = 1    -- close with buffer
+      vim.g.mkdp_filetypes  = { "markdown" }
+      vim.g.mkdp_browser    = "brave"
     '';
-    
+
+
     opts = {
       number = true;
       shiftwidth = 2;
@@ -117,4 +117,11 @@
       splitright = true;
     };
   };
+  system.activationScripts.markdownPreviewInstall = ''
+    echo "Installing markdown-preview-nvim dependencies…"
+    ${config.programs.nixvim.package}/bin/nvim \
+      --headless \
+      +"call mkdp#util#install()" \
+      +qa
+  '';
 }

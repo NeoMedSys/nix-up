@@ -1,6 +1,7 @@
 { lib, pkgs, config, flakehub, ... }:
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
+  markdownPreview = pkgs.callPackage ../pkgs/markdown-preview.nix { };
 in
 {
   # Global software packages to install
@@ -22,6 +23,7 @@ in
     ripgrep
     rofi
     sandboxed-teams
+    markdownPreview
     # tmux
     xsel
     
@@ -31,6 +33,7 @@ in
     playerctl
     pavucontrol
     dunst
+    mdcat
     networkmanagerapplet
     xorg.xrandr
     
@@ -75,6 +78,10 @@ in
     #networkmanager-openvpn
     dig
     #wget
+
+    # frontend nasytness
+    nodejs
+    yarn
     
     # Privacy and security tools
     dnscrypt-proxy2
