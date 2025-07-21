@@ -189,6 +189,8 @@ bar {
     }
 }
 
+# Start opensnitch UI
+exec_always --no-startup-id opensnitch-ui
 
 # Start compositor for transparency
 exec_always --no-startup-id picom

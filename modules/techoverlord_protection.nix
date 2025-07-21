@@ -90,19 +90,9 @@ let
                   echo "$FILTERED_OUTPUT" >> "$REPORT_FILE"
                   
                   # Check for real infections (exclude ALL common NixOS false positives)
-                  # These are symlinks to Nix store, not real infections
-                  REAL_INFECTIONS=$(echo "$ROOTKIT_OUTPUT" | grep "INFECTED" | \
-                          grep -v "basename.*INFECTED" | \
-                          grep -v "date.*INFECTED" | \
-                          grep -v "dirname.*INFECTED" | \
-                          grep -v "echo.*INFECTED" | \
-                          grep -v "env.*INFECTED")
-                  
-                  # Debug: Show what's being detected
-                  echo "DEBUG: All INFECTED lines:" >> "$REPORT_FILE"
-                  echo "$ROOTKIT_OUTPUT" | grep "INFECTED" >> "$REPORT_FILE"
-                  echo "DEBUG: After filtering:" >> "$REPORT_FILE"
-                  echo "$REAL_INFECTIONS" >> "$REPORT_FILE"
+                  # Filter out standalone INFECTED lines that follow NixOS commands
+                  REAL_INFECTIONS=$(echo "$ROOTKIT_OUTPUT" | \
+                          awk '/Checking `(basename|date|dirname|echo|env)/ {getline; next} /INFECTED/ {print}')
                   
                   if [ -n "$REAL_INFECTIONS" ]; then
                           ((CRITICAL++))

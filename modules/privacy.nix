@@ -34,6 +34,7 @@
   
   # Configure NetworkManager to use dnscrypt-proxy2
   networking = {
+    nftables.enable = true;  # for opensnitch
     networkmanager = {
       insertNameservers = [ "127.0.0.1" "::1" ];
       dns = "none";  # Don't let NetworkManager override DNS
@@ -52,28 +53,36 @@
       };
     };
     
-    
     # Additional firewall hardening
     firewall = {
       enable = true;
       allowPing = false;
       logReversePathDrops = true;
-      
-      # Block outgoing connections to common tracking ports
-      extraCommands = ''
-              # Block Google analytics
-              iptables -A OUTPUT -d www.google-analytics.com -j DROP
-              iptables -A OUTPUT -d ssl.google-analytics.com -j DROP
-              
-              # Block Facebook tracking
-              iptables -A OUTPUT -d connect.facebook.net -j DROP
-              iptables -A OUTPUT -d graph.facebook.com -j DROP
-              
-              # Log and drop suspicious packets
-              iptables -A INPUT -m state --state INVALID -j LOG --log-prefix "DROP INVALID " --log-level 4
-              iptables -A INPUT -m state --state INVALID -j DROP
-      '';
     };
+
+    # declare all your raw & filter rules in nftables DSL
+    nftables.ruleset = ''
+      # send all non-root traffic to NFQUEUE 0 for OpenSnitch
+      table inet raw {
+        chain output {
+         type filter hook output priority raw; policy accept;
+          meta skuid != 0 queue num 0 bypass
+        }
+      }
+      table inet filter { 
+        # log & drop invalid
+        chain input {
+          type filter hook input priority filter; policy accept;
+          ct state invalid log prefix "DROP INVALID " counter
+          ct state invalid drop
+        }
+        chain output {
+          type filter hook input priority filter; policy accept;
+          # all DNS‑based privacy rules are done upstream via dnscrypt‑proxy
+          accept
+        }
+      }
+    '';
   };
   
   # Fail2ban for intrusion prevention

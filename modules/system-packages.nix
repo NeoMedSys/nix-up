@@ -79,6 +79,7 @@ in
     # Privacy and security tools
     dnscrypt-proxy2
     opensnitch
+    opensnitch-ui
     iftop
     nethogs
     

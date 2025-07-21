@@ -7,19 +7,21 @@ icons = "none"
 # --- BLOCKS ---
 
 [[block]]
-block       = "hueshift"
-hue_shifter = "redshift"
-step        = 100
-click_temp  = 3500
-max_temp    = 6500
-min_temp    = 2500
-# add a sun icon, show the Kelvin, and keep the space before it
-format      = " $temperature K"
+block    = "custom"
+command  = '''
+if systemctl --user is-active redshift.service >/dev/null; then
+  temp=$(redshift -p | awk '/Current color temperature:/ {print int($5)}')
+  echo " ${temp} K"
+else
+  echo " Paused"
+fi
+'''
+shell    = "bash"
+interval = 5
 
 [[block.click]]
 button = "left"
-# open the Redshift GTK UI; install `redshift-gtk` if you don’t have it
-cmd    = "redshift-gtk"
+cmd    = "redshift-pause" 
 
 
 [[block]]
