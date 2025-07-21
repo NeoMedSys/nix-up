@@ -30,6 +30,7 @@
       };
       
       nvim-autopairs.enable = true;
+
       bufferline = {
         enable = true;
         settings = {
@@ -60,6 +61,7 @@
       vim-nix
       vim-terraform
       lightline-bufferline
+      markdown-preview-nvim
     ];
     
     keymaps = [
@@ -88,7 +90,22 @@
         key = "<leader>bp";
         action = "<Cmd>BufferLinePick<CR>";
       }
+      {
+	mode = "n";
+	key = "<leader>mp";
+	action = "<Cmd>MarkdownPreview<CR>";
+      }
+      {
+	mode = "n";
+	key = "<leader>ms";
+	action = "<Cmd>MarkdownPreviewStop<CR>";
+      }
     ];
+
+    extraConfigLua = ''
+      vim.g.mkdp_browser = 'brave'
+      vim.g.mkdp_theme = 'dark'
+    '';
     
     opts = {
       number = true;

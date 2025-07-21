@@ -1,179 +1,217 @@
-#### **🎯 Super Easy Deployment with Helper Script**
+# Perseus 🛡️
 
-Use the included deployment script for the easiest experience:
+> A privacy-first, developer-optimized NixOS configuration that protects you from the tech overlords while maximizing productivity.
 
-```bash
-# Download and run the deployment helper
-curl -sSL https://raw.githubusercontent.com/yourusername/perseus/main/deploy-perseus.sh | bash -s -- yourusername/perseus root@target
+## TL;DR
 
-# Or clone and use locally
-git clone https://github.com/yourusername/perseus.git
-cd perseus
-chmod +x deploy-perseus.sh
-
-# Examples:
-./deploy-perseus.sh yourusername/perseus root@192.168.1.100  # Default settings
-./deploy-perseus.sh -u alice -d python,rust,nextjs yourusername/perseus root@target  # Dev setup
-./deploy-perseus.sh -d python,go,rust,nextjs -b firefox,brave yourusername/perseus root@workstation  # Full dev
-./deploy-perseus.sh -c perseus-server -d python,go yourusername/perseus root@server  # Server deployment
-./deploy-perseus.sh --help  # Show all options
-```
-
-### Example: Custom User Configuration
-
-```nix
-# Example customization in flake.nix for user "alice"
-perseus-alice = nixpkgs.lib.nixosSystem {
-  system = "x86_64-linux";
-  specialArgs = {
-    inherit inputs;
-    isLaptop = true;
-    hasGPU = false;  # No NVIDIA GPU
-    user = "alice";
-    userSpecifiedBrowsers = [ "firefox" "chromium" ];
-  };
-  modules = [
-    ./system/configuration.nix
-    nixvim.nixosModules.nixvim
-    disko.nixosModules.disko
-  ];
-};
-```
-
-Then deploy with: `sudo nixos-rebuild switch --flake .#perseus-alice`├── polybar-config/ # Polybar configuration
-│ ├── config.ini # Polybar main configuration
-│ └── launch.sh # Polybar launch script# Perseus v0.1.0 - NixOS Laptop Configuration
-
-A complete NixOS configuration for development and gaming laptops with flakes, i3 window manager, and NVIDIA support.
-
-## Structure
-
-```
-.
-├── flake.nix                    # Main flake configuration
-├── README.md                    # This file
-├── initial-configuration.nix    # Bootstrap config for minimal ISO
-├── test-setup.sh                # Testing script for configuration
-├── deploy-perseus.sh            # Easy deployment helper script
-├── modules/                     # Modular configurations
-│   ├── environment.nix          # Base system settings & Brave browser
-│   ├── dev-tools.nix            # Development tools (Python, Go, Rust, Next.js)
-│   ├── i3.nix                   # i3 window manager configuration
-│   ├── polybar.nix              # Status bar configuration
-│   ├── zsh.nix                  # Zsh shell configuration
-│   ├── nixvim.nix               # Neovim configuration
-│   ├── system-packages.nix      # Core system packages
-│   ├── ssh-config.nix           # SSH daemon configuration
-│   ├── ssh-keys.nix             # SSH public keys
-│   ├── steam.nix                # Gaming platform
-│   ├── nvidia.nix               # NVIDIA drivers
-│   └── expressvpn.nix           # VPN configuration
-├── polybar-config/              # Polybar configuration
-│   ├── config.ini               # Polybar main configuration
-│   └── launch.sh                # Polybar launch script
-└── system/                      # System-level configurations
-    ├── disko-config.nix         # Disk partitioning
-    ├── hardware-configuration.nix # Hardware-specific settings
-    └── configuration.nix        # Main system configuration
-```
-
-## Installation
-
-### 1. Boot from NixOS Minimal ISO
-
-Download the latest NixOS minimal ISO (25.05) and boot from it.
-
-### 2. Initial Setup with Minimal Configuration
+Perseus is a fully declarative NixOS setup that combines **uncompromising privacy**, **developer ergonomics**, and **gaming readiness** into one reproducible system. Deploy anywhere with a single command and get the exact same environment every time.
 
 ```bash
-# Enable flakes temporarily
-export NIX_CONFIG="experimental-features = nix-command flakes"
-
-# Setup networking if needed
-sudo systemctl start wpa_supplicant # for WiFi
-
-# Generate hardware configuration
-sudo nixos-generate-config --root /mnt
-
-# Clone this repository
-git clone <your-repo-url> /tmp/nixos-config
-
-# Copy initial configuration
-sudo cp /tmp/nixos-config/initial-configuration.nix /mnt/etc/nixos/configuration.nix
-
-# OPTIONAL: Edit the username in the copied file (default is "algol")
-# sudo nano /mnt/etc/nixos/configuration.nix  # Change "algol" to your preferred username
-
-# Install NixOS with basic setup
-sudo nixos-install
-
-# Set password for your user (default: "algol", or whatever you changed it to)
-sudo nixos-enter --root /mnt -c 'passwd algol'
-
-# Reboot
-reboot
-```
-
-### 3. Deploy Full Configuration
-
-After rebooting and logging in with the username:
-
-```bash
-# Clone the config
-git clone <your-repo-url> ~/nixos-config
-cd ~/nixos-config
-
-# IMPORTANT: Customize for your setup
-# 1. Edit flake.nix - update user and userSpecifiedBrowsers in specialArgs
-# 2. Update SSH keys in modules/ssh-keys.nix with your actual keys
-# 3. Update hardware-configuration.nix with your actual hardware UUIDs
-
-# Deploy the full configuration
 sudo nixos-rebuild switch --flake .#perseus
 ```
 
-### 4. Post-Installation
+## 🎯 Philosophy
+
+**"Your machine, your rules"** - Perseus embodies the principle that you should have complete control over your computing environment:
+
+- **Privacy by Default**: Every connection monitored, every tracker blocked, every telemetry disabled
+- **Reproducible Everywhere**: One config file → identical system on any machine
+- **Zero Manual Configuration**: Everything from keybindings to themes defined in code
+- **Modular Architecture**: Enable only what you need, when you need it
+- **Community First**: Built on open standards, contributing back to the ecosystem
+
+## 🛡️ Privacy & Security Arsenal
+
+### The Tech Overlord Defense System
+
+Perseus includes **NastyTechLords** - an automated security daemon that runs comprehensive audits every 6 hours:
 
 ```bash
-# Set up ExpressVPN (manual)
-sudo /etc/expressvpn-install.sh
-
-# Configure i3 (copy sample config to ~/.config/i3/config)
-# Configure polybar (already configured system-wide)
-
-# Reboot to ensure all services start correctly
-sudo reboot
+ntl status          # Check daemon status
+ntl run             # Manual security audit
+ntl report          # View latest findings
+ntl run --full-check # Deep system verification
 ```
 
-## Features
+### Multi-Layer Protection
 
-- **Operating System**: NixOS 25.05 (latest) with Flakes
-- **Window Manager**: i3 with custom configuration
-- **Status Bar**: Polybar with system monitoring
-- **Shell**: Zsh with powerlevel10k theme and useful aliases
-- **Editor**: Neovim with extensive plugin setup via nixvim
-- **Browser**: Configurable browsers (Brave, Firefox, Chromium)
-- **Development**: Configurable language support (Python, Go, Rust, Next.js)
-- **Gaming**: Steam with NVIDIA support and GameMode optimization
-- **Graphics**: NVIDIA drivers with container toolkit support
-- **VPN**: ExpressVPN support (manual installation) + OpenVPN
-- **Streaming**: Stremio for media consumption
-- **Security**: SSH with key-based authentication, firewall configured
-- **Power Management**: TLP for battery optimization, thermal management
-- **Auto-Updates**: Automatic system updates and garbage collection
-- **CLI Configuration**: No code editing required - configure via environment variables
+1. **DNS Level** (First Line of Defense)
+   - `dnscrypt-proxy2` with encrypted DNS
+   - Automatic ad/tracker/malware blocking
+   - Anonymous DNS routing
 
-## Customization
+2. **Network Level**
+   - OpenSnitch application firewall (per-app rules)
+   - MAC address randomization
+   - Custom firewall rules blocking known trackers
+   - Fail2ban intrusion prevention
 
-Edit the modules in `modules/` to customize specific aspects:
+3. **System Level**
+   - AppArmor mandatory access control
+   - Kernel hardening (sysctl tweaks)
+   - No swap (prevents memory dumps)
+   - Disabled telemetry for all development tools
 
-- `environment.nix` - Base system settings
-- `zsh.nix` - Shell configuration and aliases
-- `nixvim.nix` - Editor configuration
-- `i3.nix` - Window manager settings
-- `polybar.nix` - Status bar configuration
+4. **Application Level**
+   - Sandboxed Teams (via bubblewrap)
+   - Brave browser with fingerprint protection
+   - Signal & Element for encrypted communication
 
-## Updates
+## 💻 Developer Paradise
+
+### Language Support
+
+Perseus uses a modular approach - enable only the languages you need:
+
+```nix
+# In flake.nix
+perseus = mkSystem {
+  hasGPU = false;
+  devTools = [ "python" "go" "rust" "nextjs" ];
+};
+```
+
+### Python Development
+
+Integrated `pyenv` command for isolated Python environments:
+
+```bash
+pyenv               # Enter Python dev shell
+poetry new myapp    # Create new project
+poetry add pandas   # Manage dependencies
+```
+
+### Editor Features
+
+Neovim (via nixvim) comes preconfigured with:
+- **LSP Support**: Auto-completion, go-to-definition, inline diagnostics
+- **Telescope**: Fuzzy file/content search (`<leader>t`)
+- **Treesitter**: Advanced syntax highlighting
+- **Markdown Preview**: Live preview in Brave (`<leader>mp`)
+- **Git Integration**: Fugitive and Gitsigns
+- **File Explorer**: NvimTree (`<leader>e`)
+
+### Container Development
+
+- Docker with NVIDIA GPU support (when enabled)
+- Rootless Podman option
+- Pre-configured for development containers
+
+## 🎮 Gaming Ready
+
+### Steam Integration
+
+```nix
+# Enable with GPU support
+perseus-gpu = mkSystem {
+  hasGPU = true;
+  devTools = [ "python" ];
+};
+```
+
+Features:
+- Native Steam with Proton
+- GameMode for performance optimization
+- MangoHud for FPS/performance overlay
+- 32-bit libraries for compatibility
+- Controller support out of the box
+
+### Performance Tweaks
+
+- NVIDIA drivers with optimal settings
+- TLP for power management
+- Custom kernel parameters
+- Gamemode integration
+
+## 🖥️ Desktop Environment
+
+### i3 Window Manager
+
+Clean, keyboard-driven workflow with sensible defaults:
+
+| Keybinding | Action | 
+|------------|--------|
+| `Mod+Enter` | Terminal |
+| `Mod+b` | Brave browser |
+| `Mod+Shift+r` | Toggle blue light filter |
+| `Mod+d` | Application launcher |
+| `Mod+h/j/k/l` | Navigate windows |
+| `Mod+1-9` | Switch workspace |
+
+### Status Bar
+
+Interactive i3status-rust modules:
+- **Blue Light Filter**: Click to adjust screen temperature
+- **Network**: Shows SSID, click for network manager
+- **Bluetooth**: Connected device, click for manager
+- **System Stats**: CPU, RAM, disk usage
+- **Battery**: Smart icon based on charge level
+
+### Daily Use Applications
+
+- **Brave**: Privacy-focused browsing
+- **Alacritty**: GPU-accelerated terminal
+- **Slack**: Sandboxed team communication
+- **Spotify**: Music streaming
+- **Stremio**: Media streaming
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+1. NixOS 25.05 or later
+2. Git installed
+3. 20GB+ free disk space
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/perseus
+cd perseus
+
+# For laptop without GPU
+sudo nixos-rebuild switch --flake .#perseus
+
+# For system with NVIDIA GPU
+sudo nixos-rebuild switch --flake .#perseus-gpu
+```
+
+### First Boot
+
+1. Security daemon starts automatically
+2. Blue light filter activates at 10 PM
+3. All privacy protections enabled by default
+
+### Customization
+
+Edit `flake.nix` to:
+- Change username (default: "jon")
+- Select browsers
+- Enable/disable GPU support
+- Add development tools
+
+## 📊 System Architecture
+
+```
+modules/
+├── environment.nix      # System-wide settings
+├── privacy.nix          # Security & privacy configs
+├── techoverlord_protection.nix  # NastyTechLords daemon
+├── nixvim.nix          # Neovim configuration
+├── steam.nix           # Gaming setup
+├── gpl.nix             # Programming languages
+└── redshift.nix        # Blue light filter
+
+configs/
+├── i3-config/          # Window manager
+├── i3status-rust/      # Status bar
+└── alacritty/          # Terminal emulator
+```
+
+## 🔧 Maintenance
+
+### System Updates
 
 ```bash
 # Update flake inputs
@@ -181,121 +219,38 @@ nix flake update
 
 # Rebuild system
 sudo nixos-rebuild switch --flake .#perseus
+
+# Rollback if needed
+sudo nixos-rebuild switch --rollback
 ```
 
-## nixos-anywhere Deployment
-
-This configuration is designed to work with nixos-anywhere for remote deployments using GitHub releases. **No code editing required** - configure via environment variables:
-
-### **🚀 Easy CLI Configuration**
+### Security Monitoring
 
 ```bash
-# Deploy with default settings (user: algol, browser: brave, no dev tools)
-nixos-anywhere --flake github:yourusername/perseus/v0.1.0#perseus root@target-machine
+# Check security status
+ntl report
 
-# Customize via environment variables - no code editing needed!
-PERSEUS_USER=alice \
-PERSEUS_BROWSERS=firefox,chromium \
-PERSEUS_DEV_TOOLS=python,rust,nextjs \
-PERSEUS_LAPTOP=false \
-PERSEUS_GPU=true \
-nixos-anywhere --flake github:yourusername/perseus/v0.1.0#perseus root@target-machine
+# View audit history
+ntl history
 
-# Full development setup
-PERSEUS_DEV_TOOLS=python,go,rust,nextjs \
-PERSEUS_BROWSERS=brave,firefox \
-nixos-anywhere --flake github:yourusername/perseus/v0.1.0#perseus root@dev-machine
-
-# Server deployment (backend development only)
-PERSEUS_USER=admin \
-PERSEUS_DEV_TOOLS=python,go \
-PERSEUS_BROWSERS= \
-PERSEUS_LAPTOP=false \
-PERSEUS_GPU=false \
-nixos-anywhere --flake github:yourusername/perseus/v0.1.0#perseus root@server
-
-# Use pre-configured variants (include common dev tools)
-nixos-anywhere --flake github:yourusername/perseus/v0.1.0#perseus-desktop root@desktop
-nixos-anywhere --flake github:yourusername/perseus/v0.1.0#perseus-server root@server
+# Watch live logs
+ntl logs
 ```
 
-### **📋 Environment Variables**
+## 🤝 Contributing
 
-| Variable            | Default | Description                                           |
-| ------------------- | ------- | ----------------------------------------------------- |
-| `PERSEUS_USER`      | `algol` | Username for the system                               |
-| `PERSEUS_BROWSERS`  | `brave` | Comma-separated browser list (firefox,chromium,brave) |
-| `PERSEUS_DEV_TOOLS` | ``      | Comma-separated dev tools (python,go,rust,nextjs)     |
-| `PERSEUS_LAPTOP`    | `true`  | Enable laptop optimizations (true/false)              |
-| `PERSEUS_GPU`       | `true`  | Enable NVIDIA support (true/false)                    |
+Perseus is open source and welcomes contributions:
 
-### Release Workflow
+1. Fork the repository
+2. Create a feature branch
+3. Follow the existing code style (tabs, not spaces)
+4. Test on a VM first
+5. Submit a pull request
 
-1. **Test locally** first using the provided test script:
+## 📜 License
 
-```bash
-# Make test script executable and run it
-chmod +x test-setup.sh
-./test-setup.sh
-```
+MIT - Use Perseus to build your own privacy fortress!
 
-2. **Create GitHub release** with version tag (e.g., v0.1.0)
-3. **Deploy remotely** using nixos-anywhere with the release tag
+---
 
-**Manual testing commands:**
-
-```bash
-# Local testing
-nix flake check                    # Check flake syntax
-nix build .#nixosConfigurations.perseus.config.system.build.toplevel  # Test build
-nixos-rebuild build-vm --flake .#perseus  # Test in VM
-```
-
-## Important Notes
-
-### Before First Use
-
-1. **SSH Keys**: Replace the placeholder keys in `modules/ssh-keys.nix` with your actual public keys
-2. **Hardware Configuration**: After installation, copy the generated `/etc/nixos/hardware-configuration.nix` to `system/hardware-configuration.nix`
-3. **Disk Configuration**: Adjust the disk device in `system/disko-config.nix` based on your hardware (e.g., `/dev/sda` vs `/dev/nvme0n1`)
-4. **CPU Type**: Update `hardware-configuration.nix` to use `kvm-amd` instead of `kvm-intel` if using AMD processor
-5. **NVIDIA**: The configuration assumes NVIDIA GPU; disable via `PERSEUS_GPU=false` or use `#perseus-server` for non-GPU systems
-
-### Default Settings
-
-- **Username**: `algol` (the famous variable star in Perseus)
-- **Browser**: `brave`
-- **Development Tools**: None (add via `PERSEUS_DEV_TOOLS=python,go,rust,nextjs`)
-- **Laptop optimizations**: Enabled
-- **NVIDIA support**: Enabled
-- **All easily configurable via CLI!**
-
-### Available Development Tools
-
-- **Python**: Python 3.11 + pip
-- **Go**: Go compiler
-- **Rust**: rustc + cargo
-- **Next.js**: Node.js 20 LTS + TypeScript
-
-### ExpressVPN Setup
-
-ExpressVPN requires manual installation as it's not available in nixpkgs:
-
-1. Download the Linux package from ExpressVPN website
-2. Follow the installation script instructions at `/etc/expressvpn-install.sh`
-3. Alternatively, use OpenVPN with ExpressVPN's .ovpn configuration files
-
-### Customization Tips
-
-- Edit `modules/zsh.nix` to add more aliases or change shell behavior
-- Modify `modules/polybar.nix` to customize the status bar appearance
-- Update `modules/i3.nix` to add window manager keybindings and rules
-- Adjust `modules/system-packages.nix` to add or remove system-wide packages
-
-## Version
-
-Current version: **v0.1.0**
-
-This configuration targets NixOS 25.05 (latest stable release) with kernel 6.12 LTS for optimal NVIDIA compatibility.
-
-**Perseus** - Named after the constellation, with **Algol** as the default username (the famous "demon star" in Perseus). Perfect for a laptop that connects to remote systems via nixos-anywhere. perseus
+*"In a world of tech overlords, be the rebel with root access"* - Perseus Project
