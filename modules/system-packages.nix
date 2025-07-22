@@ -1,6 +1,8 @@
 { lib, pkgs, config, flakehub, ... }:
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
+  sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
+
 in
 {
   # Global software packages to install
@@ -21,7 +23,6 @@ in
     fzf
     ripgrep
     rofi
-    sandboxed-teams
     # tmux
     xsel
     
@@ -60,7 +61,9 @@ in
     alacritty
 
     # comms
-    slack
+    sandboxed-teams
+    sandboxed-slack
+
     
     # Muzicha
     spotify
