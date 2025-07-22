@@ -7,8 +7,6 @@ let
     convert ${inputs.self}/assets/king.png \
       -gravity center -resize 96x96^ -extent 96x96 $out
   '';
-  expressvpn-unwrapped = import ../pkgs/expressvpn.nix { inherit pkgs; };
-
 in
 {
   # Bootloader
@@ -181,17 +179,6 @@ in
     "XDG_DATA_DIRS+=/run/current-system/sw/share"
     ];
   };
-
-  systemd.services.expressvpnd = {
-      description = "ExpressVPN Daemon";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = "${expressvpn-unwrapped}/usr/sbin/expressvpnd";
-        KillMode = "process";
-        Restart = "on-failure";
-        PrivateTmp = true;
-      };
-    };
 
   system.activationScripts.compileGreeterGSettings = ''
     echo "Compiling GSettings schemas for LightDM Greeter..."
