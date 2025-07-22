@@ -3,6 +3,7 @@ let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
 
+  sandboxed-streamio = import ../pkgs/sandboxed-streamio.nix { inherit pkgs; };
 in
 {
   # Global software packages to install
@@ -60,10 +61,12 @@ in
     # Terminal emulator
     alacritty
 
+    # Entertainment
+    sandboxed-streamio
+
     # comms
     sandboxed-teams
     sandboxed-slack
-
     
     # Muzicha
     spotify
