@@ -13,7 +13,7 @@
     "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
     "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
     "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
-    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.substituteAll {
+    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.substitute {
       src = "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
       wallpaper = "${inputs.self}/assets/wallpaper.png";
     });

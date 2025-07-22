@@ -16,8 +16,6 @@ pkgs.stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
     dpkg -x $src $out
-    mkdir -p $out/lib/systemd/system
-    mv $out/usr/lib/systemd/system/expressvpnd.service $out/lib/systemd/system/
     runHook postInstall
   '';
 
