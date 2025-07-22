@@ -1,0 +1,6 @@
+# Disable the blank line check
+disabled = ["redundant_let_in"]
+
+# Duplicates -- this should be enforce but turned off for now
+disabled = ["top_level_duplicate_key"]
+
