@@ -58,6 +58,7 @@
       enable = true;
       allowPing = false;
       logReversePathDrops = true;
+      trustedInterfaces = [ "mullvad" ];
     };
 
     # declare all your raw & filter rules in nftables DSL

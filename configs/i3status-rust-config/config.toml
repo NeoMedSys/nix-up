@@ -26,10 +26,9 @@ cmd    = "redshift-pause"
 [[block]]
 block = "custom"
 command = '''
-status=$(expressvpn status)
-if echo "$status" | grep -q "Connected to"; then
-  location=$(echo "$status" | sed 's/Connected to //')
-  echo " $location"
+if systemctl is-active --quiet wg-quick-mullvad; then
+  server=$(wg show mullvad endpoint 2>/dev/null | cut -d':' -f1)
+  echo "  ${server:-Connected}"
 else
   echo " Disconnected"
 fi
@@ -39,7 +38,7 @@ interval = 5
 
 [[block.click]]
 button = "left"
-cmd = "bash -c 'if expressvpn status | grep -q \"Connected to\"; then expressvpn disconnect; else expressvpn connect auto; fi'"
+cmd = "mullvad-toggle"
 
 [[block]]
 block = "custom"

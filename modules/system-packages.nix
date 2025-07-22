@@ -3,10 +3,6 @@ let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
-  expressvpn-unwrapped = import ../pkgs/expressvpn.nix { inherit pkgs; };
-  sandboxed-expressvpn = import ../pkgs/sandboxed-expressvpn.nix { inherit pkgs; 
-    expressvpn-unwrapped = expressvpn-unwrapped;
-  };
 in
 {
   # Global software packages to install
@@ -57,7 +53,6 @@ in
     # Network and Bluetooth GUI tools
     networkmanagerapplet
     overskride  # Modern Rust+GTK4 Bluetooth manager
-    sandboxed-expressvpn
     
     # Screenshot tools
     scrot
