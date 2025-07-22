@@ -35,6 +35,8 @@
     wantedBy = lib.mkForce [ ];
   };
 
+  # systemd.services.wg-quick-mullvad.wantedBy = [ "multi-user.target" ];
+
   # Helper script for easy management
   environment.systemPackages = with pkgs; [
     (writeShellScriptBin "mullvad-toggle" ''
