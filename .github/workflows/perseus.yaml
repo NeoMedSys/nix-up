@@ -28,7 +28,7 @@ jobs:
             nix run nixpkgs#statix -- check .
             nix run nixpkgs#deadnix --  .
       
-      - name: Build configurations
+      - name: Build system manuals
         run: |
           nix build .#nixosConfigurations.perseus.config.system.build.manual.html
           nix build .#nixosConfigurations.perseus-gpu.config.system.build.manual.html
