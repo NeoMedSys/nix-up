@@ -29,9 +29,9 @@ command = '''
 status=$(expressvpn status)
 if echo "$status" | grep -q "Connected to"; then
   location=$(echo "$status" | sed 's/Connected to //')
-  echo "shield-lock $location"
+  echo " $location"
 else
-  echo "shield-off Disconnected"
+  echo " Disconnected"
 fi
 '''
 shell = "bash"
@@ -39,15 +39,7 @@ interval = 5
 
 [[block.click]]
 button = "left"
-cmd = '''
-if expressvpn status | grep -q "Connected to"; then
-  expressvpn disconnect
-else
-  expressvpn connect
-fi
-'''
-shell = "bash"
-
+cmd = "bash -c 'if expressvpn status | grep -q \"Connected to\"; then expressvpn disconnect; else expressvpn connect auto; fi'"
 
 [[block]]
 block = "custom"

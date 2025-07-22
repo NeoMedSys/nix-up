@@ -1,3 +1,6 @@
+![CI/CD](https://github.com/NeoMedSys/perseus/actions/workflows/perseus.yaml/badge.svg)
+![Version](https://img.shields.io/github/v/tag/NeoMedSys/perseus)
+[![FlakeHub](https://img.shields.io/badge/flakehub-NeoMedSys/perseus-blue)](https://flakehub.com/flake/NeoMedSys/perseus)
 # Perseus 🛡️
 
 > A privacy-first, developer-optimized NixOS configuration that protects you from the tech overlords while maximizing productivity.
