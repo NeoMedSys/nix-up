@@ -26,7 +26,6 @@ jobs:
       - name: Build configurations
         run: |
           nix build .#nixosConfigurations.perseus.config.system.build.toplevel --dry-run
-          ntl run
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
