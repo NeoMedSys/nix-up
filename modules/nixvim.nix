@@ -61,7 +61,6 @@
       vim-nix
       vim-terraform
       lightline-bufferline
-      markdown-preview-nvim
     ];
     
     keymaps = [
@@ -92,20 +91,18 @@
       }
       {
         mode = "n";
-        key = "<leader>p";
-        action = "<Cmd>:MarkdownPreviewToggle<CR>";
+        key = "<leader>mp";
+        action = "<Cmd>silent !pandoc % -s -o /tmp/preview.html && xdg-open /tmp/preview.html &<CR>";
       }
     ];
 
-        # Plugin-specific Lua configuration
     extraConfigLua = ''
-      -- markdown-preview.nvim settings
-      vim.g.mkdp_auto_start = 0    -- do not automatically open
-      vim.g.mkdp_auto_close = 1    -- close with buffer
-      vim.g.mkdp_filetypes  = { "markdown" }
-      vim.g.mkdp_browser    = "brave"
+      -- vim-markdown-composer settings
+      vim.g.markdown_composer_browser = 'brave'
+      vim.g.markdown_composer_open_browser = 0  -- Don't auto-open
+      vim.g.markdown_composer_refresh_rate = 0  -- Realtime updates
+      vim.g.markdown_composer_syntax_theme = 'github-dark'
     '';
-
 
     opts = {
       number = true;
@@ -117,11 +114,4 @@
       splitright = true;
     };
   };
-  system.activationScripts.markdownPreviewInstall = ''
-    echo "Installing markdown-preview-nvim dependencies…"
-    ${config.programs.nixvim.package}/bin/nvim \
-      --headless \
-      +"call mkdp#util#install()" \
-      +qa
-  '';
 }

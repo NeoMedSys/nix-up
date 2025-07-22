@@ -1,7 +1,6 @@
 { lib, pkgs, config, flakehub, ... }:
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
-  markdownPreview = pkgs.callPackage ../pkgs/markdown-preview.nix { };
 in
 {
   # Global software packages to install
@@ -23,7 +22,6 @@ in
     ripgrep
     rofi
     sandboxed-teams
-    markdownPreview
     # tmux
     xsel
     
@@ -79,10 +77,6 @@ in
     dig
     #wget
 
-    # frontend nasytness
-    nodejs
-    yarn
-    
     # Privacy and security tools
     dnscrypt-proxy2
     opensnitch
@@ -125,6 +119,22 @@ in
     dejavu_fonts
     liberation_ttf
     fira-code-symbols
+
+    # Pandoc and live MD rendering
+    pandoc
+    (pkgs.writeScriptBin "mdlive" ''
+        #!${pkgs.bash}/bin/bash
+        FILE="$1"
+        HTML="/tmp/$(basename "$FILE" .md).html"
+        
+        pandoc "$FILE" -s -o "$HTML"
+        brave "$HTML" &
+        
+        while inotifywait -e modify "$FILE"; do
+            pandoc "$FILE" -s -o "$HTML"
+        done
+    '')
+    inotify-tools
   ];
 
   # This registers the fonts with your system so applications can find them.
