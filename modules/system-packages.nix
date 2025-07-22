@@ -4,6 +4,7 @@ let
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
 
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
+  sandboxed-expressvpn = import ../pkgs/sandboxed-expressvpn.nix { inherit pkgs; };
 in
 {
   # Global software packages to install

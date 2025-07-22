@@ -30,8 +30,8 @@ jobs:
       
       - name: Build configurations
         run: |
-          nix build .#nixosConfigurations.perseus.config.system.build.toplevel
-          nix build .#nixosConfigurations.perseus-gpu.config.system.build.toplevel
+          nix build .#nixosConfigurations.perseus.config.system.build.manual.html
+          nix build .#nixosConfigurations.perseus-gpu.config.system.build.manual.html
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

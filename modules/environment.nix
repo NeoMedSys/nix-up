@@ -48,7 +48,7 @@ in
             enable = true;
             greeters.gtk.enable = true;
             extraSeatDefaults = ''
-              greeter-setup-script=${pkgs.picom}/bin/picom --config /etc/picom.conf
+              greeter-setup-script=${pkgs.picom}/bin/picom --config /etc/picom.conf &
             '';
           };
       };
