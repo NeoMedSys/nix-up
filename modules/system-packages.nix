@@ -55,6 +55,7 @@ in
     # Network and Bluetooth GUI tools
     networkmanagerapplet
     overskride  # Modern Rust+GTK4 Bluetooth manager
+    sandboxed-expressvpn
     
     # Screenshot tools
     scrot
