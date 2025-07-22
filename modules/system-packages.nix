@@ -3,7 +3,7 @@ let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
 
-  sandboxed-streamio = import ../pkgs/sandboxed-streamio.nix { inherit pkgs; };
+  sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
 in
 {
   # Global software packages to install
@@ -62,7 +62,7 @@ in
     alacritty
 
     # Entertainment
-    sandboxed-streamio
+    sandboxed-stremio
 
     # comms
     sandboxed-teams

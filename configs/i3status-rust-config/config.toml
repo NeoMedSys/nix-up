@@ -23,6 +23,31 @@ interval = 5
 button = "left"
 cmd    = "redshift-pause" 
 
+[[block]]
+block = "custom"
+command = '''
+status=$(expressvpn status)
+if echo "$status" | grep -q "Connected to"; then
+  location=$(echo "$status" | sed 's/Connected to //')
+  echo "shield-lock $location"
+else
+  echo "shield-off Disconnected"
+fi
+'''
+shell = "bash"
+interval = 5
+
+[[block.click]]
+button = "left"
+cmd = '''
+if expressvpn status | grep -q "Connected to"; then
+  expressvpn disconnect
+else
+  expressvpn connect
+fi
+'''
+shell = "bash"
+
 
 [[block]]
 block = "custom"

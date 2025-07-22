@@ -32,7 +32,7 @@
     "${inputs.self}/modules/nvidia.nix"
   ] ++ [
     # VPN (currently disabled)
-    # "${inputs.self}/modules/expressvpn.nix"
+    "${inputs.self}/modules/expressvpn.nix"
   ];
 
   # System identification
