@@ -26,7 +26,7 @@ jobs:
       - name: Lint flake
         run: |
             nix run nixpkgs#statix -- check .
-            nix run nixpkgs#deadnix -- --no-hidden -f flake.nix .
+            nix run nixpkgs#deadnix --  .
       
       - name: Build configurations
         run: |

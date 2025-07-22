@@ -43,12 +43,15 @@ in
       };
       windowManager.i3.enable = true;
 
-        #displayManager = {
-        #    lightdm = {
-        #      enable = true;
-        #      greeters.gtk.enable = true;
-        #    };
-        #};
+      displayManager = {
+          lightdm = {
+            enable = true;
+            greeters.gtk.enable = true;
+            extraSeatDefaults = ''
+              greeter-setup-script=${pkgs.picom}/bin/picom --config /etc/picom.conf
+            '';
+          };
+      };
     };
 
     displayManager = {

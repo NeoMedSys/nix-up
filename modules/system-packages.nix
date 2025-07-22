@@ -38,17 +38,18 @@ in
     xorg.xrandr
     
     # Window manager tools (moved from i3.nix)
+    arandr
+    dmenu
     i3
     i3status-rust
     i3lock
     i3blocks
-    dmenu
     rofi
     feh
     picom
     polybar
     nitrogen
-    arandr
+    sweet
     
     # Network and Bluetooth GUI tools
     networkmanagerapplet
