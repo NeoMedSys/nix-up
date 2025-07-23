@@ -9,9 +9,45 @@
 
 Perseus is a fully declarative NixOS setup that combines **uncompromising privacy**, **developer ergonomics**, and **gaming readiness** into one reproducible system. Deploy anywhere with a single command and get the exact same environment every time.
 
+## 🚀 Quick Start
+
+### Prerequisites
+
+1. NixOS 25.05 or later
+2. Git installed
+3. 20GB+ free disk space
+
+### Installation
+
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/perseus
+cd perseus
+
+# For laptop without GPU
+sudo nixos-rebuild switch --flake .#perseus
+
+# For system with NVIDIA GPU
+sudo nixos-rebuild switch --flake .#perseus-gpu
+
+# For system with VPN
+cp your-mullvad-config.conf configs/mullvad-config/
 sudo nixos-rebuild switch --flake .#perseus
 ```
+
+### First Boot
+
+1. Security daemon starts automatically
+2. Blue light filter activates at 10 PM
+3. All privacy protections enabled by default
+
+### Customization
+
+Edit `flake.nix` to:
+- Change username (default: "jon")
+- Select browsers
+- Enable/disable GPU support
+- Add development tools
 
 ## 🎯 Philosophy
 
@@ -59,6 +95,12 @@ ntl run --full-check # Deep system verification
    - Sandboxed Teams (via bubblewrap)
    - Brave browser with fingerprint protection
    - Signal & Element for encrypted communication
+
+5. **VPN Level**
+   - Mullvad WireGuard integration (auto-configured)
+   - On-demand activation via status bar
+   - Local network access preserved
+   - Kill switch protection when active
 
 ## 💻 Developer Paradise
 
@@ -144,6 +186,7 @@ Clean, keyboard-driven workflow with sensible defaults:
 ### Status Bar
 
 Interactive i3status-rust modules:
+- **VPN**: click to toggle on or off
 - **Blue Light Filter**: Click to adjust screen temperature
 - **Network**: Shows SSID, click for network manager
 - **Bluetooth**: Connected device, click for manager
@@ -158,41 +201,6 @@ Interactive i3status-rust modules:
 - **Spotify**: Music streaming
 - **Stremio**: Media streaming
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-1. NixOS 25.05 or later
-2. Git installed
-3. 20GB+ free disk space
-
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/perseus
-cd perseus
-
-# For laptop without GPU
-sudo nixos-rebuild switch --flake .#perseus
-
-# For system with NVIDIA GPU
-sudo nixos-rebuild switch --flake .#perseus-gpu
-```
-
-### First Boot
-
-1. Security daemon starts automatically
-2. Blue light filter activates at 10 PM
-3. All privacy protections enabled by default
-
-### Customization
-
-Edit `flake.nix` to:
-- Change username (default: "jon")
-- Select browsers
-- Enable/disable GPU support
-- Add development tools
 
 ## 📊 System Architecture
 

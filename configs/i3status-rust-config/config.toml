@@ -27,10 +27,9 @@ cmd    = "redshift-pause"
 block = "custom"
 command = '''
 if systemctl is-active --quiet wg-quick-mullvad; then
-  server=$(sudo wg show mullvad endpoints 2>/dev/null | cut -d':' -f1)
-  echo "  ${server:-Connected}"
+  echo "  VPN-On"
 else
-  echo " Disconnected"
+  echo " VPN-Off"
 fi
 '''
 shell = "bash"

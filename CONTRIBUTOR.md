@@ -24,12 +24,11 @@ Thank you for your interest in making Perseus better! This guide will help you c
 ### Medium Priority
 - Wayland support (currently X11 only)
 - Secrets management (agenix or sops-nix)
-- Backup automation
+- Backup automation (BorgBackup)
 - Multi-monitor improvements
 
 ### Nice to Have
 - Custom Perseus ISO
-- Ansible-style remote deployment
 - Theme switcher (dark/light modes)
 
 ## 📋 Contribution Guidelines
