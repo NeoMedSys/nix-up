@@ -13,10 +13,16 @@
     "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
     "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
     "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
-    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.substitute {
-      src = "${inputs.self}/configs/lightdm/lightdm-gtk-greeter.conf";
-      wallpaper = "${inputs.self}/assets/wallpaper.png";
-    });
+
+    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.writeText "lightdm-gtk-greeter.conf" ''
+        [greeter]
+        background=${inputs.self}/assets/wallpaper.png
+        theme-name=Sweet-Dark
+        icon-theme-name=Arc
+        font-name=MesloLGS NF 11
+        position=50%,center 50%,center
+        gtk-application-prefer-dark-theme=true
+      '');
 
     "lightdm-greeter-theme-override" = {
       target = "gsettings/schemas/lightdm.gschema.override/99_greeter-theme.gschema.override";
