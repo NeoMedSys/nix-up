@@ -58,7 +58,6 @@
       enable = true;
       allowPing = false;
       logReversePathDrops = true;
-      trustedInterfaces = [ "mullvad" ];
     };
 
     # declare all your raw & filter rules in nftables DSL
@@ -79,7 +78,6 @@
         }
         chain output {
           type filter hook input priority filter; policy accept;
-          ip daddr { 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12 } accept
           # all DNS‑based privacy rules are done upstream via dnscrypt‑proxy
           accept
         }

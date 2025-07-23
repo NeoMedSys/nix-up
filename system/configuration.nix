@@ -33,7 +33,7 @@
     "${inputs.self}/modules/nvidia.nix"
   ] ++ [
     # VPN (currently disabled)
-    "${inputs.self}/modules/vpn.nix"
+      # "${inputs.self}/modules/vpn.nix"
   ];
 
   # System identification
