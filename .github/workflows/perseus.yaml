@@ -32,9 +32,6 @@ jobs:
         run: |
             nix eval .#nixosConfigurations.perseus.config.system.build.toplevel
             nix eval .#nixosConfigurations.perseus-gpu.config.system.build.toplevel
-      - name: Check closure size
-        run: |
-          nix path-info -Sh .#nixosConfigurations.perseus.config.system.build.toplevel
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
