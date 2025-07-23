@@ -27,7 +27,7 @@ cmd    = "redshift-pause"
 block = "custom"
 command = '''
 if systemctl is-active --quiet wg-quick-mullvad; then
-  server=$(wg show mullvad endpoint 2>/dev/null | cut -d':' -f1)
+  server=$(sudo wg show mullvad endpoints 2>/dev/null | cut -d':' -f1)
   echo "  ${server:-Connected}"
 else
   echo " Disconnected"
