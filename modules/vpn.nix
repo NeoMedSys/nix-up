@@ -29,6 +29,7 @@ in
         publicKey = publicKey;
         allowedIPs = [ "0.0.0.0/0" "::/0" ];
         endpoint = endpoint;
+        persistentKeepalive = 25;
       }];
     };
   };
