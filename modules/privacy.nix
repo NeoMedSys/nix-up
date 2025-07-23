@@ -73,6 +73,9 @@
         # Allow traffic on the loopback interface (localhost)
         iifname "lo" accept
 
+        # Allow incoming WireGuard traffic from Mullvad
+        udp dport 51820 accept
+
         # Drop invalid packets
         ct state invalid drop
       }
