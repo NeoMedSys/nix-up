@@ -11,6 +11,7 @@
     "${inputs.self}/modules/zsh.nix"
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
+    # "${inputs.self}/modules/lightdm.nix"
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"
@@ -32,7 +33,7 @@
     "${inputs.self}/modules/nvidia.nix"
   ] ++ [
     # VPN (currently disabled)
-    # "${inputs.self}/modules/expressvpn.nix"
+      "${inputs.self}/modules/vpn.nix"
   ];
 
   # System identification

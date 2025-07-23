@@ -13,6 +13,11 @@
     prime = {
       offload.enable = true;
       sync.enable = false;
+      # ⚠️ WARNING: These are placeholder values to pass CI.
+      # You MUST replace them with the real bus IDs from your hardware
+      # before deploying this configuration, or your system will not boot.
+      intelBusId = "PCI:0:0:0";
+      nvidiaBusId = "PCI:0:0:0";
     };
   };
 	

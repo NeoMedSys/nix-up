@@ -62,27 +62,41 @@
 
     # declare all your raw & filter rules in nftables DSL
     nftables.ruleset = ''
-      # send all non-root traffic to NFQUEUE 0 for OpenSnitch
-      table inet raw {
-        chain output {
-         type filter hook output priority raw; policy accept;
-          meta skuid != 0 queue num 0 bypass
-        }
+    table inet filter {
+      # This chain handles all incoming traffic
+      chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Allow established and related connections (essential for return traffic)
+        ct state established,related accept
+
+        # Allow traffic on the loopback interface (localhost)
+        iifname "lo" accept
+
+        # Allow incoming WireGuard traffic from Mullvad
+        udp dport 51820 accept
+
+        # Drop invalid packets
+        ct state invalid drop
       }
-      table inet filter { 
-        # log & drop invalid
-        chain input {
-          type filter hook input priority filter; policy accept;
-          ct state invalid log prefix "DROP INVALID " counter
-          ct state invalid drop
-        }
-        chain output {
-          type filter hook input priority filter; policy accept;
-          # all DNS‑based privacy rules are done upstream via dnscrypt‑proxy
-          accept
-        }
+
+      # This chain handles all outgoing traffic
+      chain output {
+        # The typo is corrected here from 'input' to 'output'
+        type filter hook output priority 0; policy accept;
       }
-    '';
+    }
+
+    # This table sends non-root traffic to OpenSnitch for inspection
+    table inet raw {
+      chain output {
+        type filter hook output priority -300; policy accept;
+        # This will queue all outbound traffic from non-root users for OpenSnitch
+        # If OpenSnitch isn't running, this can block traffic.
+        meta skuid != 0 queue num 0 bypass
+      }
+    }
+  '';
   };
   
   # Fail2ban for intrusion prevention

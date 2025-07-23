@@ -23,6 +23,21 @@ interval = 5
 button = "left"
 cmd    = "redshift-pause" 
 
+[[block]]
+block = "custom"
+command = '''
+if systemctl is-active --quiet wg-quick-mullvad; then
+  echo "  VPN-On"
+else
+  echo " VPN-Off"
+fi
+'''
+shell = "bash"
+interval = 5
+
+[[block.click]]
+button = "left"
+cmd = "mullvad-toggle"
 
 [[block]]
 block = "custom"

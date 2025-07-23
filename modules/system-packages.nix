@@ -2,7 +2,7 @@
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
-
+  sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
 in
 {
   # Global software packages to install
@@ -37,17 +37,18 @@ in
     xorg.xrandr
     
     # Window manager tools (moved from i3.nix)
+    arandr
+    dmenu
     i3
     i3status-rust
     i3lock
     i3blocks
-    dmenu
     rofi
     feh
     picom
     polybar
     nitrogen
-    arandr
+    sweet
     
     # Network and Bluetooth GUI tools
     networkmanagerapplet
@@ -60,10 +61,12 @@ in
     # Terminal emulator
     alacritty
 
+    # Entertainment
+    sandboxed-stremio
+
     # comms
     sandboxed-teams
     sandboxed-slack
-
     
     # Muzicha
     spotify

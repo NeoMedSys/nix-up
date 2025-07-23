@@ -4,3 +4,7 @@ result-*
 
 # Ignore automatically generated direnv output
 .direnv
+
+# ignore mullvad configs
+configs/mullvad-config/*.conf
+

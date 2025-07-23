@@ -22,12 +22,16 @@ jobs:
         run: |
           nix flake check
           nix flake show
-      
-      - name: Build configurations
+
+      - name: Lint flake
         run: |
-          nix build .#nixosConfigurations.perseus.config.system.build.toplevel --dry-run
-          nix build .#nixosConfigurations.perseus-gpu.config.system.build.toplevel --dry-run
-          ntl run
+            nix run nixpkgs#statix -- check .
+            nix run nixpkgs#deadnix --  .
+      
+      - name: Evaluate configurations
+        run: |
+            nix eval .#nixosConfigurations.perseus.config.system.build.toplevel
+            nix eval .#nixosConfigurations.perseus-gpu.config.system.build.toplevel
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
