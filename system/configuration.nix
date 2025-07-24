@@ -12,6 +12,7 @@
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
     "${inputs.self}/modules/lid-close.nix"
+    "${inputs.self}/modules/sway.nix"
     # "${inputs.self}/modules/lightdm.nix"
 
     # Desktop environment
