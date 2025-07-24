@@ -191,6 +191,8 @@ bar {
 
 bindsym XF86PowerOff exec i3-msg exit
 
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock-fancy --nofork
+
 # Start opensnitch UI
 exec_always --no-startup-id opensnitch-ui
 

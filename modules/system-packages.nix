@@ -35,6 +35,7 @@ in
     mdcat
     networkmanagerapplet
     xorg.xrandr
+    xss-lock
     
     # Window manager tools (moved from i3.nix)
     arandr
