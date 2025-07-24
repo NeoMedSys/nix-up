@@ -189,6 +189,8 @@ bar {
     }
 }
 
+bindsym XF86PowerOff exec i3-msg exit
+
 # Start opensnitch UI
 exec_always --no-startup-id opensnitch-ui
 
