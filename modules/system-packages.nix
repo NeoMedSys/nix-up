@@ -3,6 +3,8 @@ let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
+  wayland-apps = import ../pkgs/wayland/sandboxed-apps.nix { inherit pkgs; };
+
 in
 {
   # Global software packages to install
@@ -65,10 +67,13 @@ in
 
     # Entertainment
     sandboxed-stremio
+    wayland-apps.sandboxed-stremio-wayland
 
     # comms
     sandboxed-teams
     sandboxed-slack
+    wayland-apps.sandboxed-teams-wayland
+    wayland-apps.sandboxed-slack-wayland
     
     # Muzicha
     spotify

@@ -1,0 +1,279 @@
+# Sway configuration - Complete migration from i3 preserving ALL features
+# File location: configs/sway-config/config
+
+# Variables (same as your i3 setup)
+set $mod Mod4
+set $left h
+set $down j  
+set $up k
+set $right l
+set $term alacritty
+set $menu rofi -show drun
+
+# Output configuration (monitors/displays)
+# Your laptop display
+output eDP-1 {
+    # Set wallpaper (replace with your wallpaper path)
+    bg ~/wallpaper.png fill
+    # Scale and position
+    scale 1
+    pos 0 0
+}
+
+# Auto-detect and configure external monitors
+output * bg ~/wallpaper.png fill
+
+# Idle management - PRESERVES your current lid close behavior!
+exec swayidle -w \
+    timeout 300 'swaylock -f -c 000000 --effect-blur 7x5 --effect-vignette 0.5:0.5' \
+    timeout 600 'swaymsg "output * power off"' \
+    resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f -c 000000 --effect-blur 7x5 --effect-vignette 0.5:0.5'
+
+# Input configuration  
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
+    scroll_method two_finger
+    dwt enabled
+    accel_profile adaptive
+    pointer_accel 0.3
+}
+
+input type:keyboard {
+    xkb_layout us
+    xkb_options caps:escape,eurosign:e
+    repeat_delay 300
+    repeat_rate 50
+}
+
+# Key bindings - EXACTLY PRESERVED FROM YOUR i3 SETUP
+
+# Start a terminal
+bindsym $mod+Return exec $term
+
+# Kill focused window
+bindsym $mod+Shift+q kill
+
+# Start your launcher
+bindsym $mod+d exec $menu
+
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+floating_modifier $mod normal
+
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+
+# Exit sway (preserves your logout behavior)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -B 'Yes' 'swaymsg exit'
+
+# Move your focus around (SAME AS i3)
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# Or use arrow keys
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move the focused window (SAME AS i3)
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# Arrow keys
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Workspaces (EXACTLY LIKE i3)
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# Move focused container to workspace (EXACTLY LIKE i3)
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# Layout stuff (SAME AS i3)
+bindsym $mod+b splith
+bindsym $mod+v splitv
+
+# Switch container layout styles
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Make current focus fullscreen
+bindsym $mod+f fullscreen
+
+# Toggle floating mode
+bindsym $mod+Shift+space floating toggle
+
+# Swap focus between tiling and floating
+bindsym $mod+space focus mode_toggle
+
+# Move focus to parent container
+bindsym $mod+a focus parent
+
+# Scratchpad (SAME AS i3)
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Resizing containers (SAME AS i3)
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Media keys (PRESERVED from your setup)
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl set 5%+
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+
+# Screenshots (Wayland versions)
+bindsym Print exec grim ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+bindsym $mod+Print exec grim -g "$(slurp)" ~/Pictures/screenshot-$(date +%Y%m%d-%H%M%S).png
+
+# Lock screen (replaces i3lock-fancy)
+bindsym $mod+l exec swaylock -f -c 000000 --effect-blur 7x5 --effect-vignette 0.5:0.5
+
+# Suspend (SAME AS YOUR CURRENT SETUP)
+bindsym $mod+Shift+s exec systemctl suspend
+
+# Power button - PRESERVES macOS behavior (logout)
+bindsym XF86PowerOff exec swaymsg exit
+
+# Status Bar - KEEP YOUR i3status-rust!
+bar {
+    position top
+    status_command i3status-rs ~/.config/sway/i3status-rust.toml
+    
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+        active_workspace #88888800 #88888800 #ffffff
+        focused_workspace #5555ff #5555ff #ffffff
+        urgent_workspace #ff5555 #ff5555 #ffffff
+    }
+    
+    font MesloLGS NF 10
+}
+
+# Window appearance (SAME AS i3)
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders smart
+
+# Gaps (if you use them in i3)
+gaps inner 5
+gaps outer 5
+smart_gaps on
+
+# Window rules - PRESERVE your application settings
+for_window [app_id="pavucontrol"] floating enable
+for_window [class="Spotify"] move to workspace 10
+for_window [app_id="teams"] move to workspace 9
+for_window [app_id="slack"] move to workspace 9
+
+# Auto-start applications (PRESERVE from your i3 setup)
+exec_always --no-startup-id dunst
+exec --no-startup-id nm-applet --indicator
+
+# Clipboard manager for Wayland
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist decode | wl-copy
+bindsym $mod+c exec cliphist list | rofi -dmenu | cliphist decode | wl-copy
+
+# Workspace assignments (preserve your current setup)
+assign [class="^Brave-browser$"] workspace 1
+assign [class="^Spotify$"] workspace 10
+assign [app_id="teams"] workspace 9
+assign [app_id="slack"] workspace 9
+
+# Focus follows mouse (if you use this in i3)
+focus_follows_mouse yes
+
+# Workspace auto back and forth (if you use this in i3)
+workspace_auto_back_and_forth yes
+
+# Include additional config files
+include /etc/sway/config.d/*loating_border pixel 2
+hide_edge_borders smart
+
+# Gaps (if you use them in i3)
+gaps inner 5
+gaps outer 5
+smart_gaps on
+
+# Window rules - PRESERVE your application settings
+for_window [app_id="pavucontrol"] floating enable
+for_window [class="Spotify"] move to workspace 10
+for_window [app_id="teams"] move to workspace 9
+for_window [app_id="slack"] move to workspace 9
+
+# Auto-start applications (PRESERVE from your i3 setup)
+exec_always --no-startup-id dunst
+exec --no-startup-id nm-applet --indicator
+
+# Clipboard manager for Wayland
+exec wl-paste --type text --watch cliphist store
+exec wl-paste --type image --watch cliphist store
+bindsym $mod+c exec cliphist list | rofi -dmenu | cliphist decode | wl-copy
+
+# Workspace assignments (preserve your current setup)
+assign [class="^Brave-browser$"] workspace 1
+assign [class="^Spotify$"] workspace 10
+assign [app_id="teams"] workspace 9
+assign [app_id="slack"] workspace 9
+
+# Focus follows mouse (if you use this in i3)
+focus_follows_mouse yes
+
+# Workspace auto back and forth (if you use this in i3)
+workspace_auto_back_and_forth yes
+
+# Include additional config files
+include /etc/sway/config.d/*
