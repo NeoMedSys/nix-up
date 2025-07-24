@@ -1,3 +1,5 @@
+# Add this to your modules/environment.nix or create a new module
+
 { config, lib, pkgs, user ? "algol", ... }:
 {
   # Configure systemd-logind to handle lid switch properly
@@ -24,21 +26,12 @@
     '';
   };
 
-  # Install xss-lock for automatic screen locking before suspend
-  environment.systemPackages = with pkgs; [
-    xss-lock
-    i3lock-fancy  # You already have this
-  ];
-
-  # Resume configuration - restart services that die during suspend
+  # Minimal resume configuration - only restart NetworkManager if needed
   powerManagement = {
     enable = true;
     resumeCommands = ''
       # NetworkManager sometimes needs a kick after resume
       ${pkgs.systemd}/bin/systemctl restart NetworkManager || true
-      
-      # Restart user services that die during suspend (run as the user)
-      ${pkgs.sudo}/bin/sudo -u ${user} ${pkgs.systemd}/bin/systemctl --user restart dunst || true
     '';
   };
 }

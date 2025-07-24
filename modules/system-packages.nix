@@ -23,7 +23,7 @@ in
     fzf
     ripgrep
     rofi
-    # tmux
+    tmux
     xsel
     
     # Desktop utilities (moved from other modules)
@@ -32,6 +32,7 @@ in
     playerctl
     pavucontrol
     dunst
+    libnotify
     mdcat
     networkmanagerapplet
     xorg.xrandr
