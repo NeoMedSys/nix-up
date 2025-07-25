@@ -6,6 +6,14 @@
     wrapperFeatures.gtk = true;
   };
 
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+    ];
+  };
+
   # Minimal PAM for swaylock
   security.pam.services.swaylock = {};
 
@@ -17,7 +25,7 @@
 
   # Basic config symlink only
   system.userActivationScripts.sway-configs = ''
-    mkdir -p ~/.config/sway
+    mkdir -p ~/.config/sway ~/.config/waybar 
     ln -sf /etc/sway/config ~/.config/sway/config
     ln -sf /etc/waybar/config ~/.config/waybar/config
     ln -sf /etc/waybar/style.css ~/.config/waybar/style.css

@@ -1,4 +1,4 @@
-/* Waybar style to match your polybar */
+/* Waybar style - Fixed visibility */
 
 * {
     font-family: "MesloLGS NF";
@@ -7,37 +7,39 @@
 }
 
 window#waybar {
-    background-color: rgba(46, 52, 64, 0.0); /* #002E3440 equivalent */
+    background-color: transparent; /* Completely transparent bar */
     color: #D8DEE9;
     border: none;
 }
 
 /* Center module container */
 .modules-center {
-    background-color: rgba(46, 52, 64, 0.0);
+    background-color: transparent; /* Also transparent */
 }
 
-/* Individual app launcher buttons */
+/* Individual app launcher buttons - made much more visible */
 #custom-slack,
-#custom-brave, 
+#custom-brave,
 #custom-steam,
 #custom-stremio,
 #custom-spotify {
-    background-color: rgba(67, 76, 94, 0.67); /* #aa434C5E equivalent */
+    background-color: rgba(67, 76, 94, 0.95); /* Much more opaque */
     color: #ECEFF4;
     border-radius: 12px;
     padding: 8px 12px;
     margin: 4px;
     min-width: 30px;
     font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #5E81AC; /* Add border for visibility */
 }
 
 /* Hover effects */
 #custom-slack:hover,
 #custom-brave:hover,
-#custom-steam:hover, 
+#custom-steam:hover,
 #custom-stremio:hover,
 #custom-spotify:hover {
-    background-color: rgba(67, 76, 94, 0.8);
+    background-color: rgba(94, 129, 172, 0.8);
     transition: background-color 0.2s ease;
 }

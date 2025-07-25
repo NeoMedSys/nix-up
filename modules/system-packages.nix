@@ -64,6 +64,8 @@ in
     slurp
     rofi-wayland
     waybar
+    xdg-desktop-portal
+    xdg-desktop-portal-wlr
 
     # Network and Bluetooth GUI tools
     networkmanagerapplet
@@ -169,5 +171,12 @@ in
     dejavu_fonts
     liberation_ttf
     fira-code-symbols
+    # Additional icon fonts for better brand logos
+    material-design-icons
+    material-icons
+    noto-fonts-emoji
+    nerd-fonts.symbols-only  # More comprehensive Nerd Fonts collection
+    nerd-fonts.fira-code
+    font-awesome_5
   ];
 }

@@ -124,3 +124,6 @@ bar {
 
 # Autostart waybar
 exec_always --no-startup-id waybar
+
+# add if waybar fails after reboot
+# exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
