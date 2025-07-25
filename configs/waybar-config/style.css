@@ -1,0 +1,43 @@
+/* Waybar style to match your polybar */
+
+* {
+    font-family: "MesloLGS NF";
+    font-size: 16px;
+    font-weight: normal;
+}
+
+window#waybar {
+    background-color: rgba(46, 52, 64, 0.0); /* #002E3440 equivalent */
+    color: #D8DEE9;
+    border: none;
+}
+
+/* Center module container */
+.modules-center {
+    background-color: rgba(46, 52, 64, 0.0);
+}
+
+/* Individual app launcher buttons */
+#custom-slack,
+#custom-brave, 
+#custom-steam,
+#custom-stremio,
+#custom-spotify {
+    background-color: rgba(67, 76, 94, 0.67); /* #aa434C5E equivalent */
+    color: #ECEFF4;
+    border-radius: 12px;
+    padding: 8px 12px;
+    margin: 4px;
+    min-width: 30px;
+    font-size: 18px;
+}
+
+/* Hover effects */
+#custom-slack:hover,
+#custom-brave:hover,
+#custom-steam:hover, 
+#custom-stremio:hover,
+#custom-spotify:hover {
+    background-color: rgba(67, 76, 94, 0.8);
+    transition: background-color 0.2s ease;
+}

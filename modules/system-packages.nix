@@ -54,6 +54,17 @@ in
     nitrogen
     sweet
     
+    # sway
+    sway
+    swaylock-effects
+    swayidle
+    swaybg
+    wl-clipboard
+    grim
+    slurp
+    rofi-wayland
+    waybar
+
     # Network and Bluetooth GUI tools
     networkmanagerapplet
     overskride  # Modern Rust+GTK4 Bluetooth manager

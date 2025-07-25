@@ -1,4 +1,0 @@
-○ dunst.service - Dunst notification daemon
-     Loaded: loaded (]8;;file://perseus/run/current-system/sw/share/systemd/user/dunst.service\/run/current-system/sw/share/systemd/user/dunst.service]8;;\; linked-runtime; preset: ignored)
-     Active: inactive (dead)
-       Docs: ]8;;man:dunst(1)\man:dunst(1)]8;;\
