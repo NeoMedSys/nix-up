@@ -1,75 +1,96 @@
 { pkgs, ... }:
-
 let
-  # Data isolation + full functionality -- Restricting Telemetry is handled by networking
-  
-  # Privacy-focused Slack with data isolation
+  # Privacy-focused Slack with automatic URL handler registration
   sandboxed-slack-wayland = pkgs.stdenv.mkDerivation {
     name = "sandboxed-slack-wayland";
     version = "1.0";
     nativeBuildInputs = [ pkgs.makeWrapper ];
     dontUnpack = true;
     installPhase = ''
-      mkdir -p $out/bin
+      mkdir -p $out/bin $out/share/applications
+      # Create the slack wrapper
       makeWrapper ${pkgs.slack}/bin/slack $out/bin/slack \
         --run 'mkdir -p "$HOME/.local/share/app-isolation/slack"' \
-        --run 'mkdir -p "$HOME/.local/share/app-isolation/slack/.config"' \
-        --run 'mkdir -p "$HOME/.local/share/app-isolation/slack/.local/share"' \
-        --set HOME "$HOME/.local/share/app-isolation/slack" \
+        --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/slack\"" \
         --set HOSTNAME "research-workstation" \
         --set USER "researcher" \
-        --set LOGNAME "researcher" \
-        --set SLACK_DISABLE_TELEMETRY "1" \
-        --set WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
-        --set XDG_SESSION_TYPE "wayland" \
-        --set XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR"
+        --set SLACK_DISABLE_TELEMETRY "1"
+      # Create desktop file for URL handler registration
+      cat > $out/share/applications/slack.desktop << EOF
+[Desktop Entry]
+Type=Application
+Name=Slack
+Comment=Slack Desktop App (Privacy-focused)
+Exec=$out/bin/slack %u
+Icon=slack
+Terminal=false
+MimeType=x-scheme-handler/slack;
+Categories=Network;InstantMessaging;
+StartupWMClass=Slack
+NoDisplay=false
+EOF
     '';
   };
-
-  # Privacy-focused Teams with data isolation  
+  # Privacy-focused Teams with URL handler registration
   sandboxed-teams-wayland = pkgs.stdenv.mkDerivation {
     name = "sandboxed-teams-wayland";
     version = "1.0";
     nativeBuildInputs = [ pkgs.makeWrapper ];
     dontUnpack = true;
     installPhase = ''
-      mkdir -p $out/bin
+      mkdir -p $out/bin $out/share/applications
+      # Create the teams wrapper
       makeWrapper ${pkgs.teams-for-linux}/bin/teams-for-linux $out/bin/teams \
         --run 'mkdir -p "$HOME/.local/share/app-isolation/teams"' \
-        --run 'mkdir -p "$HOME/.local/share/app-isolation/teams/.config"' \
-        --run 'mkdir -p "$HOME/.local/share/app-isolation/teams/.local/share"' \
-        --set HOME "$HOME/.local/share/app-isolation/teams" \
+        --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/teams\"" \
         --set HOSTNAME "research-workstation" \
         --set USER "researcher" \
-        --set LOGNAME "researcher" \
-        --set TEAMS_DISABLE_TELEMETRY "1" \
-        --set WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
-        --set XDG_SESSION_TYPE "wayland" \
-        --set XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR"
+        --set TEAMS_DISABLE_TELEMETRY "1"
+      # Create desktop file for URL handler registration
+      cat > $out/share/applications/teams-for-linux.desktop << EOF
+[Desktop Entry]
+Type=Application
+Name=Microsoft Teams
+Comment=Microsoft Teams (Privacy-focused)
+Exec=$out/bin/teams %u
+Icon=teams-for-linux
+Terminal=false
+MimeType=x-scheme-handler/msteams;
+Categories=Network;InstantMessaging;
+StartupWMClass=teams-for-linux
+NoDisplay=false
+EOF
     '';
   };
-
-  # Privacy-focused Stremio with data isolation
+  # Privacy-focused Stremio
   sandboxed-stremio-wayland = pkgs.stdenv.mkDerivation {
     name = "sandboxed-stremio-wayland";
     version = "1.0";
     nativeBuildInputs = [ pkgs.makeWrapper ];
     dontUnpack = true;
     installPhase = ''
-      mkdir -p $out/bin
+      mkdir -p $out/bin $out/share/applications
+      # Create the stremio wrapper
       makeWrapper ${pkgs.stremio}/bin/stremio $out/bin/stremio \
         --run 'mkdir -p "$HOME/.local/share/app-isolation/stremio"' \
-        --run 'mkdir -p "$HOME/.local/share/app-isolation/stremio/.config"' \
-        --run 'mkdir -p "$HOME/.local/share/app-isolation/stremio/.local/share"' \
-        --set HOME "$HOME/.local/share/app-isolation/stremio" \
+        --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/stremio\"" \
         --set HOSTNAME "research-workstation" \
-        --set USER "researcher" \
-        --set WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
-        --set XDG_SESSION_TYPE "wayland" \
-        --set XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR"
+        --set USER "researcher"
+      # Create desktop file
+      cat > $out/share/applications/stremio.desktop << EOF
+[Desktop Entry]
+Type=Application
+Name=Stremio
+Comment=Stremio Media Player (Privacy-focused)
+Exec=$out/bin/stremio %u
+Icon=stremio
+Terminal=false
+Categories=AudioVideo;Video;Player;
+StartupWMClass=Stremio
+NoDisplay=false
+EOF
     '';
   };
-
 in
 {
   inherit sandboxed-teams-wayland sandboxed-slack-wayland sandboxed-stremio-wayland;

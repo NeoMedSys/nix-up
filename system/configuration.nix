@@ -17,7 +17,8 @@
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"
-    "${inputs.self}/modules/redshift.nix"
+    # shift to Wayland-native later
+    # "${inputs.self}/modules/redshift.nix"
 
     # Gaming
     "${inputs.self}/modules/steam.nix"
@@ -28,6 +29,7 @@
     # Privacy matter
     "${inputs.self}/modules/privacy.nix"
     "${inputs.self}/modules/techoverlord_protection.nix"
+    "${inputs.self}/modules/app-telemetry-deny.nix"
 
 
   # Conditionally import nvidia.nix based on the hasGPU flag

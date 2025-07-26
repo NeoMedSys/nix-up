@@ -169,7 +169,6 @@ in
   (pkgs.writeScriptBin "slack-x11" ''
     exec ${sandboxed-slack}/bin/slack "$@"  
   '')
-
   ];
 
 

@@ -184,7 +184,7 @@ output * bg ~/nixos/perseus/assets/wallpaper.png fill
 
 # Autostart waybar
 exec waybar
-exec opensnitch-ui >/dev/null 2>&1
+exec_always opensnitch-ui >/dev/null 2>&1
 exec dunst
 
 # add if waybar fails after reboot
