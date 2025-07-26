@@ -125,9 +125,31 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+set $lock swaylock -f \
+    --screenshots \
+    --clock \
+    --indicator \
+    --indicator-radius 120 \
+    --indicator-thickness 8 \
+    --effect-blur 7x5 \
+    --effect-vignette 0.5:0.5 \
+    --ring-color e94560 \
+    --key-hl-color 0f3460 \
+    --line-color 00000000 \
+    --inside-color 1a1a2e88 \
+    --separator-color 00000000 \
+    --grace 3 \
+    --fade-in 0.1 \
 
 # Lock screen
-bindsym $mod+l exec swaylock -f -c 000000
+# bindsym $mod+l exec $lock -f -c 000000
+bindsym $mod+l exec $lock
+
+exec_always swayidle -w \
+    timeout 300 '$lock -f -c 000000' \
+    timeout 600 'swaymsg "output * power off"' \
+    resume 'swaymsg "output * power on"' \
+    before-sleep '$lock -f -c 000000'
 
 # Reboot
 bindsym $mod+Shift+r exec sudo systemctl reboot
@@ -162,15 +184,8 @@ output * bg ~/nixos/perseus/assets/wallpaper.png fill
 
 # Autostart waybar
 exec waybar
-exec opensnitch-ui
+exec opensnitch-ui >/dev/null 2>&1
 exec dunst
-
-exec_always swayidle -w \
-    timeout 300 'swaylock -f -c 000000' \
-    timeout 600 'swaymsg "output * power off"' \
-    resume 'swaymsg "output * power on"' \
-    before-sleep 'swaylock -f -c 000000'
-
 
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE

@@ -79,12 +79,9 @@ in
     alacritty
 
     # Entertainment
-    sandboxed-stremio
     wayland-apps.sandboxed-stremio-wayland
 
     # comms
-    sandboxed-teams
-    sandboxed-slack
     wayland-apps.sandboxed-teams-wayland
     wayland-apps.sandboxed-slack-wayland
     
@@ -161,7 +158,20 @@ in
         done
     '')
     inotify-tools
+
+  # X11 versions with different names (for fallback)
+  (pkgs.writeScriptBin "stremio-x11" ''
+    exec ${sandboxed-stremio}/bin/stremio "$@"
+  '')
+  (pkgs.writeScriptBin "teams-x11" ''
+    exec ${sandboxed-teams}/bin/teams "$@"
+  '')
+  (pkgs.writeScriptBin "slack-x11" ''
+    exec ${sandboxed-slack}/bin/slack "$@"  
+  '')
+
   ];
+
 
   # This registers the fonts with your system so applications can find them.
   fonts.packages = with pkgs; [
