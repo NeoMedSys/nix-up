@@ -9,11 +9,14 @@ icons = "none"
 [[block]]
 block    = "custom"
 command  = '''
-if systemctl --user is-active redshift.service >/dev/null; then
-  temp=$(redshift -p | awk '/Current color temperature:/ {print int($5)}')
-  echo " ${temp} K"
+if systemctl --user is-active gammastep.service >/dev/null; then
+  temp=$(gammastep -p | awk '/Period:/ {if($2=="Day") print "6500"; else print "3500"}' | head -1)
+  if [ -z "$temp" ]; then
+    temp=$(gammastep -p | awk '/Color temperature:/ {print int($3)}' | head -1)
+  fi
+  echo "  ${temp} K"
 else
-  echo " Paused"
+  echo "  Paused"
 fi
 '''
 shell    = "bash"
@@ -21,7 +24,7 @@ interval = 5
 
 [[block.click]]
 button = "left"
-cmd    = "redshift-pause" 
+cmd    = "gammastep-pause" 
 
 [[block]]
 block = "custom"

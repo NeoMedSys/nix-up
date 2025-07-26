@@ -34,7 +34,7 @@
 			brightness-day=1.0
 			brightness-night=0.9
 			location-provider=manual
-			adjustment-method=randr
+			adjustment-method=drm
                         dawn-time=06:00-07:00
                         dusk-time=22:00-23:00
 			

@@ -9,7 +9,7 @@
     lidSwitchExternalPower = "suspend"; # Also suspend when plugged in
     lidSwitchDocked = "suspend"; # And when docked
     
-    # Handle power button - ignore in logind, let i3 handle it
+    # Handle power button - ignore in logind, let WM handle it
     powerKey = "ignore";
     
     # Additional power management settings

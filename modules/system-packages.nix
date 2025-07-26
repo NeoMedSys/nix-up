@@ -3,6 +3,8 @@ let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
+  wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
+
 in
 {
   # Global software packages to install
@@ -14,6 +16,7 @@ in
     git
     gcc
     openssl
+    vscodium
     
     # System utilities
     direnv
@@ -32,6 +35,7 @@ in
     playerctl
     pavucontrol
     dunst
+    gammastep
     libnotify
     mdcat
     networkmanagerapplet
@@ -52,6 +56,19 @@ in
     nitrogen
     sweet
     
+    # sway
+    sway
+    swaylock-effects
+    swayidle
+    swaybg
+    wl-clipboard
+    grim
+    slurp
+    rofi-wayland
+    waybar
+    xdg-desktop-portal
+    xdg-desktop-portal-wlr
+
     # Network and Bluetooth GUI tools
     networkmanagerapplet
     overskride  # Modern Rust+GTK4 Bluetooth manager
@@ -64,11 +81,12 @@ in
     alacritty
 
     # Entertainment
-    sandboxed-stremio
+    wayland-apps.sandboxed-stremio-wayland
 
     # comms
-    sandboxed-teams
-    sandboxed-slack
+    wayland-apps.sandboxed-teams-wayland
+    wayland-apps.sandboxed-slack-wayland
+    wayland-apps.sandboxed-zoom-wayland
     
     # Muzicha
     spotify
@@ -96,7 +114,11 @@ in
     gnupg
     age
     sops
-    
+
+    # Screen Recording
+    obs-studio
+    wf-recorder
+
     # Secure communication
     signal-desktop
     element-desktop
@@ -119,6 +141,12 @@ in
     zsh
     zsh-powerlevel10k
     zsh-syntax-highlighting
+
+    # Office and document tools  
+    onlyoffice-bin
+    zathura
+    evince
+    tectonic
     
     # Fonts
     fira-code
@@ -143,7 +171,19 @@ in
         done
     '')
     inotify-tools
+
+  # X11 versions with different names (for fallback)
+  (pkgs.writeScriptBin "stremio-x11" ''
+    exec ${sandboxed-stremio}/bin/stremio "$@"
+  '')
+  (pkgs.writeScriptBin "teams-x11" ''
+    exec ${sandboxed-teams}/bin/teams "$@"
+  '')
+  (pkgs.writeScriptBin "slack-x11" ''
+    exec ${sandboxed-slack}/bin/slack "$@"  
+  '')
   ];
+
 
   # This registers the fonts with your system so applications can find them.
   fonts.packages = with pkgs; [
@@ -153,5 +193,12 @@ in
     dejavu_fonts
     liberation_ttf
     fira-code-symbols
+    # Additional icon fonts for better brand logos
+    material-design-icons
+    material-icons
+    noto-fonts-emoji
+    nerd-fonts.symbols-only  # More comprehensive Nerd Fonts collection
+    nerd-fonts.fira-code
+    font-awesome_5
   ];
 }

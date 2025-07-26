@@ -181,4 +181,25 @@ in
     echo "Compiling GSettings schemas for LightDM Greeter..."
     ${pkgs.glib}/bin/glib-compile-schemas /etc/gsettings/schemas/lightdm.gschema.override/ &> /dev/null || true
   '';
+
+    # File associations for office documents
+    xdg.mime.defaultApplications = {
+    # OnlyOffice for all office formats (no LibreOffice)
+    "application/vnd.oasis.opendocument.text" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.oasis.opendocument.spreadsheet" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.oasis.opendocument.presentation" = "onlyoffice-desktopeditors.desktop";
+    
+    # OnlyOffice for MS Office formats (optimal compatibility)
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "onlyoffice-desktopeditors.desktop";
+    
+    # Legacy MS Office formats
+    "application/msword" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.ms-excel" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.ms-powerpoint" = "onlyoffice-desktopeditors.desktop";
+    
+    # PDF documents (zathura as default)
+    "application/pdf" = "org.pwmt.zathura.desktop";
+  };
 }

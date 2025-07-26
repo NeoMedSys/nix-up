@@ -1,0 +1,191 @@
+# BASIC Sway config - Just window management, no extras
+set $mod Mod4
+
+gaps inner 5
+gaps outer 2
+
+default_border none
+default_floating_border none
+
+# Window colors (adapted from your i3 config)
+client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+
+bindsym XF86PowerOff exec swaymsg exit
+
+# Basic keybindings from your i3 config
+bindsym $mod+Return exec alacritty
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+e exit
+
+input type:keyboard {
+    xkb_layout us
+    xkb_options caps:escape,eurosign:e
+}
+
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
+    scroll_method two_finger
+}
+
+# Your actual focus keys from i3
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+i focus up
+bindsym $mod+semicolon focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Your actual move keys from i3
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Your actual split keys from i3
+bindsym $mod+h splith
+bindsym $mod+v splitv
+
+# Basic layout
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+bindsym $mod+d exec rofi -show drun
+bindsym $mod+b exec brave
+bindsym $mod+c exec slack
+
+# Workspaces
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# Media keys (from your i3 config)
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+# Brightness controls (from your i3 config)
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+
+bindsym Print exec grim ~/screenshot-$(date +%Y%m%d-%H%M%S).png && grim - | wl-copy
+bindsym $mod+Print exec sh -c 'grim -g "$(slurp)" - | wl-copy'
+
+# Resize mode (exactly like your i3 config)
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+set $lock swaylock -f \
+    --screenshots \
+    --clock \
+    --indicator \
+    --indicator-radius 120 \
+    --indicator-thickness 8 \
+    --effect-blur 7x5 \
+    --effect-vignette 0.5:0.5 \
+    --ring-color e94560 \
+    --key-hl-color 0f3460 \
+    --line-color 00000000 \
+    --inside-color 1a1a2e88 \
+    --separator-color 00000000 \
+    --grace 3 \
+    --fade-in 0.1 \
+
+# Lock screen
+# bindsym $mod+l exec $lock -f -c 000000
+bindsym $mod+l exec $lock
+
+exec_always swayidle -w \
+    timeout 300 '$lock -f -c 000000' \
+    timeout 600 'swaymsg "output * power off"' \
+    resume 'swaymsg "output * power on"' \
+    before-sleep '$lock -f -c 000000'
+
+# Reboot
+bindsym $mod+Shift+r exec sudo systemctl reboot
+
+# Run steam
+bindsym $mod+g exec steam
+
+# Keyboard layout switching (Wayland version)
+bindsym $mod+u exec swaymsg input type:keyboard xkb_layout us
+bindsym $mod+n exec swaymsg input type:keyboard xkb_layout no
+#
+# i3status-rust bar
+bar {
+    status_command i3status-rs /etc/i3status-rust/config.toml
+    position top
+    font pango:MesloLGS NF 10
+
+    colors {
+        background            #282A2E
+        statusline            #C5C8C6
+        separator             #373B41
+
+        #                     border    background   text
+        focused_workspace     #4a90e2   #4a90e2      #ffffff
+        active_workspace      #373B41   #373B41      #ffffff
+        inactive_workspace    #282A2E   #282A2E      #888888
+        urgent_workspace      #A54242   #A54242      #ffffff
+    }
+}
+
+output * bg ~/nixos/perseus/assets/wallpaper.png fill
+
+# Autostart waybar
+exec waybar
+exec_always opensnitch-ui >/dev/null 2>&1
+exec dunst
+
+# add if waybar fails after reboot
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
