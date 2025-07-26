@@ -85,6 +85,7 @@ in
     # comms
     wayland-apps.sandboxed-teams-wayland
     wayland-apps.sandboxed-slack-wayland
+    wayland-apps.sandboxed-zoom-wayland
     
     # Muzicha
     spotify
@@ -135,6 +136,12 @@ in
     zsh
     zsh-powerlevel10k
     zsh-syntax-highlighting
+
+    # Office and document tools  
+    libreoffice-fresh
+    onlyoffice-bin
+    okular  # KDE PDF viewer (works without KDE)
+    texlive.combined.scheme-medium
     
     # Fonts
     fira-code

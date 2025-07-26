@@ -181,4 +181,25 @@ in
     echo "Compiling GSettings schemas for LightDM Greeter..."
     ${pkgs.glib}/bin/glib-compile-schemas /etc/gsettings/schemas/lightdm.gschema.override/ &> /dev/null || true
   '';
+
+    # File associations for office documents
+  xdg.mime.defaultApplications = {
+    # LibreOffice as primary for open formats
+    "application/vnd.oasis.opendocument.text" = "libreoffice-writer.desktop";
+    "application/vnd.oasis.opendocument.spreadsheet" = "libreoffice-calc.desktop";
+    "application/vnd.oasis.opendocument.presentation" = "libreoffice-impress.desktop";
+    
+    # OnlyOffice for MS Office formats (better compatibility)
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "onlyoffice-desktopeditors.desktop";
+    
+    # Legacy MS Office formats
+    "application/msword" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.ms-excel" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.ms-powerpoint" = "onlyoffice-desktopeditors.desktop";
+    
+    # PDF documents (okular as default)
+    "application/pdf" = "okular.desktop";
+  };
 }

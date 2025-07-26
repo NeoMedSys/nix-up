@@ -60,6 +60,13 @@
     # Safe application settings
     ELECTRON_DISABLE_CRASH_REPORTER = "1";
     NPM_CONFIG_DISABLE_UPDATE_NOTIFIER = "true";
+
+    # Disable Zoom Telemetry
+    ZOOM_DISABLE_ANALYTICS = "1";
+    ZOOM_DISABLE_TELEMETRY = "1";
+
+    # Office applications privacy
+    LO_JAVA_JFR = "false";
   };
 
   # Verification service (optional - can disable if not needed)

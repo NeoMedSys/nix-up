@@ -92,6 +92,36 @@ NoDisplay=false
 EOF
     '';
   };
+  # Privacy-focused Zoom
+  sandboxed-zoom-wayland = pkgs.stdenv.mkDerivation {
+    name = "sandboxed-zoom-wayland";
+    version = "1.0";
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out/bin $out/share/applications
+      # Create the zoom wrapper
+      makeWrapper ${pkgs.zoom-us}/bin/zoom-us $out/bin/zoom \
+        --run 'mkdir -p "$HOME/.local/share/app-isolation/zoom"' \
+        --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/zoom\"" \
+        --set HOSTNAME "research-workstation" \
+        --set USER "researcher" \
+      # Create desktop file for URL handler registration
+      cat > $out/share/applications/zoom.desktop << EOF
+[Desktop Entry]
+Type=Application
+Name=Zoom
+Comment=Zoom Video Conferencing (Privacy-focused)
+Exec=$out/bin/zoom %u
+Icon=zoom
+Terminal=false
+MimeType=x-scheme-handler/zoommtg;x-scheme-handler/zoomphonecall;
+Categories=Network;AudioVideo;
+StartupWMClass=zoom
+NoDisplay=false
+EOF
+    '';
+  };
 in
 {
   inherit sandboxed-teams-wayland sandboxed-slack-wayland sandboxed-stremio-wayland;
