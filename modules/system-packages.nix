@@ -34,6 +34,7 @@ in
     playerctl
     pavucontrol
     dunst
+    gammastep
     libnotify
     mdcat
     networkmanagerapplet
