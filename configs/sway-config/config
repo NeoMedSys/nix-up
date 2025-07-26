@@ -1,6 +1,20 @@
 # BASIC Sway config - Just window management, no extras
 set $mod Mod4
 
+gaps inner 5
+gaps outer 2
+
+default_border none
+default_floating_border none
+
+# Window colors (adapted from your i3 config)
+client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+
+bindsym XF86PowerOff exec swaymsg exit
+
 # Basic keybindings from your i3 config
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+q kill
@@ -90,6 +104,28 @@ bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
 bindsym Print exec grim ~/screenshot-$(date +%Y%m%d-%H%M%S).png && grim - | wl-copy
 bindsym $mod+Print exec sh -c 'grim -g "$(slurp)" - | wl-copy'
 
+# Resize mode (exactly like your i3 config)
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+
 # Lock screen
 bindsym $mod+l exec swaylock -f -c 000000
 
@@ -122,8 +158,19 @@ bar {
     }
 }
 
+output * bg ~/nixos/perseus/assets/wallpaper.png fill
+
 # Autostart waybar
-exec_always --no-startup-id waybar
+exec waybar
+exec opensnitch-ui
+exec dunst
+
+exec_always swayidle -w \
+    timeout 300 'swaylock -f -c 000000' \
+    timeout 600 'swaymsg "output * power off"' \
+    resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f -c 000000'
+
 
 # add if waybar fails after reboot
-# exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
