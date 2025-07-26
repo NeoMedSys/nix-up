@@ -94,6 +94,14 @@
         key = "<leader>mp";
         action = "<Cmd>silent !pandoc % -s -o /tmp/preview.html && xdg-open /tmp/preview.html &<CR>";
       }
+      {
+        mode = "n";
+        key = "<leader>lp";
+        action = "<Cmd>silent !tectonic % && zathura %:r.pdf &<CR>";
+        options = {
+          desc = "LaTeX Preview - compile with tectonic and view PDF";
+        };
+      }
     ];
 
     extraConfigLua = ''

@@ -146,7 +146,7 @@ in
     onlyoffice-bin
     zathura
     evince
-    texlive.combined.scheme-medium
+    tectonic
     
     # Fonts
     fira-code
