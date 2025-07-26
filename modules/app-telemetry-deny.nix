@@ -62,7 +62,6 @@
     NPM_CONFIG_DISABLE_UPDATE_NOTIFIER = "true";
 
     # Disable Zoom Telemetry
-    ZOOM_DISABLE_ANALYTICS = "1";
     ZOOM_DISABLE_TELEMETRY = "1";
 
     # Office applications privacy
