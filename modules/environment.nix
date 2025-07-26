@@ -183,13 +183,13 @@ in
   '';
 
     # File associations for office documents
-  xdg.mime.defaultApplications = {
-    # LibreOffice as primary for open formats
-    "application/vnd.oasis.opendocument.text" = "libreoffice-writer.desktop";
-    "application/vnd.oasis.opendocument.spreadsheet" = "libreoffice-calc.desktop";
-    "application/vnd.oasis.opendocument.presentation" = "libreoffice-impress.desktop";
+    xdg.mime.defaultApplications = {
+    # OnlyOffice for all office formats (no LibreOffice)
+    "application/vnd.oasis.opendocument.text" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.oasis.opendocument.spreadsheet" = "onlyoffice-desktopeditors.desktop";
+    "application/vnd.oasis.opendocument.presentation" = "onlyoffice-desktopeditors.desktop";
     
-    # OnlyOffice for MS Office formats (better compatibility)
+    # OnlyOffice for MS Office formats (optimal compatibility)
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "onlyoffice-desktopeditors.desktop";
@@ -199,7 +199,7 @@ in
     "application/vnd.ms-excel" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.ms-powerpoint" = "onlyoffice-desktopeditors.desktop";
     
-    # PDF documents (okular as default)
-    "application/pdf" = "okular.desktop";
+    # PDF documents (zathura as default)
+    "application/pdf" = "org.pwmt.zathura.desktop";
   };
 }

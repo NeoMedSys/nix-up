@@ -39,6 +39,25 @@
       
       # VS Code telemetry (specific endpoints)
       "vscode-update.azurewebsites.net"
+      
+      # AI coding assistants (prevent code scanning/exfiltration)
+      "copilot-proxy.githubusercontent.com"
+      "api.githubcopilot.com"
+      "github.com/features/copilot"
+      # Tabnine AI coding
+      "cloud.tabnine.com"
+      "api.tabnine.com"
+      # Codeium AI coding
+      "server.codeium.com"
+      "api.codeium.com" 
+      # Cursor AI coding
+      "api.cursor.sh"
+      "cursor.sh"
+      # Amazon CodeWhisperer
+      "codewhisperer.aws.amazon.com"
+      # JetBrains AI Assistant (code-specific)
+      "ai.jetbrains.com"
+      "ai-assistant.jetbrains.com"
     ];
   };
 
@@ -66,6 +85,22 @@
 
     # Office applications privacy
     LO_JAVA_JFR = "false";
+
+    # AI coding assistant blocking (surgical)
+    GITHUB_COPILOT_DISABLED = "1";
+    TABNINE_DISABLE_TELEMETRY = "1";
+    CODEIUM_DISABLE_TELEMETRY = "1";
+    CURSOR_DISABLE_AI = "1";
+    # VS Codium AI blocking (dev-specific)
+    VSCODE_DISABLE_WORKSPACE_TRUST = "1";  # Prevents some AI integrations
+    # JetBrains AI blocking (code analysis only)
+    JETBRAINS_AI_DISABLED = "1";
+    # Prevent accidental API key usage in dev environments
+    OPENAI_API_KEY = "";  # Clear if accidentally set
+    ANTHROPIC_API_KEY = "";
+    # Disable funding prompts that include AI service ads
+    DISABLE_OPENCOLLECTIVE = "1";
+
   };
 
   # Verification service (optional - can disable if not needed)

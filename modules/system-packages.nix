@@ -16,6 +16,7 @@ in
     git
     gcc
     openssl
+    vscodium
     
     # System utilities
     direnv
@@ -113,7 +114,11 @@ in
     gnupg
     age
     sops
-    
+
+    # Screen Recording
+    obs-studio
+    wf-recorder
+
     # Secure communication
     signal-desktop
     element-desktop
@@ -138,9 +143,9 @@ in
     zsh-syntax-highlighting
 
     # Office and document tools  
-    libreoffice-fresh
     onlyoffice-bin
-    okular  # KDE PDF viewer (works without KDE)
+    zathura
+    evince
     texlive.combined.scheme-medium
     
     # Fonts

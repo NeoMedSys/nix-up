@@ -124,5 +124,5 @@ EOF
   };
 in
 {
-  inherit sandboxed-teams-wayland sandboxed-slack-wayland sandboxed-stremio-wayland;
+  inherit sandboxed-teams-wayland sandboxed-slack-wayland sandboxed-stremio-wayland sandboxed-zoom-wayland;
 }
