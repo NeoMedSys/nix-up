@@ -7,35 +7,29 @@
     "margin-bottom": 0,
     "margin-left": 0,
     "margin-right": 0,
-
     "modules-center": ["custom/slack", "custom/brave", "custom/steam", "custom/stremio", "custom/spotify"],
-
     "custom/slack": {
-        "format": "󰒱",
+        "format": " ",
         "on-click": "slack",
         "tooltip-format": "Slack"
     },
-
     "custom/brave": {
-        "format": "󰖟",
+        "format": " ",
         "on-click": "brave",
         "tooltip-format": "Brave Browser"
     },
-
     "custom/steam": {
-        "format": "󰓓",
+        "format": " ",
         "on-click": "steam",
         "tooltip-format": "Steam"
     },
-
     "custom/stremio": {
-        "format": "󰎁",
+        "format": " ",
         "on-click": "stremio",
         "tooltip-format": "Stremio"
     },
-
     "custom/spotify": {
-        "format": "󰓇",
+        "format": " ",
         "on-click": "spotify",
         "tooltip-format": "Spotify"
     }
