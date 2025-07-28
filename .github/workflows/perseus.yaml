@@ -30,7 +30,7 @@ jobs:
       
       - name: Evaluate configurations
         run: |
-          ./perseus.sh <<< $'testuser\ntesthost\nTest User\ntest@example.com\nfalse\nfalse\ny\ny\ny\n3\nn'
+          ./perseus.sh <<< $'y\ntestuser\ntesthost\nTest User\ntest@example.com\nfalse\nfalse\ny\ny\ny\n3\nn'
           echo "=== user-config.nix content ==="
           cat user-config.nix
           echo "=== Available configurations ==="
