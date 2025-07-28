@@ -32,6 +32,7 @@ jobs:
         run: |
           ./perseus.sh <<< $'testuser\ntesthost\nTest User\ntest@example.com\nfalse\nfalse\ny\ny\ny\n3\nn'
           git add user-config.nix
+          git commit -m "temp config for CI"
           nix eval .#nixosConfigurations.testhost.config.system.build.toplevel
 
   publish:
