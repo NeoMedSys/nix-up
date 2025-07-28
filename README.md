@@ -11,6 +11,7 @@ Perseus is a fully declarative NixOS setup that combines **uncompromising privac
 
 ## 🚀 Quick Start
 
+
 ### Prerequisites
 
 1. NixOS 25.05 or later
@@ -19,20 +20,46 @@ Perseus is a fully declarative NixOS setup that combines **uncompromising privac
 
 ### Installation
 
+First step is to run the bare metal installation from ISO and then run the Perseus installation.
+
+#### 1 Bare Metal Installation
+
 ```bash
-# Clone the repository
+# 1.1 Partition your disk (replace /dev/sda with your disk)
+sudo fdisk /dev/sda
+# Create: 512MB EFI partition (type EF00), rest for root (type 8300)
+
+# 1.2 Format partitions
+sudo mkfs.fat -F 32 /dev/sda1  # EFI
+sudo mkfs.ext4 /dev/sda2       # Root
+
+# 1.3 Mount the file systems
+sudo mount /dev/sda2 /mnt
+sudo mkdir -p /mnt/boot
+sudo mount /dev/sda1 /mnt/boot
+
+# 1.4 Generate hardware configuration
+sudo nixos-generate-config --root /mnt
+```
+
+#### 2. Perseus Installation
+```bash
+# 2.1 Clone the repository and setup the args for your system
 git clone https://github.com/yourusername/perseus
 cd perseus
+sh perseus.sh
 
-# For laptop without GPU
-sudo nixos-rebuild switch --flake .#perseus
+# 2.2 Copy the generated hardware config
+sudo cp /mnt/etc/nixos/hardware-configuration.nix system/
 
-# For system with NVIDIA GPU
-sudo nixos-rebuild switch --flake .#perseus-gpu
-
-# For system with VPN
+# 2.3 For system with VPN (Only Mullvad support for now)
 cp your-mullvad-config.conf configs/mullvad-config/
-sudo nixos-rebuild switch --flake .#perseus
+
+# 7. Install your personalized system
+sudo nixos-install --flake .#<your-hostname>
+
+# 8. Reboot and enjoy your freedom
+sudo reboot
 ```
 
 ### First Boot

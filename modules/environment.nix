@@ -103,6 +103,7 @@ in
       allowedUDPPorts = [ 53 ];
     };
   };
+  environment = {
     variables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
