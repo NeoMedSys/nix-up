@@ -7,5 +7,4 @@ result-*
 
 # ignore mullvad configs
 configs/mullvad-config/*.conf
-user-config.nix
 assets/personal-*

@@ -12,26 +12,7 @@
   outputs = { self, nixpkgs, flakehub, ... }@inputs:
   let
     version = "1.0.0";
-
-    userConfig = if builtins.pathExists ./user-config.nix 
-      then import ./user-config.nix 
-      else builtins.trace "WARNING: Using default config. Run './perseus.sh' to customize." { 
-        username = "user"; 
-        hostname = "nixos"; 
-        timezone = "Europe/Amsterdam";
-        isLaptop = true;
-        hasGPU = false;
-        browsers = [ "brave" "firefox" ];
-        devTools = [ "python" "go" ];
-        gaming = true;
-        privacy = true;
-        vpn = false;
-        gitName = "User";
-        gitEmail = "user@example.com";
-        latitude = 52.37;
-        longitude = 4.89;
-      };
-
+    userConfig = import ~/nixos/perseus/user-config.nix;
     mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
