@@ -29,6 +29,7 @@ in
     fastfetch
     fzf
     libinput-gestures
+    libinput
     ripgrep
     rofi
     tmux
