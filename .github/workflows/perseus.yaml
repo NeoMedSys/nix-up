@@ -52,6 +52,6 @@ jobs:
       - uses: DeterminateSystems/flakehub-push@main
         with:
           name: "NeoMedSys/perseus"
-          tag: ${{ github.ref_name }}
+          tag: ${{ github.ref_name == 'main' && '0.1.0' || github.ref_name }}
           visibility: "public"
           token: ${{ secrets.FH_TOKEN }}
