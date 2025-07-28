@@ -155,6 +155,7 @@ in
     dejavu_fonts
     liberation_ttf
     fira-code-symbols
+    papirus-icon-theme
 
     # Pandoc and live MD rendering
     pandoc

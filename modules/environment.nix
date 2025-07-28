@@ -62,7 +62,9 @@ in
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+      wireplumber.enable = true;
     };
+    blueman.enable = true;
   };
   # User Accounts and Permissions
   users.users.${user} = {
@@ -139,7 +141,16 @@ in
   };
 
   hardware = {
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      powerOnBoot = true;
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+          Experiment = true;
+        };
+      };
+    };
     graphics = {
       enable = true;
       enable32Bit = true;
@@ -166,6 +177,8 @@ in
     cp ${config.environment.etc."user-avatars/king-${user}.png".source} /home/${user}/.face
     chmod 644 /home/${user}/.face
   '';
+
+  systemd.user.services.mpris-proxy.enable = true;
 
   systemd.services.display-manager.serviceConfig = {
     Environment = [

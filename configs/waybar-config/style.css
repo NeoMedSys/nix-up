@@ -1,5 +1,4 @@
-/* Waybar style - Fixed visibility */
-
+/* Waybar style - Crisp Papirus branded icons */
 * {
     font-family: "MesloLGS NF";
     font-size: 16px;
@@ -7,31 +6,48 @@
 }
 
 window#waybar {
-    background-color: transparent; /* Completely transparent bar */
+    background-color: transparent;
     color: #D8DEE9;
     border: none;
 }
 
-/* Center module container */
 .modules-center {
-    background-color: transparent; /* Also transparent */
+    background-color: transparent;
 }
 
-/* Individual app launcher buttons - made much more visible */
+/* Base style for app launcher buttons */
 #custom-slack,
 #custom-brave,
 #custom-steam,
 #custom-stremio,
 #custom-spotify {
-    background-color: rgba(67, 76, 94, 0.95); /* Much more opaque */
+    background-color: rgba(67, 76, 94, 0.95);
     color: #ECEFF4;
     border-radius: 12px;
     padding: 8px 12px;
     margin: 4px;
-    min-width: 30px;
-    font-size: 18px;
-    font-weight: bold;
-    border: 1px solid #5E81AC; /* Add border for visibility */
+    min-width: 32px;
+    min-height: 32px;
+    border: 1px solid #5E81AC;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Use 32x32 SVG icons for crisp rendering */
+#custom-slack {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/slack.svg");
+}
+#custom-brave {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/brave-browser.svg");
+}
+#custom-steam {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/steam.svg");
+}
+#custom-stremio {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/stremio.svg");
+}
+#custom-spotify {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/spotify.svg");
 }
 
 /* Hover effects */
