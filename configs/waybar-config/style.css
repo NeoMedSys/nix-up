@@ -1,4 +1,4 @@
-/* Waybar style - Real Papirus branded icons */
+/* Waybar style - Crisp Papirus branded icons */
 * {
     font-family: "MesloLGS NF";
     font-size: 16px;
@@ -31,28 +31,28 @@ window#waybar {
     border: 1px solid #5E81AC;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 30px 30px;
+    background-size: 32px 32px;
 }
 
-/* Real branded icons from Papirus theme - Crisp rendering */
+/* Use 48x48 SVG icons for crisp rendering */
 #custom-slack {
-    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/slack.svg");
+    background-image: url("/run/current-system/sw/share/icons/Papirus/48x48/apps/slack.svg");
 }
 
 #custom-brave {
-    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/brave-browser.svg");
+    background-image: url("/run/current-system/sw/share/icons/Papirus/48x48/apps/brave-browser.svg");
 }
 
 #custom-steam {
-    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/steam.svg");
+    background-image: url("/run/current-system/sw/share/icons/Papirus/48x48/apps/steam.svg");
 }
 
 #custom-stremio {
-    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/stremio.svg");
+    background-image: url("/run/current-system/sw/share/icons/Papirus/48x48/apps/stremio.svg");
 }
 
 #custom-spotify {
-    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/spotify.svg");
+    background-image: url("/run/current-system/sw/share/icons/Papirus/48x48/apps/spotify.svg");
 }
 
 /* Hover effects */
