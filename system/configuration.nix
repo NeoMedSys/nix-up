@@ -1,10 +1,14 @@
-{ config, lib, pkgs, inputs, isLaptop, hasGPU, user, userSpecifiedBrowsers, ... }:
+{ config, lib, pkgs, inputs, userConfig, ... }:
 {
   imports = [
     # Hardware and disk configuration
     "${inputs.self}/system/hardware-configuration.nix"
     # "${inputs.self}/system/disko-config.nix"
 
+    # Core system modules - pass userConfig to modules that need it
+    ({ ... }: {
+      _module.args = { inherit userConfig; };
+    })
     # Core system modules
     "${inputs.self}/modules/environment.nix"
     "${inputs.self}/modules/system-packages.nix"
@@ -34,15 +38,14 @@
 
 
   # Conditionally import nvidia.nix based on the hasGPU flag
-  ] ++ lib.optionals hasGPU [
+  ] ++ lib.optionals userConfig.hasGPU [
     "${inputs.self}/modules/nvidia.nix"
-  ] ++ [
-    # VPN (currently disabled)
+  ] ++ lib.optionals userConfig.vpn [
       "${inputs.self}/modules/vpn.nix"
   ];
 
   # System identification
-  networking.hostName = "perseus";
+  networking.hostName = userConfig.hostname;
 
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

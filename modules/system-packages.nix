@@ -1,10 +1,14 @@
-{ lib, pkgs, config, flakehub, ... }:
+{ lib, pkgs, config, userConfig ? null, flakehub, ... }:
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
   wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
 
+    # Browser packages based on user config
+  browserPackages = if userConfig != null
+      then map (browser: pkgs.${browser}) userConfig.browsers
+      else [ pkgs.brave pkgs.firefox ]; # fallback default
 in
 {
   # Global software packages to install
@@ -183,7 +187,7 @@ in
   (pkgs.writeScriptBin "slack-x11" ''
     exec ${sandboxed-slack}/bin/slack "$@"  
   '')
-  ];
+  ] ++  browserPackages;
 
 
   # This registers the fonts with your system so applications can find them.

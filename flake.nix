@@ -13,15 +13,14 @@
   let
     version = "1.0.0";
 
-    mkSystem = { hasGPU, devTools ? [], ... }:
+    # Import user configuration
+    userConfig = import ./user-config.nix;
+
+    mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit inputs version flakehub;
-          user = "jon";
-          userSpecifiedBrowsers = [ "brave" ];
-          isLaptop = true;
-          inherit hasGPU devTools;
+          inherit inputs version flakehub userConfig;
         };
         modules = [
           ./system/configuration.nix
@@ -32,17 +31,8 @@
   in
   {
     nixosConfigurations = {
-      # Default configuration WITHOUT GPU
-      perseus = mkSystem {
-        hasGPU = false;
-        devTools = [ "python" "go" ];
-      };
-
-      # A second configuration WITH GPU
-      "perseus-gpu" = mkSystem {
-        hasGPU = true;
-        devTools = [ "python" "go" ];
-      };
+      # Use hostname from config
+      "${userConfig.hostname}" = mkSystem {};
     };
   };
 }

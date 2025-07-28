@@ -1,5 +1,4 @@
-{ config, pkgs, lib, inputs, isLaptop ? true, hasGPU ? true, user ? "algol", userSpecifiedBrowsers ? [ "brave" ], ... }:
-
+{ config, pkgs, lib, inputs, userConfig ? null, ... }:
 let
   processedKing = pkgs.runCommand "king-processed.png" {
     buildInputs = [ pkgs.imagemagick ];
@@ -16,7 +15,7 @@ in
   };
 
   # Time and Localization
-  time.timeZone = "Europe/Amsterdam";
+  time.timeZone = userConfig.timezone;
 
   i18n = {
     supportedLocales = [ "en_US.UTF-8/UTF-8" "nb_NO.UTF-8/UTF-8" ];
@@ -67,7 +66,7 @@ in
     blueman.enable = true;
   };
   # User Accounts and Permissions
-  users.users.${user} = {
+  users.users.${userConfig.username} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" ];
     shell = pkgs.zsh;
@@ -77,7 +76,7 @@ in
 
   security = {
     sudo.extraRules = [{
-      users = [ user ];
+      users = [ userConfig.username ];
       commands = [{
         command = "ALL";
         options = [ "NOPASSWD" "NOSETENV" ];
@@ -104,19 +103,12 @@ in
       allowedUDPPorts = [ 53 ];
     };
   };
-
-  # System Environment
   environment = {
-    systemPackages = with pkgs; [
-      stremio
-    ] ++ map (browser: pkgs.${browser}) userSpecifiedBrowsers;
-    
     variables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
     };
-
-    etc."user-avatars/king-${user}.png".source = processedKing;
+    etc."user-avatars/king-${userConfig.username}.png".source = processedKing;
   };
 
   # Nix and Nixpkgs Configuration
@@ -136,7 +128,7 @@ in
   };
 
   # Hardware and Power Management
-  powerManagement = lib.mkIf isLaptop {
+  powerManagement = lib.mkIf userConfig.isLaptop {
     enable = true;
   };
 
@@ -160,25 +152,26 @@ in
   # Virtualisation
   virtualisation.docker = {
     enable = true;
-    enableNvidia = hasGPU;
+    enableNvidia = userConfig.hasGPU;
   };
 
   # change this accordingly
   programs.git = {
     enable = true;
     config = {
-      user.name = "JonNesvold";
-      user.email = "jnesvold@neomedsys.io";
+      user.name = userConfig.gitName;
+      user.email = userConfig.gitEmail;
     };
   };
 
   # System Scripts
   system.userActivationScripts.king = ''
-    cp ${config.environment.etc."user-avatars/king-${user}.png".source} /home/${user}/.face
-    chmod 644 /home/${user}/.face
+    cp ${config.environment.etc."user-avatars/king-${userConfig.username}.png".source} /home/${userConfig.username}/.face
+    chmod 644 /home/${userConfig.username}/.face
   '';
 
   systemd.user.services.mpris-proxy.enable = true;
+
 
   systemd.services.display-manager.serviceConfig = {
     Environment = [

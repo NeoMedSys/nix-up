@@ -1,6 +1,9 @@
-{ config, pkgs, lib, devTools ? [], user ? "algol", ... }:
+{ config, pkgs, lib, userConfig, ... }:
 
 let
+  # Get devTools and user from userConfig or use defaults
+  devTools = userConfig.devTools;
+  
   # Helper function to check if a tool is enabled
   hasDevTool = tool: builtins.elem tool devTools;
 
@@ -43,7 +46,7 @@ in
   ];
 
   # Development user groups
-  users.users.${user} = lib.mkIf (devTools != []) {
+  users.users.${userConfig.username} = lib.mkIf (devTools != []) {
     extraGroups = [ "docker" ];
   };
 }
