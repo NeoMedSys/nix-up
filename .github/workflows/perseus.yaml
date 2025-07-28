@@ -31,6 +31,7 @@ jobs:
       - name: Evaluate configurations
         run: |
           ./perseus.sh <<< $'testuser\ntesthost\nTest User\ntest@example.com\nfalse\nfalse\ny\ny\ny\n3\nn'
+          git add user-config.nix
           nix eval .#nixosConfigurations.testhost.config.system.build.toplevel
 
   publish:
