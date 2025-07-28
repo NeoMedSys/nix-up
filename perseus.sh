@@ -14,12 +14,15 @@ fi
 # Detect hardware
 GPU_DETECTED=false
 LAPTOP_DETECTED=false
+
+# Check for GPU via DRM subsystem
 if ls /sys/class/drm/card* >/dev/null 2>&1; then
-    # Check if any card mentions nvidia ( add support for other cards )
+    # Check if any card mentions nvidia
     if grep -qi nvidia /sys/class/drm/card*/device/uevent 2>/dev/null; then
         GPU_DETECTED=true
     fi
 fi
+
 [ -e /sys/class/power_supply/BAT0 ] && LAPTOP_DETECTED=true
 
 # Get user input
@@ -40,10 +43,7 @@ IS_LAPTOP=${LAPTOP_INPUT:-$LAPTOP_DETECTED}
 
 # Browser selection
 echo ""
-echo "Browser selection (space to toggle, enter to confirm):"
-echo "1. Brave"
-echo "2. Firefox" 
-echo "Both selected by default."
+echo "Browser selection:"
 read -p "Include Brave? [Y/n]: " BRAVE_INPUT
 read -p "Include Firefox? [Y/n]: " FIREFOX_INPUT
 
@@ -51,7 +51,36 @@ BROWSERS="["
 [[ ! $BRAVE_INPUT =~ ^[Nn]$ ]] && BROWSERS="$BROWSERS \"brave\""
 [[ ! $FIREFOX_INPUT =~ ^[Nn]$ ]] && BROWSERS="$BROWSERS \"firefox\""
 BROWSERS="$BROWSERS ]"
-BROWSERS=$(echo $BROWSERS | sed 's/\[ /[/g' | sed 's/ \]/]/g' | sed 's/" "/", "/g')
+BROWSERS=$(echo $BROWSERS | sed 's/\[ /[/g' | sed 's/ \]/]/g')
+
+# VPN question
+read -p "Enable VPN support? [y/N]: " VPN_INPUT
+VPN_ENABLED=false
+[[ $VPN_INPUT =~ ^[Yy]$ ]] && VPN_ENABLED=true
+
+# Location selection
+echo ""
+echo "Select your location (for blue light filter):"
+echo "1. US East Coast (New York)"
+echo "2. US West Coast (Los Angeles)" 
+echo "3. Europe (Amsterdam)"
+echo "4. Asia (Tokyo)"
+echo "5. UK (London)"
+echo "6. Custom coordinates"
+read -p "Choose [1-6]: " LOCATION_CHOICE
+
+case $LOCATION_CHOICE in
+    1) LAT=40.7; LON=-74.0 ;;
+    2) LAT=34.0; LON=-118.2 ;;
+    3) LAT=52.4; LON=4.9 ;;
+    4) LAT=35.7; LON=139.7 ;;
+    5) LAT=51.5; LON=-0.1 ;;
+    6) 
+        read -p "Enter latitude: " LAT
+        read -p "Enter longitude: " LON
+        ;;
+    *) LAT=52.4; LON=4.9 ;; # Default to Amsterdam
+esac
 
 # Generate config file
 cat > user-config.nix << EOF
@@ -66,11 +95,11 @@ cat > user-config.nix << EOF
   devTools = [ "python" "go" ];
   gaming = true;
   privacy = true;
-  vpn = false;
+  vpn = $VPN_ENABLED;
   gitName = "$GIT_NAME";
   gitEmail = "$GIT_EMAIL";
-  latitude = 52.37;
-  longitude = 4.89;
+  latitude = $LAT;
+  longitude = $LON;
 }
 EOF
 

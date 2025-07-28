@@ -167,15 +167,15 @@ if [ "$status" = "Charging" ]; then
     printf "\uf1e6 %s%%" "$capacity"
 else
     if [ "$capacity" -ge 90 ]; then
-        icon="\uf240"
+        icon=$'\uf240'
     elif [ "$capacity" -ge 70 ]; then
-        icon="\uf241"
+        icon=$'\uf241'
     elif [ "$capacity" -ge 50 ]; then
-        icon="\uf242"
+        icon=$'\uf242'
     elif [ "$capacity" -ge 25 ]; then
-        icon="\uf243"
+        icon=$'\uf243'
     else
-        icon="\uf244"
+        icon=$'\uf244'
     fi
     printf "%s %s%%" "$icon" "$capacity"
 fi

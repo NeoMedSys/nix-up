@@ -5,13 +5,13 @@
   timezone = "Europe/Amsterdam";
   isLaptop = true;
   hasGPU = false;
-  browsers = ["brave", "firefox"];
+  browsers = ["brave" "firefox"];
   devTools = [ "python" "go" ];
   gaming = true;
   privacy = true;
-  vpn = false;
+  vpn = true;
   gitName = "JonNesvold";
   gitEmail = "jnesvold@neomedsys.io";
-  latitude = 52.37;
-  longitude = 4.89;
+  latitude = 52.4;
+  longitude = 4.9;
 }
