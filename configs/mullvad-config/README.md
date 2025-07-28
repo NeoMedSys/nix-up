@@ -1,4 +1,4 @@
-### Add config like so:
+### Add 1 config only like so:
 ```conf
 [Interface]
 # Device: Hot Fish
