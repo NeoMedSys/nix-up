@@ -9,4 +9,4 @@ result-*
 configs/mullvad-config/*.conf
 assets/personal-*
 
-inti-config
+inti-config/*
