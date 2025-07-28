@@ -62,6 +62,8 @@ sudo nixos-install --flake .#<your-hostname>
 sudo reboot
 ```
 
+##### NOTE: Add mullvad config to the setup before running install if you want the VPN
+
 ### First Boot
 
 1. Security daemon starts automatically
