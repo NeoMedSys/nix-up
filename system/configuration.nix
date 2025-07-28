@@ -45,7 +45,7 @@
   ];
 
   # System identification
-  networking.hostName = "perseus";
+  networking.hostName = userConfig.hostname;
 
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
