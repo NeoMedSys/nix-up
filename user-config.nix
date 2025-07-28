@@ -10,8 +10,8 @@
   gaming = true;
   privacy = true;
   vpn = true;
-  gitName = "JonNesvold";
-  gitEmail = "PLACEHOLDER_EMAIL";
+  gitName = "PLACEHOLDER_GIT_NAME";
+  gitEmail = "PLACEHOLDER_GIT_EMAIL";
   latitude = 52.4;
   longitude = 4.9;
 }
