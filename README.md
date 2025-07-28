@@ -68,14 +68,6 @@ sudo reboot
 2. Blue light filter activates at 10 PM
 3. All privacy protections enabled by default
 
-### Customization
-
-Edit `flake.nix` to:
-- Change username (default: "jon")
-- Select browsers
-- Enable/disable GPU support
-- Add development tools
-
 ## 🎯 Philosophy
 
 **"Your machine, your rules"** - Perseus embodies the principle that you should have complete control over your computing environment:

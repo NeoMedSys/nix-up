@@ -13,8 +13,24 @@
   let
     version = "1.0.0";
 
-    # Import user configuration
-    userConfig = import ./user-config.nix;
+    userConfig = if builtins.pathExists ./user-config.nix 
+      then import ./user-config.nix 
+      else builtins.trace "WARNING: Using default config. Run './perseus.sh' to customize." { 
+        username = "user"; 
+        hostname = "nixos"; 
+        timezone = "Europe/Amsterdam";
+        isLaptop = true;
+        hasGPU = false;
+        browsers = [ "brave" "firefox" ];
+        devTools = [ "python" "go" ];
+        gaming = true;
+        privacy = true;
+        vpn = false;
+        gitName = "User";
+        gitEmail = "user@example.com";
+        latitude = 52.37;
+        longitude = 4.89;
+      };
 
     mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
