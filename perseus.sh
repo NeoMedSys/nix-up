@@ -98,7 +98,7 @@ sed -i "s/PLACEHOLDER_LONGITUDE/$LON/g" user-config.nix
 # Setup git filter to clean personal data on push
 echo "Setting up git filter to clean personal data on push"
 echo "user-config.nix filter=userconfig" >> .gitattributes
-git config filter.userconfig.clean "sed 's|$USERNAME|PLACEHOLDER_USERNAME|g; s|$HOSTNAME|PLACEHOLDER_HOSTNAME|g; s|$GIT_NAME|PLACEHOLDER_GIT_NAME|g; s|$GIT_EMAIL|PLACEHOLDER_GIT_EMAIL|g; s|$LAT|PLACEHOLDER_LATITUDE|g; s|$LON|PLACEHOLDER_LONGITUDE|g; s|$IS_LAPTOP|PLACEHOLDER_IS_LAPTOP|g; s|$HAS_GPU|PLACEHOLDER_HAS_GPU|g; s|$VPN_ENABLED|PLACEHOLDER_VPN|g'"
+git config filter.userconfig.clean "sed 's/testuser/PLACEHOLDER_USERNAME/g; s/testhost/PLACEHOLDER_HOSTNAME/g; s/Test User/PLACEHOLDER_GIT_NAME/g; s/test@example.com/PLACEHOLDER_GIT_EMAIL/g; s/52.4/PLACEHOLDER_LATITUDE/g; s/4.9/PLACEHOLDER_LONGITUDE/g; s/Europe\/Amsterdam/PLACEHOLDER_TIMEZONE/g'"
 git config filter.userconfig.smudge cat
 
 # Handle SSH keys
