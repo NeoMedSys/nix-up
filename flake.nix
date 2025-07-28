@@ -12,7 +12,7 @@
   outputs = { self, nixpkgs, flakehub, ... }@inputs:
   let
     version = "1.0.0";
-    userConfig = import ~/nixos/perseus/user-config.nix;
+    userConfig = import ./user-config.nix;
     mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
