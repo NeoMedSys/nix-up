@@ -1,5 +1,4 @@
-{ config, pkgs, lib, inputs, userConfig ? null, userSpecifiedBrowsers ? [ "brave" ], ... }:
-
+{ config, pkgs, lib, inputs, userConfig ? null, ... }:
 let
   processedKing = pkgs.runCommand "king-processed.png" {
     buildInputs = [ pkgs.imagemagick ];
@@ -16,7 +15,7 @@ in
   };
 
   # Time and Localization
-  time.timeZone = "Europe/Amsterdam";
+  time.timeZone = userConfig.timezone;
 
   i18n = {
     supportedLocales = [ "en_US.UTF-8/UTF-8" "nb_NO.UTF-8/UTF-8" ];
@@ -67,7 +66,7 @@ in
     blueman.enable = true;
   };
   # User Accounts and Permissions
-  users.users.${user} = {
+  users.users.${userConfig.username} = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" ];
     shell = pkgs.zsh;
@@ -104,18 +103,10 @@ in
       allowedUDPPorts = [ 53 ];
     };
   };
-
-  # System Environment
-  environment = {
-    systemPackages = with pkgs; [
-      stremio
-    ] ++ map (browser: pkgs.${browser}) userSpecifiedBrowsers;
-    
     variables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
     };
-
     etc."user-avatars/king-${userConfig.username}.png".source = processedKing;
   };
 
