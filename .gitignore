@@ -8,3 +8,5 @@ result-*
 # ignore mullvad configs
 configs/mullvad-config/*.conf
 assets/personal-*
+
+inti-config
