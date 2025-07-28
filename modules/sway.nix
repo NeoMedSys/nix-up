@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, user ? "algol", ... }:
+{ config, pkgs, lib, inputs, ... }:
 {
   # Basic Sway setup only
   programs.sway = {

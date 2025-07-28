@@ -195,8 +195,8 @@
   
   # Privacy-focused browser settings (for when browsers are launched)
   programs.firefox = {
-    enable = false;  # You're using Brave
-    # But if someone installs Firefox, these policies apply
+    enable = false;
+    # If someone installs Firefox, these policies apply
     policies = {
       DisableTelemetry = true;
       DisableFirefoxStudies = true;

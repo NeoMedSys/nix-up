@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, userConfig ? null, ... }:
+let
+  # Use coordinates from userConfig or fallback to Amsterdam
+  latitude = if userConfig != null then toString userConfig.latitude else "52.37";
+  longitude = if userConfig != null then toString userConfig.longitude else "4.89";
+in
 {
   # Gammastep blue light filter service (Wayland native)
   systemd.user.services.gammastep = {
@@ -29,8 +34,8 @@
       dusk-time=22:00-23:00
       
       [manual]
-      lat=52.37
-      lon=4.89
+      lat=${latitude}
+      lon=${longitude}
     '';
   };
 }
