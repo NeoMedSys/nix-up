@@ -10,3 +10,4 @@ configs/mullvad-config/*.conf
 assets/personal-*
 
 inti-config/*
+init-config/
