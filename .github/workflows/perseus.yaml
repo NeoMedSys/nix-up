@@ -30,8 +30,8 @@ jobs:
       
       - name: Evaluate configurations
         run: |
-            nix eval .#nixosConfigurations.perseus.config.system.build.toplevel
-            nix eval .#nixosConfigurations.perseus-gpu.config.system.build.toplevel
+          ./perseus.sh <<< $'testuser\ntesthost\nTest User\ntest@example.com\nfalse\nfalse\ny\ny\ny\n3\nn'
+          nix eval .#nixosConfigurations.testhost.config.system.build.toplevel
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -48,6 +48,6 @@ jobs:
       - uses: DeterminateSystems/flakehub-push@main
         with:
           name: "NeoMedSys/perseus"
-          tag: "v0.1.0"
-          visibility: "private"
+          tag: ${{ github.ref_name }}
+          visibility: "public"
           token: ${{ secrets.FH_TOKEN }}
