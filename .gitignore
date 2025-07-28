@@ -8,5 +8,4 @@ result-*
 # ignore mullvad configs
 configs/mullvad-config/*.conf
 user-config.nix
-modules/ssh-keys.nix
 assets/personal-*
