@@ -11,6 +11,11 @@ if [ -f user-config.nix ]; then
     [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
 fi
 
+if [ ! -f user-config.nix.template ]; then
+    echo "ERROR: user-config.nix.template not found!"
+    exit 1
+fi
+
 # Detect hardware
 GPU_DETECTED=false
 LAPTOP_DETECTED=false
@@ -62,7 +67,7 @@ VPN_ENABLED=false
 echo ""
 echo "Select your location (for blue light filter):"
 echo "1. US East Coast (New York)"
-echo "2. US West Coast (Los Angeles)" 
+echo "2. US West Coast (Los Angeles)"
 echo "3. Europe (Amsterdam)"
 echo "4. Asia (Tokyo)"
 echo "5. UK (London)"
@@ -75,33 +80,31 @@ case $LOCATION_CHOICE in
     3) LAT=52.4; LON=4.9 ;;
     4) LAT=35.7; LON=139.7 ;;
     5) LAT=51.5; LON=-0.1 ;;
-    6) 
+    6)
         read -p "Enter latitude: " LAT
         read -p "Enter longitude: " LON
         ;;
     *) LAT=52.4; LON=4.9 ;; # Default to Amsterdam
 esac
 
-# Generate config file
-cat > user-config.nix << EOF
-# Perseus User Configuration
-{
-  username = "$USERNAME";
-  hostname = "$HOSTNAME";
-  timezone = "$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")";
-  isLaptop = $IS_LAPTOP;
-  hasGPU = $HAS_GPU;
-  browsers = $BROWSERS;
-  devTools = [ "python" "go" ];
-  gaming = true;
-  privacy = true;
-  vpn = $VPN_ENABLED;
-  gitName = "$GIT_NAME";
-  gitEmail = "$GIT_EMAIL";
-  latitude = $LAT;
-  longitude = $LON;
-}
-EOF
+# Update user-config.nix with personal values
+sed -i "s/PLACEHOLDER_USERNAME/$USERNAME/g" user-config.nix
+sed -i "s/PLACEHOLDER_HOSTNAME/$HOSTNAME/g" user-config.nix
+sed -i "s/PLACEHOLDER_TIMEZONE/$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")/g" user-config.nix
+sed -i "s/PLACEHOLDER_IS_LAPTOP/$IS_LAPTOP/g" user-config.nix
+sed -i "s/PLACEHOLDER_HAS_GPU/$HAS_GPU/g" user-config.nix
+sed -i "s/PLACEHOLDER_BROWSERS/$BROWSERS/g" user-config.nix
+sed -i "s/PLACEHOLDER_VPN/$VPN_ENABLED/g" user-config.nix
+sed -i "s/PLACEHOLDER_GIT_NAME/$GIT_NAME/g" user-config.nix
+sed -i "s/PLACEHOLDER_GIT_EMAIL/$GIT_EMAIL/g" user-config.nix
+sed -i "s/PLACEHOLDER_LATITUDE/$LAT/g" user-config.nix
+sed -i "s/PLACEHOLDER_LONGITUDE/$LON/g" user-config.nix
+
+# Setup git filter to clean personal data on push
+echo "Setting up git filter to clean personal data on push"
+echo "user-config.nix filter=userconfig" >> .gitattributes
+git config filter.userconfig.clean "sed 's|$USERNAME|PLACEHOLDER_USERNAME|g; s|$HOSTNAME|PLACEHOLDER_HOSTNAME|g; s|$GIT_NAME|PLACEHOLDER_GIT_NAME|g; s|$GIT_EMAIL|PLACEHOLDER_GIT_EMAIL|g; s|$LAT|PLACEHOLDER_LATITUDE|g; s|$LON|PLACEHOLDER_LONGITUDE|g; s|$IS_LAPTOP|PLACEHOLDER_IS_LAPTOP|g; s|$HAS_GPU|PLACEHOLDER_HAS_GPU|g; s|$VPN_ENABLED|PLACEHOLDER_VPN|g'"
+git config filter.userconfig.smudge cat
 
 # Handle SSH keys
 echo ""
@@ -130,7 +133,7 @@ EOF
     echo "✓ Created empty modules/ssh-keys.nix"
 fi
 
-echo "✓ Created user-config.nix"
+echo "✓ Created user-config.nix from template"
 echo ""
 echo "Next steps:"
 echo "1. Edit user-config.nix to customize further"
