@@ -11,11 +11,6 @@ if [ -f user-config.nix ]; then
     [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
 fi
 
-if [ ! -f user-config.nix.template ]; then
-    echo "ERROR: user-config.nix.template not found!"
-    exit 1
-fi
-
 # Detect hardware
 GPU_DETECTED=false
 LAPTOP_DETECTED=false
