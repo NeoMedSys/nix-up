@@ -28,10 +28,12 @@ in
     jq
     fastfetch
     fzf
+    libinput-gestures
     ripgrep
     rofi
     tmux
     xsel
+    ydotool
     
     # Desktop utilities (moved from other modules)
     brightnessctl

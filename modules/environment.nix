@@ -68,7 +68,7 @@ in
   # User Accounts and Permissions
   users.users.${userConfig.username} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" ];
+    extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" "input" ];
     shell = pkgs.zsh;
     packages = with pkgs; [ tree ];
     homeMode = "0751";
@@ -207,5 +207,21 @@ in
     
     # PDF documents (zathura as default)
     "application/pdf" = "org.pwmt.zathura.desktop";
+  };
+
+  # Add libinput config and service
+  environment.etc."libinput-gestures.conf".text = ''
+    gesture swipe right 3 ydotool key alt+Left
+    gesture swipe left 3 ydotool key alt+Right
+  '';
+
+  systemd.user.services.libinput-gestures = {
+    enable = true;
+    description = "Libinput gestures";
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.libinput-gestures}/bin/libinput-gestures";
+      Restart = "always";
+    };
   };
 }
