@@ -9,4 +9,4 @@ result-*
 configs/mullvad-config/*.conf
 user-config.nix
 modules/ssh-keys.nix
-assets/*
+assets/personal-*
