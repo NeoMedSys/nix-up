@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, userConfig, ... }:
 {
   # Basic Sway setup only
   programs.sway = {
