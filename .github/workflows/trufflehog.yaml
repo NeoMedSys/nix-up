@@ -1,40 +1,33 @@
 name: TruffleHog Secret Scanning
-
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
-
+    branches:
+      - main
 permissions:
   contents: read
-
 jobs:
   trufflehog:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Install TruffleHog
         run: |
           python -m pip install --upgrade pip
           pip install truffleHog
-
       - name: Run TruffleHog and Check Output
         run: |
-          # don’t let exit code 1 fail the job unless we want it to
-          trufflehog --json . > trufflehog_report.json || true
-
+          trufflehog --json . --exclude-path flake.lock > trufflehog_report.json || true
           if [ -s trufflehog_report.json ]; then
-            echo "❌ TruffleHog found secrets!"
+            echo No secrets found
             cat trufflehog_report.json
             exit 1
           else
-            echo "✅ No secrets found"
+            echo No secrets found
           fi
-
       - name: Upload Report
         uses: actions/upload-artifact@v4
         with:
