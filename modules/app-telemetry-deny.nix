@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {
   # App Telemetry Denial Module
   # Conservative approach - only block actual telemetry endpoints

@@ -97,6 +97,22 @@ case $LOCATION_CHOICE in
     *) LAT=52.4; LON=4.9 ;; # Default to Amsterdam
 esac
 
+# Detect GPU bus IDs if GPU is enabled
+if [[ $HAS_GPU == "true" ]]; then
+    echo "Detecting GPU bus IDs..."
+    INTEL_BUS_ID=$(lspci | grep -i "vga.*intel" | head -1 | cut -d' ' -f1 | sed 's/:/.:/g' | sed 's/^/PCI:/')
+    NVIDIA_BUS_ID=$(lspci | grep -i "vga.*nvidia\|3d.*nvidia" | head -1 | cut -d' ' -f1 | sed 's/:/.:/g' | sed 's/^/PCI:/')
+    
+    if [[ -z "$INTEL_BUS_ID" || -z "$NVIDIA_BUS_ID" ]]; then
+        echo "Warning: Could not auto-detect GPU bus IDs"
+        echo "Run 'lspci | grep -i vga' to find your bus IDs"
+        read -p "Enter Intel bus ID (format PCI:X:Y:Z): " INTEL_BUS_ID
+        read -p "Enter NVIDIA bus ID (format PCI:X:Y:Z): " NVIDIA_BUS_ID
+    fi
+    echo "Intel bus ID: $INTEL_BUS_ID"
+    echo "NVIDIA bus ID: $NVIDIA_BUS_ID"
+fi
+
 # Create user-config.nix with actual values
 cat > user-config.nix << EOF
 # Perseus User Configuration
@@ -112,13 +128,18 @@ cat > user-config.nix << EOF
   gitName = "$GIT_NAME";
   gitEmail = "$GIT_EMAIL";
   latitude = $LAT;
-  longitude = $LON;
+  longitude = $LON;$(if [[ $HAS_GPU == "true" ]]; then echo "
+  intelBusId = \"$INTEL_BUS_ID\";
+  nvidiaBusId = \"$NVIDIA_BUS_ID\";"; fi)
+  wallpaperPath = "assets/wallpaper.png";
+  avatarPath = "assets/king.png";
 }
 EOF
 
 # Setup git filter to clean personal data on push
 echo "user-config.nix filter=userconfig" >> .gitattributes
 echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes
+echo "system/hardware-configuration.nix filter=hardware" >> .gitattributes
 
 git config filter.userconfig.clean 'cat << "EOF"
 # Perseus User Configuration
@@ -126,15 +147,17 @@ git config filter.userconfig.clean 'cat << "EOF"
   username = "user";
   hostname = "perseus";
   timezone = "Europe/Amsterdam";
-  isLaptop = true;
+  isLaptop = false;
   hasGPU = false;
   browsers = ["brave" "firefox"];
-  devTools = ["python" "go" "rust"];
+  devTools = ["python" "go"];
   vpn = true;
   gitName = "user";
   gitEmail = "user@user.com";
   latitude = 52.4;
   longitude = 4.9;
+  wallpaperPath = "assets/wallpaper.png";
+  avatarPath = "assets/king.png";
 }
 EOF'
 git config filter.userconfig.smudge cat
@@ -147,6 +170,35 @@ git config filter.sshkeys.clean 'cat << "EOF"
 }
 EOF'
 git config filter.sshkeys.smudge cat
+
+git config filter.hardware.clean 'cat << "EOF"
+# Generic hardware configuration for CI evaluation
+{ config, lib, pkgs, modulesPath, ... }:
+{
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  
+  boot.initrd.availableKernelModules = [ "ata_piix" "ohci_pci" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ ];
+  boot.extraModulePackages = [ ];
+  
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/00000000-0000-0000-0000-000000000000";
+    fsType = "ext4";
+  };
+  
+  swapDevices = [ ];
+  
+  networking.useDHCP = lib.mkDefault true;
+  
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  virtualisation.vmware.guest.enable = lib.mkDefault true;
+}
+EOF'
+git config filter.hardware.smudge cat
 
 # Handle SSH keys
 echo ""

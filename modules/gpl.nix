@@ -1,4 +1,4 @@
-{ config, pkgs, lib, userConfig, ... }:
+{ pkgs, lib, userConfig, ... }:
 
 let
   # Get devTools and user from userConfig or use defaults

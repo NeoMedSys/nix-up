@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 let
   # Find the Mullvad config file (expects exactly 1 .conf file)
   mullvadConfigDir = ../configs/mullvad-config;

@@ -1,4 +1,4 @@
-{config, pkgs, lib, ...}
+{ pkgs, ...}:
 {
   # Battery low notification service
   systemd.user.services.battery-notify = {

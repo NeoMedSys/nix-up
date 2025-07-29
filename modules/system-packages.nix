@@ -1,4 +1,4 @@
-{ lib, pkgs, config, userConfig ? null, flakehub, ... }:
+{ pkgs, userConfig ? null, flakehub, ... }:
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };

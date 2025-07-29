@@ -9,7 +9,7 @@
     flakehub.url = "github:DeterminateSystems/fh";
   };
 
-  outputs = { self, nixpkgs, flakehub, ... }@inputs:
+  outputs = { nixpkgs, flakehub, ... }@inputs:
   let
     version = "1.0.0";
     userConfig = import ./user-config.nix;

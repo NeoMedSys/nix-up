@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, ... }:
+{ pkgs, inputs, userConfig, ... }:
 {
   # Basic Sway setup only
   programs.sway = {
@@ -29,6 +29,6 @@
     ln -sf /etc/sway/config ~/.config/sway/config
     ln -sf /etc/waybar/config ~/.config/waybar/config
     ln -sf /etc/waybar/style.css ~/.config/waybar/style.css
-    cp ${inputs.self}/assets/wallpaper.png ~/.config/sway/wallpaper.png
+    cp ${inputs.self}/${userConfig.wallpaperPath} ~/.config/sway/wallpaper.png
   '';
 }

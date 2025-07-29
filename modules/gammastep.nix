@@ -1,4 +1,4 @@
-{ config, pkgs, lib, userConfig ? null, ... }:
+{ pkgs, userConfig ? null, ... }:
 let
   # Use coordinates from userConfig or fallback to Amsterdam
   latitude = if userConfig != null then toString userConfig.latitude else "52.37";

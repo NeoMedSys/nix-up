@@ -1,4 +1,4 @@
-{ config, pkgs, lib, userConfig, ... }:
+{ pkgs, userConfig, ... }:
 let
   # The main audit script
   nastyTechLordsScript = pkgs.writeShellScriptBin "nastyTechLords" ''

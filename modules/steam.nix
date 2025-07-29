@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
 	# Steam and gaming configuration
 	programs.steam = {

@@ -1,4 +1,4 @@
-{ config, lib, inputs, userConfig ? null, ... }:
+{ lib, userConfig ? null, ... }:
 let
   # Import SSH keys safely
   sshKeys = import ./ssh-keys.nix;
