@@ -8,13 +8,16 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   trufflehog:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install TruffleHog
         run: |
@@ -23,10 +26,8 @@ jobs:
 
       - name: Run TruffleHog and Check Output
         run: |
-          # Run trufflehog and redirect output to a JSON file
           trufflehog --json . > trufflehog_report.json
-          
-          # Check if the file was created and has content
+
           if [ -s trufflehog_report.json ]; then
             echo "TruffleHog found secrets, outputting report:"
             cat trufflehog_report.json
@@ -39,4 +40,3 @@ jobs:
         with:
           name: trufflehog-report
           path: trufflehog_report.json
-
