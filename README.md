@@ -21,6 +21,12 @@ What you get:
 
 ###### i3/X11 included but being phased out
 
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8ec48a37-a0c3-4c76-8d18-b9ead35a5087" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ba326466-74ce-45eb-a042-8f52fd5f1d5e" />
+
+
 ## 🚀 Quick Start
 
 

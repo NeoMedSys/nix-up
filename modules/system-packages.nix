@@ -64,7 +64,7 @@ in
     sweet
     
     # sway
-    sway
+    swayfx
     swaylock-effects
     swayidle
     swaybg
