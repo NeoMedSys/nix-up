@@ -1,5 +1,4 @@
 name: Perseus CI/CD
-
 on:
   pull_request:
     branches: [ main ]
@@ -7,35 +6,27 @@ on:
     branches: [ main ]
     tags:
       - 'v*'
-
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
       - uses: DeterminateSystems/nix-installer-action@main
-      
       - uses: DeterminateSystems/magic-nix-cache-action@main
-      
       - name: Check flake
         run: |
           nix flake check
           nix flake show
-
       - name: Lint flake
         run: |
             nix run nixpkgs#statix -- check .
             nix run nixpkgs#deadnix --  .
-      
       - name: Evaluate configurations
         run: |
           echo "=== user-config.nix content ==="
           cat user-config.nix
-          echo "=== Available configurations ==="
-          nix flake show
+          echo "=== Evalutate build ==="
           nix eval .#nixosConfigurations.perseus.config.system.build.toplevel
-
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: check
@@ -45,9 +36,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      
       - uses: DeterminateSystems/nix-installer-action@main
-      
       - uses: DeterminateSystems/flakehub-push@main
         with:
           name: "NeoMedSys/perseus"

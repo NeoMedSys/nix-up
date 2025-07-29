@@ -118,9 +118,19 @@ EOF
 
 # Setup git filter to clean personal data on push
 echo "user-config.nix filter=userconfig" >> .gitattributes
+echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes
 
-git config filter.userconfig.clean "sed 's|$USERNAME|user|g; s|$HOSTNAME|perseus|g; s|$GIT_NAME|user|g; s|$GIT_EMAIL|user@user.com|g; s|$LAT|52.4|g; s|$LON|4.9|g; s|$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")|Europe/Amsterdam|g; s|$IS_LAPTOP|false|g; s|$HAS_GPU|false|g; s|$VPN_ENABLED|true|g; s|$BROWSERS|[\"brave\" \"firefox\"]|g; s|$DEVTOOLS|[\"python\" \"go\"]|g'"
+git config filter.userconfig.clean 'sed "s|username = \".*\"|username = \"user\"|g; s|hostname = \".*\"|hostname = \"perseus\"|g; s|gitName = \".*\"|gitName = \"user\"|g; s|gitEmail = \".*\"|gitEmail = \"user@user.com\"|g; s|timezone = \".*\"|timezone = \"Europe/Amsterdam\"|g; s|browsers = \\[.*\\]|browsers = [\"brave\" \"firefox\"]|g; s|devTools = \\[.*\\]|devTools = [\"python\" \"go\"]|g; s|latitude = [0-9.-]*|latitude = 52.4|g; s|longitude = [0-9.-]*|longitude = 4.9|g; s|isLaptop = true|isLaptop = false|g; s|isLaptop = false|isLaptop = false|g; s|hasGPU = true|hasGPU = false|g; s|hasGPU = false|hasGPU = false|g; s|vpn = true|vpn = true|g; s|vpn = false|vpn = true|g"'
 git config filter.userconfig.smudge cat
+
+git config filter.sshkeys.clean 'cat << "EOF"
+{
+  # SSH public keys - add your keys here
+  # Example:
+  # user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your-email@example.com";
+}
+EOF'
+git config filter.sshkeys.smudge cat
 
 # Handle SSH keys
 echo ""
@@ -148,15 +158,6 @@ else
 EOF
     echo "✓ Created empty modules/ssh-keys.nix"
 fi
-
-git config filter.sshkeys.clean 'cat << "EOF"
-{
-  # SSH public keys - add your keys here
-  # Example:
-  # user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your-email@example.com";
-}
-EOF'
-git config filter.sshkeys.smudge cat
 
 echo "✓ Created user-config.nix from template"
 echo ""
