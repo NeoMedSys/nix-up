@@ -1,0 +1,42 @@
+name: TruffleHog Secret Scanning
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  trufflehog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install TruffleHog
+        run: |
+          python -m pip install --upgrade pip
+          pip install truffleHog
+
+      - name: Run TruffleHog and Check Output
+        run: |
+          trufflehog --json . > trufflehog_report.json
+
+          if [ -s trufflehog_report.json ]; then
+            echo "TruffleHog found secrets, outputting report:"
+            cat trufflehog_report.json
+          else
+            echo "TruffleHog did not find any secrets. The report file is empty."
+          fi
+
+      - name: Upload TruffleHog Report as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trufflehog-report
+          path: trufflehog_report.json
