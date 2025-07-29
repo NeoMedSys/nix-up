@@ -98,6 +98,14 @@ sed -i "s/PLACEHOLDER_LONGITUDE/$LON/g" user-config.nix
 # Setup git filter to clean personal data on push
 echo "Setting up git filter to clean personal data on push"
 echo "user-config.nix filter=userconfig" >> .gitattributes
+
+echo "DEBUG: USERNAME='$USERNAME'"
+echo "DEBUG: HOSTNAME='$HOSTNAME'" 
+echo "DEBUG: GIT_NAME='$GIT_NAME'"
+echo "DEBUG: GIT_EMAIL='$GIT_EMAIL'"
+echo "DEBUG: LAT='$LAT'"
+echo "DEBUG: LON='$LON'"
+
 git config filter.userconfig.clean "sed 's/testuser/PLACEHOLDER_USERNAME/g; s/testhost/PLACEHOLDER_HOSTNAME/g; s/Test User/PLACEHOLDER_GIT_NAME/g; s/test@example.com/PLACEHOLDER_GIT_EMAIL/g; s/52.4/PLACEHOLDER_LATITUDE/g; s/4.9/PLACEHOLDER_LONGITUDE/g; s/Europe\/Amsterdam/PLACEHOLDER_TIMEZONE/g'"
 git config filter.userconfig.smudge cat
 

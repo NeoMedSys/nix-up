@@ -29,7 +29,13 @@ in
 
   # Services
   services = {
-    tlp.enable = true;
+    tlp = {
+      enable = true;
+      settings = {
+        RESTORE_DEVICE_STATE_ON_STARTUP = 1;
+        DEVICES_TO_DISABLE_ON_STARTUP = "";
+      };
+    };
     opensnitch.enable = true;
     # fingerprint
     fprintd.enable = true;
