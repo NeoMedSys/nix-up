@@ -1,4 +1,8 @@
 name: Perseus CI/CD
+
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [ main ]
