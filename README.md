@@ -275,7 +275,7 @@ Features:
 
 ## 🖥️ Desktop Environment
 
-### i3 Window Manager
+### Sway Compositor Window Manager
 
 Clean, keyboard-driven workflow with sensible defaults:
 
@@ -283,7 +283,7 @@ Clean, keyboard-driven workflow with sensible defaults:
 |------------|--------|
 | `Mod+Enter` | Terminal |
 | `Mod+b` | Brave browser |
-| `Mod+Shift+r` | Toggle blue light filter |
+| `Mod+c` | Slack |
 | `Mod+d` | Application launcher |
 | `Mod+h/j/k/l` | Navigate windows |
 | `Mod+1-9` | Switch workspace |
@@ -291,14 +291,15 @@ Clean, keyboard-driven workflow with sensible defaults:
 ### Status Bar
 
 Interactive i3status-rust modules:
-- **VPN**: click to toggle on or off
+- **Music Player**: ahows music that is playing
 - **Blue Light Filter**: Click to adjust screen temperature
+- **VPN**: click to toggle on or off
 - **Network**: Shows SSID, click for network manager
 - **Bluetooth**: Connected device, click for manager
 - **System Stats**: CPU, RAM, disk usage
 - **Battery**: Smart icon based on charge level
 
-### Daily Use Applications
+### Daily Use Applications via Waybar
 
 - **Brave**: Privacy-focused browsing
 - **Alacritty**: GPU-accelerated terminal
