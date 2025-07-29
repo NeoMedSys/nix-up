@@ -2,7 +2,7 @@
 
 Thank you for your interest in making Perseus better! This guide will help you contribute effectively.
 
-## 🎯 Current Priority Areas
+## 🎯 Current Priority Areas (only as suggestions)
 
 ### High Priority
 1. **Login Manager Improvements**
@@ -17,19 +17,22 @@ Thank you for your interest in making Perseus better! This guide will help you c
    - Reduce false positives from chkrootkit
 
 3. **Developer Experience**
-   - More language support modules (Java, C++, Zig)
+   - More language support modules (C++, F, Haskell)
    - Better LSP configurations
    - Integrated debugging support
 
+4. **Borg Backup**
+   - Backup intervals
+   - Possiblity to restore system with one command
+
 ### Medium Priority
-- Wayland support (currently X11 only)
 - Secrets management (agenix or sops-nix)
-- Backup automation (BorgBackup)
 - Multi-monitor improvements
 
 ### Nice to Have
 - Custom Perseus ISO
 - Theme switcher (dark/light modes)
+- Make it more usuable for non power users
 
 ## 📋 Contribution Guidelines
 
