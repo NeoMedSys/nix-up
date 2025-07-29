@@ -1,2 +1,3 @@
 modules/ssh-keys.nix filter=ssh-keys
 user-config.nix filter=userconfig
+user-config.nix filter=userconfig

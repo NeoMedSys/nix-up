@@ -21,7 +21,6 @@
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"
-    # shift to Wayland-native later
     # "${inputs.self}/modules/redshift.nix"
     "${inputs.self}/modules/gammastep.nix"
 

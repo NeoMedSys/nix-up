@@ -6,9 +6,8 @@ echo "==========================================="
 
 if [ -f user-config.nix ]; then
     echo "user-config.nix already exists!"
-    read -p "Overwrite? [y/N]: " -n 1 -r
-    echo
-    [[ ! $REPLY =~ ^[Yy]$ ]] && exit 0
+    read -p "Overwrite? [y/N]: " OVERWRITE_RESPONSE
+    [[ ! $OVERWRITE_RESPONSE =~ ^[Yy]$ ]] && exit 0
 fi
 
 # Detect hardware
@@ -53,6 +52,22 @@ BROWSERS="["
 BROWSERS="$BROWSERS ]"
 BROWSERS=$(echo $BROWSERS | sed 's/\[ /[/g' | sed 's/ \]/]/g')
 
+# Development tools selection
+echo ""
+echo "Development tools selection:"
+read -p "Include Python? [Y/n]: " PYTHON_INPUT
+read -p "Include Go? [Y/n]: " GO_INPUT
+read -p "Include Rust? [y/N]: " RUST_INPUT
+read -p "Include Node.js? [y/N]: " NODE_INPUT
+
+DEVTOOLS="["
+[[ ! $PYTHON_INPUT =~ ^[Nn]$ ]] && DEVTOOLS="$DEVTOOLS \"python\""
+[[ ! $GO_INPUT =~ ^[Nn]$ ]] && DEVTOOLS="$DEVTOOLS \"go\""
+[[ $RUST_INPUT =~ ^[Yy]$ ]] && DEVTOOLS="$DEVTOOLS \"rust\""
+[[ $NODE_INPUT =~ ^[Yy]$ ]] && DEVTOOLS="$DEVTOOLS \"nodejs\""
+DEVTOOLS="$DEVTOOLS ]"
+DEVTOOLS=$(echo $DEVTOOLS | sed 's/\[ /[/g' | sed 's/ \]/]/g')
+
 # VPN question
 read -p "Enable VPN support? [y/N]: " VPN_INPUT
 VPN_ENABLED=false
@@ -82,40 +97,37 @@ case $LOCATION_CHOICE in
     *) LAT=52.4; LON=4.9 ;; # Default to Amsterdam
 esac
 
-# Update user-config.nix with personal values
-sed -i "s/PLACEHOLDER_USERNAME/$USERNAME/g" user-config.nix
-sed -i "s/PLACEHOLDER_HOSTNAME/$HOSTNAME/g" user-config.nix
-sed -i "s/PLACEHOLDER_TIMEZONE/$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")/g" user-config.nix
-sed -i "s/PLACEHOLDER_IS_LAPTOP/$IS_LAPTOP/g" user-config.nix
-sed -i "s/PLACEHOLDER_HAS_GPU/$HAS_GPU/g" user-config.nix
-sed -i "s/PLACEHOLDER_BROWSERS/$BROWSERS/g" user-config.nix
-sed -i "s/PLACEHOLDER_VPN/$VPN_ENABLED/g" user-config.nix
-sed -i "s/PLACEHOLDER_GIT_NAME/$GIT_NAME/g" user-config.nix
-sed -i "s/PLACEHOLDER_GIT_EMAIL/$GIT_EMAIL/g" user-config.nix
-sed -i "s/PLACEHOLDER_LATITUDE/$LAT/g" user-config.nix
-sed -i "s/PLACEHOLDER_LONGITUDE/$LON/g" user-config.nix
-
-echo "DEBUG: USERNAME='$USERNAME'"
-echo "DEBUG: HOSTNAME='$HOSTNAME'" 
-echo "DEBUG: GIT_NAME='$GIT_NAME'"
-echo "DEBUG: GIT_EMAIL='$GIT_EMAIL'"
-echo "DEBUG: LAT='$LAT'"
-echo "DEBUG: LON='$LON'"
-
+# Create user-config.nix with actual values
+cat > user-config.nix << EOF
+# Perseus User Configuration
+{
+  username = "$USERNAME";
+  hostname = "$HOSTNAME";
+  timezone = "$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")";
+  isLaptop = $IS_LAPTOP;
+  hasGPU = $HAS_GPU;
+  browsers = $BROWSERS;
+  devTools = $DEVTOOLS;
+  vpn = $VPN_ENABLED;
+  gitName = "$GIT_NAME";
+  gitEmail = "$GIT_EMAIL";
+  latitude = $LAT;
+  longitude = $LON;
+}
+EOF
 
 # Setup git filter to clean personal data on push
-echo "Setting up git filter to clean personal data on push"
 echo "user-config.nix filter=userconfig" >> .gitattributes
 
-git config filter.userconfig.clean "sed 's/testuser/PLACEHOLDER_USERNAME/g; s/testhost/PLACEHOLDER_HOSTNAME/g; s/Test User/PLACEHOLDER_GIT_NAME/g; s/test@example.com/PLACEHOLDER_GIT_EMAIL/g; s/52.4/PLACEHOLDER_LATITUDE/g; s/4.9/PLACEHOLDER_LONGITUDE/g; s/Europe\/Amsterdam/PLACEHOLDER_TIMEZONE/g'"
+git config filter.userconfig.clean "sed 's|$USERNAME|user|g; s|$HOSTNAME|perseus|g; s|$GIT_NAME|user|g; s|$GIT_EMAIL|user@user.com|g; s|$LAT|52.4|g; s|$LON|4.9|g; s|$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")|Europe/Amsterdam|g; s|$IS_LAPTOP|false|g; s|$HAS_GPU|false|g; s|$VPN_ENABLED|true|g; s|$BROWSERS|[\"brave\" \"firefox\"]|g; s|$DEVTOOLS|[\"python\" \"go\"]|g'"
 git config filter.userconfig.smudge cat
 
 # Handle SSH keys
 echo ""
 echo "SSH Key Setup:"
-read -p "Do you want to add an SSH key now? [y/N]: " -n 1 -r
+read -p "Do you want to add an SSH key now? [y/N]: " SSH_RESPONSE
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if [[ $SSH_RESPONSE =~ ^[Yy]$ ]]; then
     echo "Paste your SSH public key:"
     read -r SSH_KEY
     cat > modules/ssh-keys.nix << EOF
@@ -136,6 +148,15 @@ else
 EOF
     echo "✓ Created empty modules/ssh-keys.nix"
 fi
+
+git config filter.sshkeys.clean 'cat << "EOF"
+{
+  # SSH public keys - add your keys here
+  # Example:
+  # user = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... your-email@example.com";
+}
+EOF'
+git config filter.sshkeys.smudge cat
 
 echo "✓ Created user-config.nix from template"
 echo ""

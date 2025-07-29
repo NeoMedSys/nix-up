@@ -30,12 +30,11 @@ jobs:
       
       - name: Evaluate configurations
         run: |
-          ./perseus.sh <<< $'y\ntestuser\ntesthost\nTest User\ntest@example.com\nfalse\nfalse\ny\ny\ny\n3\nn'
           echo "=== user-config.nix content ==="
           cat user-config.nix
           echo "=== Available configurations ==="
           nix flake show
-          # nix eval .#nixosConfigurations.testhost.config.system.build.toplevel
+          nix eval .#nixosConfigurations.perseus.config.system.build.toplevel
 
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
