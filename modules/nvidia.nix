@@ -13,8 +13,8 @@
     prime = {
       offload.enable = true;
       sync.enable = false;
-      intelBusId = userConfig.intelBusId
-      nvidiaBusId = userConfig.nvidiaBusId
+      intelBusId = userConfig.intelBusId;
+      nvidiaBusId = userConfig.nvidiaBusId;
     };
   };
 	
