@@ -3,10 +3,10 @@
   username = "user";
   hostname = "perseus";
   timezone = "Europe/Amsterdam";
-  isLaptop = true;
+  isLaptop = false;
   hasGPU = false;
   browsers = ["brave" "firefox"];
-  devTools = ["python" "go" "rust"];
+  devTools = ["python" "go"];
   vpn = true;
   gitName = "user";
   gitEmail = "user@user.com";

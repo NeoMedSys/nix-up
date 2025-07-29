@@ -137,14 +137,7 @@ EOF
 # Setup git filter to clean personal data on push
 echo "user-config.nix filter=userconfig" >> .gitattributes
 echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes
-
-# Debug: show what variables contain
-echo "DEBUG: USERNAME='$USERNAME'"
-echo "DEBUG: HOSTNAME='$HOSTNAME'"
-echo "DEBUG: GIT_NAME='$GIT_NAME'"
-echo "DEBUG: GIT_EMAIL='$GIT_EMAIL'"
-echo "DEBUG: LAT='$LAT'"
-echo "DEBUG: LON='$LON'"
+echo "system/hardware-configuration.nix filter=hardware" >> .gitattributes
 
 git config filter.userconfig.clean 'cat << "EOF"
 # Perseus User Configuration
@@ -173,6 +166,35 @@ git config filter.sshkeys.clean 'cat << "EOF"
 }
 EOF'
 git config filter.sshkeys.smudge cat
+
+git config filter.hardware.clean 'cat << "EOF"
+# Generic hardware configuration for CI evaluation
+{ config, lib, pkgs, modulesPath, ... }:
+{
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  
+  boot.initrd.availableKernelModules = [ "ata_piix" "ohci_pci" "ehci_pci" "ahci" "sd_mod" "sr_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ ];
+  boot.extraModulePackages = [ ];
+  
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/00000000-0000-0000-0000-000000000000";
+    fsType = "ext4";
+  };
+  
+  swapDevices = [ ];
+  
+  networking.useDHCP = lib.mkDefault true;
+  
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  virtualisation.vmware.guest.enable = lib.mkDefault true;
+}
+EOF'
+git config filter.hardware.smudge cat
 
 # Handle SSH keys
 echo ""
