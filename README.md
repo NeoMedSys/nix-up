@@ -9,6 +9,18 @@
 
 Perseus is a fully declarative NixOS setup that combines **uncompromising privacy**, **developer ergonomics**, and **gaming readiness** into one reproducible system. Deploy anywhere with a single command and get the exact same environment every time.
 
+**Designed for open collaboration** - your personal data stays local, GitHub gets sanitized configs for easy teamwork.
+
+What you get:
+
+1. **Desktop**: Sway compositor + Waybar + Alacritty terminal + Rofi launcher (Wayland-native) 
+3. **Privacy**: OpenSnitch firewall + encrypted DNS + Mullvad VPN + tracking protection
+4. **Development**: Neovim + Python/Go/Rust environments + Docker + Git integration
+5. **Daily Apps**: Brave browser + Slack/Teams (sandboxed) + Spotify + Signal
+6. **Gaming**: Steam + NVIDIA drivers (if GPU) + GameMode + controller support
+
+###### i3/X11 included but being phased out
+
 ## 🚀 Quick Start
 
 
