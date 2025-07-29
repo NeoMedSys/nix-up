@@ -3,7 +3,7 @@ let
   processedKing = pkgs.runCommand "king-processed.png" {
     buildInputs = [ pkgs.imagemagick ];
   } ''
-    convert ${inputs.self}/assets/king.png \
+    convert ${inputs.self}/${userConfig.avatarPath} \
       -gravity center -resize 96x96^ -extent 96x96 $out
   '';
 in

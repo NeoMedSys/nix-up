@@ -12,4 +12,6 @@
   gitEmail = "user@user.com";
   latitude = 52.4;
   longitude = 4.9;
+  wallpaperPath = "assets/wallpaper.png";
+  avatarPath = "assets/king.png";
 }

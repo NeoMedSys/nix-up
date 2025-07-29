@@ -131,6 +131,8 @@ cat > user-config.nix << EOF
   longitude = $LON;$(if [[ $HAS_GPU == "true" ]]; then echo "
   intelBusId = \"$INTEL_BUS_ID\";
   nvidiaBusId = \"$NVIDIA_BUS_ID\";"; fi)
+  wallpaperPath = "assets/wallpaper.png";
+  avatarPath = "assets/king.png";
 }
 EOF
 
@@ -154,6 +156,8 @@ git config filter.userconfig.clean 'cat << "EOF"
   gitEmail = "user@user.com";
   latitude = 52.4;
   longitude = 4.9;
+  wallpaperPath = "assets/wallpaper.png";
+  avatarPath = "assets/king.png";
 }
 EOF'
 git config filter.userconfig.smudge cat
