@@ -120,7 +120,23 @@ EOF
 echo "user-config.nix filter=userconfig" >> .gitattributes
 echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes
 
-git config filter.userconfig.clean 'sed "s|username = \".*\"|username = \"user\"|g; s|hostname = \".*\"|hostname = \"perseus\"|g; s|gitName = \".*\"|gitName = \"user\"|g; s|gitEmail = \".*\"|gitEmail = \"user@user.com\"|g; s|timezone = \".*\"|timezone = \"Europe/Amsterdam\"|g; s|browsers = \\[.*\\]|browsers = [\"brave\" \"firefox\"]|g; s|devTools = \\[.*\\]|devTools = [\"python\" \"go\"]|g; s|latitude = [0-9.-]*|latitude = 52.4|g; s|longitude = [0-9.-]*|longitude = 4.9|g; s|isLaptop = true|isLaptop = false|g; s|isLaptop = false|isLaptop = false|g; s|hasGPU = true|hasGPU = false|g; s|hasGPU = false|hasGPU = false|g; s|vpn = true|vpn = true|g; s|vpn = false|vpn = true|g"'
+git config filter.userconfig.clean 'cat << "EOF"
+# Perseus User Configuration
+{
+  username = "user";
+  hostname = "perseus";
+  timezone = "Europe/Amsterdam";
+  isLaptop = true;
+  hasGPU = false;
+  browsers = ["brave" "firefox"];
+  devTools = ["python" "go" "rust"];
+  vpn = true;
+  gitName = "user";
+  gitEmail = "user@user.com";
+  latitude = 52.4;
+  longitude = 4.9;
+}
+EOF'
 git config filter.userconfig.smudge cat
 
 git config filter.sshkeys.clean 'cat << "EOF"

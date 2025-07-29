@@ -5,3 +5,5 @@ user-config.nix filter=userconfig
 modules/ssh-keys.nix filter=sshkeys
 user-config.nix filter=userconfig
 modules/ssh-keys.nix filter=sshkeys
+user-config.nix filter=userconfig
+modules/ssh-keys.nix filter=sshkeys
