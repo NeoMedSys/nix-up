@@ -97,6 +97,22 @@ case $LOCATION_CHOICE in
     *) LAT=52.4; LON=4.9 ;; # Default to Amsterdam
 esac
 
+# Detect GPU bus IDs if GPU is enabled
+if [[ $HAS_GPU == "true" ]]; then
+    echo "Detecting GPU bus IDs..."
+    INTEL_BUS_ID=$(lspci | grep -i "vga.*intel" | head -1 | cut -d' ' -f1 | sed 's/:/.:/g' | sed 's/^/PCI:/')
+    NVIDIA_BUS_ID=$(lspci | grep -i "vga.*nvidia\|3d.*nvidia" | head -1 | cut -d' ' -f1 | sed 's/:/.:/g' | sed 's/^/PCI:/')
+    
+    if [[ -z "$INTEL_BUS_ID" || -z "$NVIDIA_BUS_ID" ]]; then
+        echo "Warning: Could not auto-detect GPU bus IDs"
+        echo "Run 'lspci | grep -i vga' to find your bus IDs"
+        read -p "Enter Intel bus ID (format PCI:X:Y:Z): " INTEL_BUS_ID
+        read -p "Enter NVIDIA bus ID (format PCI:X:Y:Z): " NVIDIA_BUS_ID
+    fi
+    echo "Intel bus ID: $INTEL_BUS_ID"
+    echo "NVIDIA bus ID: $NVIDIA_BUS_ID"
+fi
+
 # Create user-config.nix with actual values
 cat > user-config.nix << EOF
 # Perseus User Configuration
@@ -112,7 +128,9 @@ cat > user-config.nix << EOF
   gitName = "$GIT_NAME";
   gitEmail = "$GIT_EMAIL";
   latitude = $LAT;
-  longitude = $LON;
+  longitude = $LON;$(if [[ $HAS_GPU == "true" ]]; then echo "
+  intelBusId = \"$INTEL_BUS_ID\";
+  nvidiaBusId = \"$NVIDIA_BUS_ID\";"; fi)
 }
 EOF
 
@@ -120,16 +138,24 @@ EOF
 echo "user-config.nix filter=userconfig" >> .gitattributes
 echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes
 
+# Debug: show what variables contain
+echo "DEBUG: USERNAME='$USERNAME'"
+echo "DEBUG: HOSTNAME='$HOSTNAME'"
+echo "DEBUG: GIT_NAME='$GIT_NAME'"
+echo "DEBUG: GIT_EMAIL='$GIT_EMAIL'"
+echo "DEBUG: LAT='$LAT'"
+echo "DEBUG: LON='$LON'"
+
 git config filter.userconfig.clean 'cat << "EOF"
 # Perseus User Configuration
 {
   username = "user";
   hostname = "perseus";
   timezone = "Europe/Amsterdam";
-  isLaptop = true;
+  isLaptop = false;
   hasGPU = false;
   browsers = ["brave" "firefox"];
-  devTools = ["python" "go" "rust"];
+  devTools = ["python" "go"];
   vpn = true;
   gitName = "user";
   gitEmail = "user@user.com";

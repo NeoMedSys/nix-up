@@ -1,6 +1,4 @@
-# Add this to your modules/environment.nix or create a new module
-
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   # Configure systemd-logind to handle lid switch properly
   services.logind = {

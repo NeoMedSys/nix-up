@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ lib, ... }:
 {
   # DNS Privacy with dnscrypt-proxy2
   services.dnscrypt-proxy2 = {

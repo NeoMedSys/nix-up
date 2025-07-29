@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, ... }:
 {
 	# Redshift blue light filter service
 	services.redshift = {

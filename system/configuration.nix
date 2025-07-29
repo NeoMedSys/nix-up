@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, userConfig, ... }:
+{ lib, inputs, userConfig, ... }:
 {
   imports = [
     # Hardware and disk configuration

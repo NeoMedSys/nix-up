@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, lib, ... }:
+{ pkgs, inputs, lib, ... }:
 {
   # This section declaratively manages all your config files
   environment.etc = {
