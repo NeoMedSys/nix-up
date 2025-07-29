@@ -18,6 +18,72 @@ Perseus is a fully declarative NixOS setup that combines **uncompromising privac
 2. Git installed
 3. 20GB+ free disk space
 
+### Perseus Setup Script
+
+**⚠️ CRITICAL: You MUST run `./perseus.sh` before installation!**
+
+The Perseus setup script is not optional - it configures your personal settings and sets up collaboration-safe git filtering.
+
+#### What the Script Does
+
+```bash
+./perseus.sh
+```
+
+1. **Personal Configuration**: Collects your username, hostname, git details, location, and preferences
+2. **Hardware Detection**: Auto-detects NVIDIA GPU, laptop status, and PCI bus IDs  
+3. **Git Filtering Setup**: Protects your privacy while enabling collaboration
+4. **File Protection**: Prevents `git pull` from overwriting your personal configs
+
+#### Why This Matters
+
+Perseus uses a **privacy-first collaboration model**:
+
+- **Your Local Machine**: Contains real usernames, SSH keys, hardware configs, VPN settings
+- **GitHub Repository**: Contains only sanitized placeholder configs for CI/collaboration
+- **Git Filtering**: Automatically strips personal data when you push commits
+
+#### The Magic Behind the Scenes
+
+When you `git push`, the script's filters automatically transform:
+
+```diff
+# Your local user-config.nix
+- username = "alice";
+- gitEmail = "alice@company.com";
+- latitude = 40.7128;
+
+# What gets pushed to GitHub  
++ username = "user";
++ gitEmail = "user@user.com";
++ latitude = 52.4;
+```
+
+#### Collaboration Benefits
+
+✅ **Privacy**: No personal data ever reaches GitHub  
+✅ **Security**: SSH keys and hardware details stay local  
+✅ **Teamwork**: Others can contribute without seeing your setup  
+✅ **CI/CD**: Automated testing works with placeholder configs  
+✅ **Pull Safety**: `git pull` won't overwrite your personal settings
+
+#### Script Output Example
+
+```
+Welcome to Perseus NixOS Configuration Setup
+===========================================
+Username [alice]: alice
+Hostname [perseus]: alice-laptop
+Full name for git: Alice Developer
+Email for git: alice@company.com
+Has NVIDIA GPU? [false]: true
+Detecting GPU bus IDs...
+Intel bus ID: PCI:0:2:0
+NVIDIA bus ID: PCI:1:0:0
+```
+
+**After running the script once, your configs are protected forever.**
+
 ### Installation
 
 First step is to run the bare metal installation from ISO and then run the Perseus installation.
@@ -47,28 +113,34 @@ sudo nixos-generate-config --root /mnt
 # 2.1 Clone the repository and setup the args for your system
 git clone https://github.com/yourusername/perseus
 cd perseus
+
+# 2.2
+# NB! this step is mandatory for reasons explained in the previous section
 sh perseus.sh
 
-# 2.2 Copy the generated hardware config
+# 2.3 Copy the generated hardware config
 sudo cp /mnt/etc/nixos/hardware-configuration.nix system/
 
-# 2.3 For system with VPN (Only Mullvad support for now)
+# 2.4 For system with VPN (Only Mullvad support for now)
 cp your-mullvad-config.conf configs/mullvad-config/
 
-# 7. Install your personalized system
+# 2.5 Install your personalized system
 sudo nixos-install --flake .#<your-hostname>
 
-# 8. Reboot and enjoy your freedom
+# 2.6 Reboot and enjoy your freedom
 sudo reboot
 ```
-
-##### NOTE: Add mullvad config to the setup before running install if you want the VPN
 
 ### First Boot
 
 1. Security daemon starts automatically
 2. Blue light filter activates at 10 PM
 3. All privacy protections enabled by default
+
+##### NOTE: Add mullvad config to the setup before running install if you want the VPN
+
+
+
 
 ## 🎯 Philosophy
 
@@ -225,21 +297,31 @@ Interactive i3status-rust modules:
 
 ## 📊 System Architecture
 
-```
-modules/
-├── environment.nix      # System-wide settings
-├── privacy.nix          # Security & privacy configs
-├── techoverlord_protection.nix  # NastyTechLords daemon
-├── nixvim.nix          # Neovim configuration
-├── steam.nix           # Gaming setup
-├── gpl.nix             # Programming languages
-└── redshift.nix        # Blue light filter
+Perseus uses a **modular architecture** for flexibility and maintainability:
 
-configs/
-├── i3-config/          # Window manager
-├── i3status-rust/      # Status bar
-└── alacritty/          # Terminal emulator
 ```
+modules/          # Individual system components
+configs/          # Application configuration files  
+pkgs/             # Custom package definitions
+system/           # Core NixOS configuration
+```
+
+### Why Modular?
+
+- **Selective Features**: Enable only Python, skip Rust, add gaming - your choice
+- **Easy Maintenance**: Update i3 config without touching VPN settings
+- **Better Collaboration**: Contributors can focus on specific components
+- **Privacy Separation**: Personal configs isolated from system modules
+
+### Key Components
+
+- **`user-config.nix`**: Your personal settings (username, preferences, hardware)
+- **`system/hardware-configuration.nix`**: Your personal machine settings
+- **`modules/`**: System features (privacy, gaming, development languages)
+- **`configs/`**: Application dotfiles (i3, terminal, status bar)
+- **`perseus.sh`**: Setup script with git filtering magic
+
+**Privacy Model**: Personal files stay local, GitHub gets sanitized placeholders.
 
 ## 🔧 Maintenance
 

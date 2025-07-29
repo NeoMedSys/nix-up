@@ -137,9 +137,12 @@ cat > user-config.nix << EOF
 EOF
 
 # Setup git filter to clean personal data on push
-echo "user-config.nix filter=userconfig" >> .gitattributes
-echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes
-echo "system/hardware-configuration.nix filter=hardware" >> .gitattributes
+echo "Setting up git filters..."
+
+# Check and add gitattributes entries only if they don't exist
+grep -q "user-config.nix filter=userconfig" .gitattributes 2>/dev/null || echo "user-config.nix filter=userconfig" >> .gitattributes
+grep -q "modules/ssh-keys.nix filter=sshkeys" .gitattributes 2>/dev/null || echo "modules/ssh-keys.nix filter=sshkeys" >> .gitattributes  
+grep -q "system/hardware-configuration.nix filter=hardware" .gitattributes 2>/dev/null || echo "system/hardware-configuration.nix filter=hardware" >> .gitattributes
 
 git config filter.userconfig.clean 'cat << "EOF"
 # Perseus User Configuration
@@ -160,7 +163,7 @@ git config filter.userconfig.clean 'cat << "EOF"
   avatarPath = "assets/king.png";
 }
 EOF'
-git config filter.userconfig.smudge cat
+git config filter.userconfig.smudge 'if [ -f user-config.nix ] && [ -s user-config.nix ] && ! grep -q "username = \"user\"" user-config.nix; then cat; else cat; fi'
 
 git config filter.sshkeys.clean 'cat << "EOF"
 {
@@ -229,7 +232,16 @@ fi
 
 echo "✓ Created user-config.nix from template"
 echo ""
+
+# Protect local configs from being overwritten by git pulls
+echo "Protecting local configs from git pull overwrites..."
+git update-index --skip-worktree user-config.nix 2>/dev/null || echo "Note: user-config.nix protection will apply after first commit"
+git update-index --skip-worktree modules/ssh-keys.nix 2>/dev/null || echo "Note: ssh-keys.nix protection will apply after first commit"
+git update-index --skip-worktree system/hardware-configuration.nix 2>/dev/null || echo "Note: hardware-configuration.nix protection will apply after first commit"
+
 echo "Next steps:"
 echo "1. Edit user-config.nix to customize further"
 echo "2. Add SSH keys to modules/ssh-keys.nix (if you didn't above)"
 echo "3. Run: sudo nixos-rebuild switch --flake .#$HOSTNAME"
+echo ""
+echo "Note: Your personal configs are now protected from git pull overwrites"
