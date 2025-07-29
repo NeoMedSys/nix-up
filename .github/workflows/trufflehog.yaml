@@ -2,11 +2,9 @@ name: TruffleHog Secret Scanning
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 permissions:
   contents: read
@@ -26,16 +24,18 @@ jobs:
 
       - name: Run TruffleHog and Check Output
         run: |
-          trufflehog --json . > trufflehog_report.json
+          # don’t let exit code 1 fail the job unless we want it to
+          trufflehog --json . > trufflehog_report.json || true
 
           if [ -s trufflehog_report.json ]; then
-            echo "TruffleHog found secrets, outputting report:"
+            echo "❌ TruffleHog found secrets!"
             cat trufflehog_report.json
+            exit 1
           else
-            echo "TruffleHog did not find any secrets. The report file is empty."
+            echo "✅ No secrets found"
           fi
 
-      - name: Upload TruffleHog Report as Artifact
+      - name: Upload Report
         uses: actions/upload-artifact@v4
         with:
           name: trufflehog-report
