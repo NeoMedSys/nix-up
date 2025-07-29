@@ -2,11 +2,13 @@ name: Perseus CI/CD
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
   push:
-    branches: [main]
-    tags:
-      - 'v*'
+    branches:
+      - main
+      tags:
+        - 'v*'
 
 permissions:
   contents: read
@@ -22,12 +24,10 @@ jobs:
         run: |
           nix flake check
           nix flake show
-
       - name: Lint flake
         run: |
           nix run nixpkgs#statix -- check .
-          nix run nixpkgs#deadnix .
-
+          nix run nixpkgs#deadnix -- .
       - name: Evaluate configurations
         run: |
           echo "=== user-config.nix ==="
@@ -46,9 +46,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v9
-      - uses: DeterminateSystems/flakehub-push@v5
+      - name: Publish to FlakeHub
+        uses: DeterminateSystems/flakehub-push@main
         with:
-          name: "NeoMedSys/perseus"
+          name: NeoMedSys/perseus
           tag: ${{ github.ref_name }}
           visibility: public
-          token: ${{ secrets.FH_TOKEN }}
+          flakehub-push-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
