@@ -110,6 +110,9 @@
       vim.g.markdown_composer_open_browser = 0  -- Don't auto-open
       vim.g.markdown_composer_refresh_rate = 0  -- Realtime updates
       vim.g.markdown_composer_syntax_theme = 'github-dark'
+      -- Enable transparency
+      vim.cmd("highlight Normal guibg=NONE ctermbg=NONE")
+      vim.cmd("highlight NonText guibg=NONE ctermbg=NONE")
     '';
 
     opts = {
@@ -120,6 +123,9 @@
       swapfile = false;
       splitbelow = true;
       splitright = true;
+      # Add transparency (85% = 15 transparency value)
+      winblend = 15;
+      pumblend = 15;
     };
   };
 }

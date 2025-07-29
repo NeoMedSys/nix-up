@@ -1,8 +1,17 @@
 # BASIC Sway config - Just window management, no extras
 set $mod Mod4
 
-gaps inner 5
-gaps outer 2
+gaps inner 8
+gaps outer 4
+
+corner_radius 10
+blur enable
+blur_passes 2
+blur_radius 2
+shadows enable
+shadow_blur_radius 20
+
+seat * hide_cursor 2000
 
 default_border none
 default_floating_border none
