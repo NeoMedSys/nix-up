@@ -131,8 +131,190 @@ in
     variables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
+      GTK_THEME = "Juno:dark";
     };
     etc = {
+      # Global GTK Dark Theme Configuration
+      "gtk-3.0/settings.ini".text = ''
+        [Settings]
+        gtk-application-prefer-dark-theme=1
+        gtk-theme-name=Juno
+        gtk-icon-theme-name=Papirus-Dark
+        gtk-font-name=MesloLGS NF 11
+        gtk-cursor-theme-name=Adwaita
+        gtk-cursor-theme-size=24
+      '';
+
+      # Custom Nord Dark CSS for all GTK applications
+      "gtk-3.0/gtk.css".text = ''
+        /* Nord Dark Theme with Orange Highlights */
+        
+        /* Base colors */
+        @define-color nord0 #2E3440;   /* Dark background */
+        @define-color nord1 #3B4252;   /* Darker background */
+        @define-color nord2 #434C5E;   /* Medium dark */
+        @define-color nord3 #4C566A;   /* Medium */
+        @define-color nord4 #D8DEE9;   /* Light text */
+        @define-color nord12 #D08770;  /* Orange highlight */
+        @define-color nord11 #BF616A;  /* Red accent */
+
+        /* Main window background */
+        window,
+        .background {
+          background-color: @nord0;
+          color: @nord4;
+        }
+
+        /* Sidebar styling (fixes bold text issue) */
+        .sidebar,
+        .sidebar * {
+          background-color: @nord1;
+          color: @nord4;
+          font-weight: normal; /* Remove bold */
+        }
+
+        .sidebar:selected,
+        .sidebar *:selected {
+          background-color: @nord12;
+          color: @nord0;
+        }
+
+        /* File manager specific styling */
+        .nemo-window .sidebar {
+          background-color: @nord1;
+          border-right: 1px solid @nord3;
+        }
+
+        .nemo-window .sidebar row {
+          font-weight: normal;
+          padding: 8px;
+        }
+
+        .nemo-window .sidebar row:selected {
+          background-color: @nord12;
+          color: @nord0;
+        }
+
+        /* Entry fields and search */
+        entry {
+          background-color: @nord2;
+          color: @nord4;
+          border: 1px solid @nord3;
+        }
+
+        entry:focus {
+          border-color: @nord12;
+          box-shadow: 0 0 3px @nord12;
+        }
+
+        /* Buttons */
+        button {
+          background-color: @nord2;
+          color: @nord4;
+          border: 1px solid @nord3;
+        }
+
+        button:hover {
+          background-color: @nord12;
+          color: @nord0;
+        }
+
+        /* Toolbar and headerbar */
+        headerbar,
+        toolbar {
+          background-color: @nord1;
+          color: @nord4;
+          border-bottom: 1px solid @nord3;
+        }
+
+        /* Menu and context menus */
+        menu,
+        .menu {
+          background-color: @nord1;
+          color: @nord4;
+          border: 1px solid @nord3;
+        }
+
+        menuitem:hover {
+          background-color: @nord12;
+          color: @nord0;
+        }
+
+        /* Selection highlighting */
+        *:selected {
+          background-color: @nord12;
+          color: @nord0;
+        }
+
+        /* Scrollbars */
+        scrollbar slider {
+          background-color: @nord3;
+        }
+
+        scrollbar slider:hover {
+          background-color: @nord12;
+        }
+
+        /* File icons in grid/list view */
+        .view {
+          background-color: @nord0;
+          color: @nord4;
+        }
+
+        /* Path bar */
+        .path-bar button {
+          background-color: @nord2;
+          color: @nord4;
+        }
+
+        .path-bar button:hover {
+          background-color: @nord12;
+          color: @nord0;
+        }
+      '';
+
+      "gtk-4.0/settings.ini".text = ''
+        [Settings]
+        gtk-application-prefer-dark-theme=1
+        gtk-theme-name=Juno
+        gtk-icon-theme-name=Papirus-Dark
+        gtk-font-name=MesloLGS NF 11
+      '';
+
+      # GTK 4.0 CSS (same styling)
+      "gtk-4.0/gtk.css".text = ''
+        /* Same Nord styling for GTK4 apps */
+        
+        @define-color nord0 #2E3440;
+        @define-color nord1 #3B4252;
+        @define-color nord2 #434C5E;
+        @define-color nord3 #4C566A;
+        @define-color nord4 #D8DEE9;
+        @define-color nord12 #D08770;
+
+        window {
+          background-color: @nord0;
+          color: @nord4;
+        }
+
+        .sidebar {
+          background-color: @nord1;
+          color: @nord4;
+          font-weight: normal;
+        }
+
+        .sidebar:selected {
+          background-color: @nord12;
+          color: @nord0;
+        }
+
+        button:hover,
+        *:selected {
+          background-color: @nord12;
+          color: @nord0;
+        }
+      '';
+
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
       
       # i3 Configuration Files
@@ -153,7 +335,7 @@ in
       # LightDM Configuration with Juno Theme
       "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.writeText "lightdm-gtk-greeter.conf" ''
         [greeter]
-        background=${inputs.self}/${userConfig.wallpaperPath}
+        background=${inputs.self}/assets/wallpaper.png
         theme-name=Juno
         icon-theme-name=Papirus-Dark
         font-name=MesloLGS NF 11
