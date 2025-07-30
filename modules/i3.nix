@@ -13,35 +13,7 @@
     "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
     "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
     "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
-
-    "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.writeText "lightdm-gtk-greeter.conf" ''
-        [greeter]
-        background=${inputs.self}/assets/wallpaper.png
-        theme-name=Sweet-Dark
-        icon-theme-name=Arc
-        font-name=MesloLGS NF 11
-        position=50%,center 50%,center
-        gtk-application-prefer-dark-theme=true
-      '');
-
-    "lightdm-greeter-theme-override" = {
-      target = "gsettings/schemas/lightdm.gschema.override/99_greeter-theme.gschema.override";
-      source = "${inputs.self}/configs/lightdm/greeter-theme.gschema.override";
-    };
   };
 
-  # This script creates symlinks in your home directory
-  system.userActivationScripts.i3-configs = ''
-    mkdir -p ~/.config/{i3,i3status-rust,dunst,polybar,rofi,alacritty,picom,lightdm}
-    ln -sf /etc/i3/config ~/.config/i3/config
-    ln -sf /etc/i3status-rust/config.toml ~/.config/i3status-rust/config.toml
-    ln -sf /etc/polybar/config.ini ~/.config/polybar/config.ini
-    ln -sf /etc/polybar/launch.sh ~/.config/polybar/launch.sh
-    ln -sf /etc/dunst/dunstrc ~/.config/dunst/dunstrc
-    ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
-    ln -sf /etc/picom.conf ~/.config/picom.conf
-    ln -sf /etc/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
-    ln -sf /etc/lightdm/lightdm-gtk-greeter.conf ~/.config/lightdm/lightdm-gtk-greeter.conf
 
-  '';
 }

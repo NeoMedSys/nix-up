@@ -1,4 +1,3 @@
-/* Waybar style - Crisp Papirus branded icons */
 * {
     font-family: "MesloLGS NF";
     font-size: 16px;
@@ -18,6 +17,7 @@ window#waybar {
 /* Base style for app launcher buttons */
 #custom-slack,
 #custom-brave,
+#custom-nemo,
 #custom-steam,
 #custom-stremio,
 #custom-spotify {
@@ -40,6 +40,9 @@ window#waybar {
 #custom-brave {
     background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/brave-browser.svg");
 }
+#custom-nemo {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/nemo.svg");
+}
 #custom-steam {
     background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/steam.svg");
 }
@@ -53,6 +56,7 @@ window#waybar {
 /* Hover effects */
 #custom-slack:hover,
 #custom-brave:hover,
+#custom-nemo:hover,
 #custom-steam:hover,
 #custom-stremio:hover,
 #custom-spotify:hover {
