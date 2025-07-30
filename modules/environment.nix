@@ -59,7 +59,25 @@ in
 
       displayManager.lightdm = {
         enable = true;
-        greeters.gtk.enable = true;
+        greeters.gtk = {
+          enable = true;
+          theme = {
+            package = pkgs.juno-theme;
+            name = "Juno";
+          };
+          iconTheme = {
+            package = pkgs.papirus-icon-theme;
+            name = "Papirus-Dark";
+          };
+          extraConfig = ''
+            background = ${inputs.self}/${userConfig.wallpaperPath}
+            font-name = MesloLGS NF 12
+            indicators = ~host;~spacer;~clock;~spacer;~session;~power
+            clock-format = %H:%M:%S | %A, %d %B %Y
+            position = 50%,center 50%,center
+            theme-file = /etc/lightdm/gtk-greeter.css
+          '';
+        };
       };
     };
 
@@ -134,7 +152,7 @@ in
       GTK_THEME = "Juno:dark";
     };
     etc = {
-      # Global GTK Dark Theme Configuration
+      # Global GTK Dark Theme Configuration  
       "gtk-3.0/settings.ini".text = ''
         [Settings]
         gtk-application-prefer-dark-theme=1
@@ -145,134 +163,8 @@ in
         gtk-cursor-theme-size=24
       '';
 
-      # Custom Nord Dark CSS for all GTK applications
-      "gtk-3.0/gtk.css".text = ''
-        /* Nord Dark Theme with Orange Highlights */
-        
-        /* Base colors */
-        @define-color nord0 #2E3440;   /* Dark background */
-        @define-color nord1 #3B4252;   /* Darker background */
-        @define-color nord2 #434C5E;   /* Medium dark */
-        @define-color nord3 #4C566A;   /* Medium */
-        @define-color nord4 #D8DEE9;   /* Light text */
-        @define-color nord12 #D08770;  /* Orange highlight */
-        @define-color nord11 #BF616A;  /* Red accent */
-
-        /* Main window background */
-        window,
-        .background {
-          background-color: @nord0;
-          color: @nord4;
-        }
-
-        /* Sidebar styling (fixes bold text issue) */
-        .sidebar,
-        .sidebar * {
-          background-color: @nord1;
-          color: @nord4;
-          font-weight: normal; /* Remove bold */
-        }
-
-        .sidebar:selected,
-        .sidebar *:selected {
-          background-color: @nord12;
-          color: @nord0;
-        }
-
-        /* File manager specific styling */
-        .nemo-window .sidebar {
-          background-color: @nord1;
-          border-right: 1px solid @nord3;
-        }
-
-        .nemo-window .sidebar row {
-          font-weight: normal;
-          padding: 8px;
-        }
-
-        .nemo-window .sidebar row:selected {
-          background-color: @nord12;
-          color: @nord0;
-        }
-
-        /* Entry fields and search */
-        entry {
-          background-color: @nord2;
-          color: @nord4;
-          border: 1px solid @nord3;
-        }
-
-        entry:focus {
-          border-color: @nord12;
-          box-shadow: 0 0 3px @nord12;
-        }
-
-        /* Buttons */
-        button {
-          background-color: @nord2;
-          color: @nord4;
-          border: 1px solid @nord3;
-        }
-
-        button:hover {
-          background-color: @nord12;
-          color: @nord0;
-        }
-
-        /* Toolbar and headerbar */
-        headerbar,
-        toolbar {
-          background-color: @nord1;
-          color: @nord4;
-          border-bottom: 1px solid @nord3;
-        }
-
-        /* Menu and context menus */
-        menu,
-        .menu {
-          background-color: @nord1;
-          color: @nord4;
-          border: 1px solid @nord3;
-        }
-
-        menuitem:hover {
-          background-color: @nord12;
-          color: @nord0;
-        }
-
-        /* Selection highlighting */
-        *:selected {
-          background-color: @nord12;
-          color: @nord0;
-        }
-
-        /* Scrollbars */
-        scrollbar slider {
-          background-color: @nord3;
-        }
-
-        scrollbar slider:hover {
-          background-color: @nord12;
-        }
-
-        /* File icons in grid/list view */
-        .view {
-          background-color: @nord0;
-          color: @nord4;
-        }
-
-        /* Path bar */
-        .path-bar button {
-          background-color: @nord2;
-          color: @nord4;
-        }
-
-        .path-bar button:hover {
-          background-color: @nord12;
-          color: @nord0;
-        }
-      '';
-
+      # Reference external GTK CSS files
+      "gtk-3.0/gtk.css".source = "${inputs.self}/configs/gtk-theme/gtk.css";
       "gtk-4.0/settings.ini".text = ''
         [Settings]
         gtk-application-prefer-dark-theme=1
@@ -280,42 +172,15 @@ in
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
       '';
+      "gtk-4.0/gtk.css".source = "${inputs.self}/configs/gtk-theme/gtk.css";
 
-      # GTK 4.0 CSS (same styling)
-      "gtk-4.0/gtk.css".text = ''
-        /* Same Nord styling for GTK4 apps */
-        
-        @define-color nord0 #2E3440;
-        @define-color nord1 #3B4252;
-        @define-color nord2 #434C5E;
-        @define-color nord3 #4C566A;
-        @define-color nord4 #D8DEE9;
-        @define-color nord12 #D08770;
-
-        window {
-          background-color: @nord0;
-          color: @nord4;
-        }
-
-        .sidebar {
-          background-color: @nord1;
-          color: @nord4;
-          font-weight: normal;
-        }
-
-        .sidebar:selected {
-          background-color: @nord12;
-          color: @nord0;
-        }
-
-        button:hover,
-        *:selected {
-          background-color: @nord12;
-          color: @nord0;
-        }
-      '';
-
+      # User avatars and LightDM assets
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
+      "lightdm/avatar.png".source = processedKing;
+      "lightdm/wallpaper.png".source = "${inputs.self}/${userConfig.wallpaperPath}";
+
+      # LightDM GTK Greeter custom CSS - reference external file
+      "lightdm/gtk-greeter.css".source = "${inputs.self}/configs/lightdm-gtk/greeter.css";
       
       # i3 Configuration Files
       "i3/config".source = "${inputs.self}/configs/i3-config/config";
@@ -331,27 +196,6 @@ in
       "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
       "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
       "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
-
-      # LightDM Configuration with Juno Theme
-      "lightdm/lightdm-gtk-greeter.conf".source = lib.mkForce (pkgs.writeText "lightdm-gtk-greeter.conf" ''
-        [greeter]
-        background=${inputs.self}/assets/wallpaper.png
-        theme-name=Juno
-        icon-theme-name=Papirus-Dark
-        font-name=MesloLGS NF 11
-        position=50%,center 50%,center
-        gtk-application-prefer-dark-theme=true
-      '');
-
-      "lightdm-juno-theme-override" = {
-        target = "gsettings/schemas/lightdm.gschema.override/99_juno-theme.gschema.override";
-        source = pkgs.writeText "juno-theme.gschema.override" ''
-          [org.gnome.desktop.interface]
-          gtk-theme='Juno'
-          icon-theme='Papirus-Dark'
-          font-name='MesloLGS NF 11'
-        '';
-      };
     };
   };
 
@@ -435,11 +279,10 @@ in
 
     services.display-manager.serviceConfig = {
       Environment = [
-        "XDG_DATA_DIRS=/etc/gsettings/schemas/lightdm.gschema.override"
-        "XDG_DATA_DIRS+=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
-        "XDG_DATA_DIRS+=${pkgs.juno-theme}/share"
-        "XDG_DATA_DIRS+=${pkgs.papirus-icon-theme}/share"
+        "XDG_DATA_DIRS=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
         "XDG_DATA_DIRS+=/run/current-system/sw/share"
+        "GTK_DATA_PREFIX=/etc"
+        "XDG_CONFIG_DIRS=/etc"
       ];
     };
   };
@@ -464,14 +307,8 @@ in
         ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
         ln -sf /etc/picom.conf ~/.config/picom.conf
         ln -sf /etc/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
-        ln -sf /etc/lightdm/lightdm-gtk-greeter.conf ~/.config/lightdm/lightdm-gtk-greeter.conf
       '';
     };
-
-    activationScripts.compileGreeterGSettings = ''
-      echo "Compiling GSettings schemas for LightDM Greeter..."
-      ${pkgs.glib}/bin/glib-compile-schemas /etc/gsettings/schemas/lightdm.gschema.override/ &> /dev/null || true
-    '';
   };
 
   # ========================
