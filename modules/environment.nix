@@ -61,10 +61,10 @@ in
         enable = true;
         greeters.gtk = {
           enable = true;
-          theme = {
-            package = pkgs.juno-theme;
-            name = "Juno";
-          };
+            #theme = {
+            #  package = pkgs.juno-theme;
+            #  name = "Juno";
+            #};
           iconTheme = {
             package = pkgs.papirus-icon-theme;
             name = "Papirus-Dark";
@@ -75,7 +75,6 @@ in
             indicators = ~host;~spacer;~clock;~spacer;~session;~power
             clock-format = %H:%M:%S | %A, %d %B %Y
             position = 50%,center 50%,center
-            theme-file = /etc/lightdm/gtk-greeter.css
           '';
         };
       };
@@ -163,8 +162,11 @@ in
         gtk-cursor-theme-size=24
       '';
 
-      # Reference external GTK CSS files
-      "gtk-3.0/gtk.css".source = "${inputs.self}/configs/gtk-theme/gtk.css";
+      "gtk-3.0/gtk.css".text = ''
+        @import url("file:///etc/lightdm/gtk-greeter.css");
+        @import url("${inputs.self}/configs/gtk-theme/gtk.css");
+      '';
+
       "gtk-4.0/settings.ini".text = ''
         [Settings]
         gtk-application-prefer-dark-theme=1
@@ -172,7 +174,11 @@ in
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
       '';
-      "gtk-4.0/gtk.css".source = "${inputs.self}/configs/gtk-theme/gtk.css";
+
+      "gtk-4.0/gtk.css".text = ''
+        @import url("file:///etc/lightdm/gtk-greeter.css");
+        @import url("${inputs.self}/configs/gtk-theme/gtk.css");
+      '';
 
       # User avatars and LightDM assets
       "user-avatars/king-${userConfig.username}.png".source = processedKing;

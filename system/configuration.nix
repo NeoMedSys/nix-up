@@ -23,6 +23,7 @@
     "${inputs.self}/modules/i3.nix"
     # "${inputs.self}/modules/redshift.nix"
     "${inputs.self}/modules/gammastep.nix"
+    "${inputs.self}/modules/lightdm-transparent-theme.nix"
 
     # Gaming
     "${inputs.self}/modules/steam.nix"
