@@ -149,6 +149,9 @@ in
       EDITOR = "nvim";
       VISUAL = "nvim";
       GTK_THEME = "Juno:dark";
+      XDG_CURRENT_DESKTOP = "sway";
+      XDG_SESSION_TYPE = "wayland";
+      XDG_SESSION_DESKTOP = "sway";
     };
     etc = {
       # Global GTK Dark Theme Configuration  
@@ -343,6 +346,7 @@ in
     # PDF documents
     "application/pdf" = "org.pwmt.zathura.desktop";
   };
+
 
   # ========================
   # MISC CONFIGURATIONS
