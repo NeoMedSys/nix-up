@@ -18,6 +18,7 @@
     };
     # add extras to .zshrc
     shellInit = ''
+      echo "shellInit ran"
       # This part is for syntax highlighting
       source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
