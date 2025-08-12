@@ -18,7 +18,6 @@
     };
     # add extras to .zshrc
     shellInit = ''
-      echo "shellInit ran"
       # This part is for syntax highlighting
       source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -33,6 +32,15 @@
       typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS
       POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=(custom_prompt_nix_shell)
       eval "$(direnv hook zsh)"
+      if ! ssh-add -l &>/dev/null; then
+          eval "$(ssh-agent -s)" > /dev/null
+          # Auto-load private keys
+          for key in ~/.ssh/*; do
+              if [[ -f "$key" && ! "$key" =~ \.(pub|old)$ && "$key" != *known_hosts* && "$key" != *authorized_keys* && "$key" != *config* ]]; then
+                  ssh-add -q "$key" 2>/dev/null || true
+              fi
+          done
+      fi
     '';
     loginShellInit = ''
       fastfetch
