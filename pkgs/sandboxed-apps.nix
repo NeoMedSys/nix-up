@@ -10,8 +10,10 @@ let
       mkdir -p $out/bin $out/share/applications
       # Create the slack wrapper
       # Remove user-data-dir if UX becomes annoying
-      makeWrapper ${pkgs.slack}/bin/slack $out/bin/slack \
+      makeWrapper ${pkgs.systemd}/bin/systemd-run $out/bin/slack \
         --run 'mkdir -p "$HOME/.local/share/app-isolation/slack"' \
+        --add-flags "--user --scope -p MemoryHigh=4G -p MemoryMax=6G" \
+        --add-flags "${pkgs.slack}/bin/slack" \
         --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/slack\"" \
         --set HOSTNAME "research-workstation" \
         --set USER "researcher" \

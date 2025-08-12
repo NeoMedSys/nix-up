@@ -52,4 +52,44 @@
       '';
     };
   };
+
+  # Slack memory monitoring service
+  # Make this a loop over a config of app and their mem restraint
+  systemd.user.services.slack-memory-notify = {
+    description = "Slack memory usage notification";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "slack-memory-check" ''
+        slack_pid=$(pgrep -f "slack" | head -1)
+        if [ -n "$slack_pid" ]; then
+          memory_kb=$(ps -o rss= -p $slack_pid 2>/dev/null || echo "0")
+          memory_mb=$((memory_kb / 1024))
+          if [ $memory_mb -gt 3686 ]; then  # 90% of 4GB
+            ${pkgs.libnotify}/bin/notify-send \
+              --urgency=critical \
+              --icon=dialog-warning \
+              "Slack Memory Critical" \
+              "Slack using ''${memory_mb}MB (>90% limit)"
+          elif [ $memory_mb -gt 3276 ]; then  # 80% of 4GB  
+            ${pkgs.libnotify}/bin/notify-send \
+              --urgency=normal \
+              --icon=dialog-information \
+              "Slack Memory Warning" \
+              "Slack using ''${memory_mb}MB (>80% limit)"
+          fi
+        fi
+      '';
+    };
+  };
+
+  # Timer to check Slack memory every 60 seconds
+  systemd.user.timers.slack-memory-notify = {
+    description = "Check Slack memory usage periodically";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "60s";
+      OnUnitActiveSec = "60s";
+      Persistent = true;
+    };
+  };
 }
