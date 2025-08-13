@@ -198,4 +198,4 @@ exec_always opensnitch-ui >/dev/null 2>&1
 exec dunst
 
 # add if waybar fails after reboot
-exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME
