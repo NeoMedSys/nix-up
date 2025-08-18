@@ -1,4 +1,4 @@
-{ pkgs, inputs, userConfig, ... }:
+{ pkgs, inputs, userConfig, lib, ... }:
 {
   # Basic Sway setup only
   programs.sway = {
@@ -9,9 +9,16 @@
   xdg.portal = {
     enable = true;
     wlr.enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr
-    ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config = {
+      common = {
+        default = [ "gtk" ];
+      };
+      sway = {
+        default = lib.mkForce [ "wlr" "gtk" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+      };
+    };
   };
 
   # Minimal PAM for swaylock

@@ -1,0 +1,124 @@
+/* Nord Dark Theme with Orange Highlights */
+
+/* Base colors */
+@define-color nord0 #2E3440;   /* Dark background */
+@define-color nord1 #3B4252;   /* Darker background */
+@define-color nord2 #434C5E;   /* Medium dark */
+@define-color nord3 #4C566A;   /* Medium */
+@define-color nord4 #D8DEE9;   /* Light text */
+@define-color nord12 #D08770;  /* Orange highlight */
+@define-color nord11 #BF616A;  /* Red accent */
+
+/* Main window background */
+window,
+.background {
+  background-color: @nord0;
+  color: @nord4;
+}
+
+/* Sidebar styling (fixes bold text issue) */
+.sidebar,
+.sidebar * {
+  background-color: @nord1;
+  color: @nord4;
+  font-weight: normal; /* Remove bold */
+}
+
+.sidebar:selected,
+.sidebar *:selected {
+  background-color: @nord12;
+  color: @nord0;
+}
+
+/* File manager specific styling */
+.nemo-window .sidebar {
+  background-color: @nord1;
+  border-right: 1px solid @nord3;
+}
+
+.nemo-window .sidebar row {
+  font-weight: normal;
+  padding: 8px;
+}
+
+.nemo-window .sidebar row:selected {
+  background-color: @nord12;
+  color: @nord0;
+}
+
+/* Entry fields and search */
+entry {
+  background-color: @nord2;
+  color: @nord4;
+  border: 1px solid @nord3;
+}
+
+entry:focus {
+  border-color: @nord12;
+  box-shadow: 0 0 3px @nord12;
+}
+
+/* Buttons */
+button {
+  background-color: @nord2;
+  color: @nord4;
+  border: 1px solid @nord3;
+}
+
+button:hover {
+  background-color: @nord12;
+  color: @nord0;
+}
+
+/* Toolbar and headerbar */
+headerbar,
+toolbar {
+  background-color: @nord1;
+  color: @nord4;
+  border-bottom: 1px solid @nord3;
+}
+
+/* Menu and context menus */
+menu,
+.menu {
+  background-color: @nord1;
+  color: @nord4;
+  border: 1px solid @nord3;
+}
+
+menuitem:hover {
+  background-color: @nord12;
+  color: @nord0;
+}
+
+/* Selection highlighting */
+*:selected {
+  background-color: @nord12;
+  color: @nord0;
+}
+
+/* Scrollbars */
+scrollbar slider {
+  background-color: @nord3;
+}
+
+scrollbar slider:hover {
+  background-color: @nord12;
+}
+
+/* File icons in grid/list view */
+.view {
+  background-color: @nord0;
+  color: @nord4;
+}
+
+/* Path bar */
+.path-bar button {
+  background-color: @nord2;
+  color: @nord4;
+}
+
+.path-bar button:hover {
+  background-color: @nord12;
+  color: @nord0;
+}

@@ -7,7 +7,7 @@
     "margin-bottom": 0,
     "margin-left": 0,
     "margin-right": 0,
-    "modules-center": ["custom/slack", "custom/brave", "custom/steam", "custom/stremio", "custom/spotify"],
+    "modules-center": ["custom/slack", "custom/brave", "custom/nemo", "custom/steam", "custom/stremio", "custom/spotify"],
     "custom/slack": {
         "format": " ",
         "on-click": "slack",
@@ -17,6 +17,11 @@
         "format": " ",
         "on-click": "brave",
         "tooltip-format": "Brave Browser"
+    },
+    "custom/nemo": {
+        "format": " ",
+        "on-click": "nemo",
+        "tooltip-format": "File Manager"
     },
     "custom/steam": {
         "format": " ",

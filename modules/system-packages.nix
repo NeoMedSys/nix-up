@@ -21,7 +21,7 @@ in
     gcc
     openssl
     vscodium
-    
+
     # System utilities
     direnv
     htop
@@ -35,7 +35,11 @@ in
     tmux
     xsel
     ydotool
-    
+
+    # File manager and themes
+    nemo
+    juno-theme
+
     # Desktop utilities (moved from other modules)
     brightnessctl
     i3lock-fancy
@@ -48,7 +52,7 @@ in
     networkmanagerapplet
     xorg.xrandr
     xss-lock
-    
+
     # Window manager tools (moved from i3.nix)
     arandr
     dmenu
@@ -62,7 +66,7 @@ in
     polybar
     nitrogen
     sweet
-    
+
     # sway
     swayfx
     swaylock-effects
@@ -79,11 +83,11 @@ in
     # Network and Bluetooth GUI tools
     networkmanagerapplet
     overskride  # Modern Rust+GTK4 Bluetooth manager
-    
+
     # Screenshot tools
     scrot
     flameshot
-    
+
     # Terminal emulator
     alacritty
 
@@ -94,16 +98,16 @@ in
     wayland-apps.sandboxed-teams-wayland
     wayland-apps.sandboxed-slack-wayland
     wayland-apps.sandboxed-zoom-wayland
-    
+
     # Muzicha
     spotify
-    
+
     # Gaming utilities (moved from steam.nix)
     gamemode
     gamescope
     mangohud
     antimicrox
-    
+
     # VPN and network tools (moved from expressvpn.nix)
     #openvpn
     #networkmanager-openvpn
@@ -116,7 +120,7 @@ in
     opensnitch-ui
     iftop
     nethogs
-    
+
     # Encryption tools
     gnupg
     age
@@ -129,12 +133,12 @@ in
     # Secure communication
     signal-desktop
     element-desktop
-    
+
     # Privacy utilities
     tor
     torsocks
     proxychains-ng
-    
+
     # System security
     lynis  # Security auditing tool
     chkrootkit
@@ -143,18 +147,18 @@ in
     # Bluetooth tools
     bluez
     bluez-tools
-    
+
     # Zsh and theme
     zsh
     zsh-powerlevel10k
     zsh-syntax-highlighting
 
-    # Office and document tools  
+    # Office and document tools
     onlyoffice-bin
     zathura
     evince
     tectonic
-    
+
     # Fonts
     fira-code
     meslo-lgs-nf
@@ -170,10 +174,10 @@ in
         #!${pkgs.bash}/bin/bash
         FILE="$1"
         HTML="/tmp/$(basename "$FILE" .md).html"
-        
+
         pandoc "$FILE" -s -o "$HTML"
         brave "$HTML" &
-        
+
         while inotifywait -e modify "$FILE"; do
             pandoc "$FILE" -s -o "$HTML"
         done
@@ -188,7 +192,7 @@ in
     exec ${sandboxed-teams}/bin/teams "$@"
   '')
   (pkgs.writeScriptBin "slack-x11" ''
-    exec ${sandboxed-slack}/bin/slack "$@"  
+    exec ${sandboxed-slack}/bin/slack "$@"
   '')
   ] ++  browserPackages;
 

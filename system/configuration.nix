@@ -17,12 +17,14 @@
     "${inputs.self}/modules/ssh-config.nix"
     "${inputs.self}/modules/lid-close.nix"
     "${inputs.self}/modules/sway.nix"
+    "${inputs.self}/modules/thunderbolt-ethernet.nix"
     # "${inputs.self}/modules/lightdm.nix"
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"
     # "${inputs.self}/modules/redshift.nix"
     "${inputs.self}/modules/gammastep.nix"
+    "${inputs.self}/modules/lightdm-transparent-theme.nix"
 
     # Gaming
     "${inputs.self}/modules/steam.nix"
