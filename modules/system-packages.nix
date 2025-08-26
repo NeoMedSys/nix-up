@@ -7,8 +7,13 @@ let
 
     # Browser packages based on user config
   browserPackages = if userConfig != null
-      then map (browser: pkgs.${browser}) userConfig.browsers
-      else [ pkgs.librewolf pkgs.firefox ]; # fallback default
+    then
+      (map (browser:
+        if browser == "librewolf"
+        then librewolf-with-policies # Use the Emperor's version
+        else pkgs.${browser}
+      ) userConfig.browsers)
+    else [ librewolf-with-policies pkgs.firefox ];
 in
 {
   # Global software packages to install
