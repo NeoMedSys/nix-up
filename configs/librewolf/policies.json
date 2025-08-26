@@ -1,0 +1,15 @@
+{
+  "policies": {
+    "HardwareAcceleration": {
+      "Enabled": true
+    },
+    "DisableTelemetry": true,
+    "DisableFirefoxStudies": true,
+    "DisablePocket": true,
+    "Preferences": {
+      "browser.startup.homepage": "about:blank",
+      "gfx.webrender.all": true
+    }
+  }
+}
+
