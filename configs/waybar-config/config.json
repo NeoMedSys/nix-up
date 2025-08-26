@@ -1,22 +1,22 @@
 {
     "layer": "top",
-    "position": "bottom",
+    "position": "bottom", 
     "height": 50,
     "spacing": 10,
     "margin-top": 0,
     "margin-bottom": 0,
     "margin-left": 0,
     "margin-right": 0,
-    "modules-center": ["custom/slack", "custom/brave", "custom/nemo", "custom/steam", "custom/stremio", "custom/spotify"],
+    "modules-center": ["custom/slack", "custom/librewolf", "custom/nemo", "custom/steam", "custom/stremio", "custom/spotify"],
     "custom/slack": {
         "format": " ",
         "on-click": "slack",
         "tooltip-format": "Slack"
     },
-    "custom/brave": {
+    "custom/librewolf": {
         "format": " ",
-        "on-click": "brave",
-        "tooltip-format": "Brave Browser"
+        "on-click": "librewolf", 
+        "tooltip-format": "LibreWolf Browser"
     },
     "custom/nemo": {
         "format": " ",
