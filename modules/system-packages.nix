@@ -8,7 +8,7 @@ let
     # Browser packages based on user config
   browserPackages = if userConfig != null
       then map (browser: pkgs.${browser}) userConfig.browsers
-      else [ pkgs.brave pkgs.firefox ]; # fallback default
+      else [ pkgs.librewolf pkgs.firefox ]; # fallback default
 in
 {
   # Global software packages to install
@@ -176,7 +176,7 @@ in
         HTML="/tmp/$(basename "$FILE" .md).html"
 
         pandoc "$FILE" -s -o "$HTML"
-        brave "$HTML" &
+        librewolf "$HTML" &
 
         while inotifywait -e modify "$FILE"; do
             pandoc "$FILE" -s -o "$HTML"

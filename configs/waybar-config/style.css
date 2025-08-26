@@ -16,7 +16,7 @@ window#waybar {
 
 /* Base style for app launcher buttons */
 #custom-slack,
-#custom-brave,
+#custom-librewolf,
 #custom-nemo,
 #custom-steam,
 #custom-stremio,
@@ -37,8 +37,8 @@ window#waybar {
 #custom-slack {
     background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/slack.svg");
 }
-#custom-brave {
-    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/brave-browser.svg");
+#custom-librewolf {
+    background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/librewolf.svg");
 }
 #custom-nemo {
     background-image: url("/run/current-system/sw/share/icons/Papirus/32x32/apps/nemo.svg");
@@ -55,7 +55,7 @@ window#waybar {
 
 /* Hover effects */
 #custom-slack:hover,
-#custom-brave:hover,
+#custom-librewolf:hover,
 #custom-nemo:hover,
 #custom-steam:hover,
 #custom-stremio:hover,

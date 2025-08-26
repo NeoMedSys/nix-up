@@ -44,6 +44,9 @@ in
       };
     };
 
+    # for librewolf
+    upower.enable = true;
+
     # Security
     opensnitch.enable = true;
     fprintd.enable = true;
@@ -149,6 +152,7 @@ in
       EDITOR = "nvim";
       VISUAL = "nvim";
       GTK_THEME = "Juno:dark";
+      MOZ_ENABLE_WAYLAND = "1";
       XDG_CURRENT_DESKTOP = "sway";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "sway";
