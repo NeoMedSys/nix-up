@@ -51,6 +51,7 @@ in
     pavucontrol
     dunst
     gammastep
+    gnupg
     libnotify
     mdcat
     networkmanagerapplet
