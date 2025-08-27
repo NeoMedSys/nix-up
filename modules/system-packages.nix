@@ -5,15 +5,14 @@ let
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
   wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
 
-    # Browser packages based on user config
+  availableBrowsers = {
+    librewolf = import ../pkgs/librewolf-with-policies.nix { inherit pkgs; };
+    firefox = pkgs.firefox;
+  };
+
   browserPackages = if userConfig != null
-    then
-      (map (browser:
-        if browser == "librewolf"
-        then librewolf-with-policies # Use the Emperor's version
-        else pkgs.${browser}
-      ) userConfig.browsers)
-    else [ librewolf-with-policies pkgs.firefox ];
+    then map (browserName: availableBrowsers.${browserName}) userConfig.browsers
+    else [ availableBrowsers.librewolf availableBrowsers.firefox ]; # fallback default
 in
 {
   # Global software packages to install
