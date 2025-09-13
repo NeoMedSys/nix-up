@@ -11,3 +11,6 @@ assets/personal-*
 
 inti-config/*
 init-config/
+user-config.nix
+system/hardware-configuration.nix
+modules/ssh-keys.nix
