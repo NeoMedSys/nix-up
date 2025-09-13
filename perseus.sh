@@ -43,11 +43,11 @@ IS_LAPTOP=${LAPTOP_INPUT:-$LAPTOP_DETECTED}
 # Browser selection
 echo ""
 echo "Browser selection:"
-read -p "Include Brave? [Y/n]: " BRAVE_INPUT
+read -p "Include LibreWolf? [Y/n]: " LIBREWOLF_INPUT
 read -p "Include Firefox? [Y/n]: " FIREFOX_INPUT
 
 BROWSERS="["
-[[ ! $BRAVE_INPUT =~ ^[Nn]$ ]] && BROWSERS="$BROWSERS \"brave\""
+[[ ! $LIBREWOLF_INPUT =~ ^[Nn]$ ]] && BROWSERS="$BROWSERS \"librewolf\""
 [[ ! $FIREFOX_INPUT =~ ^[Nn]$ ]] && BROWSERS="$BROWSERS \"firefox\""
 BROWSERS="$BROWSERS ]"
 BROWSERS=$(echo $BROWSERS | sed 's/\[ /[/g' | sed 's/ \]/]/g')
@@ -100,9 +100,33 @@ esac
 # Detect GPU bus IDs if GPU is enabled
 if [[ $HAS_GPU == "true" ]]; then
     echo "Detecting GPU bus IDs..."
-    INTEL_BUS_ID=$(lspci | grep -i "vga.*intel" | head -1 | cut -d' ' -f1 | sed 's/:/.:/g' | sed 's/^/PCI:/')
-    NVIDIA_BUS_ID=$(lspci | grep -i "vga.*nvidia\|3d.*nvidia" | head -1 | cut -d' ' -f1 | sed 's/:/.:/g' | sed 's/^/PCI:/')
     
+    # Get raw bus addresses
+    INTEL_RAW=$(lspci | grep -i "vga.*intel" | head -1 | cut -d' ' -f1)
+    NVIDIA_RAW=$(lspci | grep -i "vga.*nvidia\|3d.*nvidia" | head -1 | cut -d' ' -f1)
+    
+    # Convert to NVIDIA prime format (remove leading zeros, use colons)
+    if [[ -n "$INTEL_RAW" ]]; then
+        INTEL_BUS_ID="PCI:$(echo $INTEL_RAW | sed 's/^0*//' | sed 's/:0*/:/' | sed 's/\.0*$//' | tr ':.' '::')"
+        INTEL_BUS_ID=$(echo $INTEL_BUS_ID | sed 's/::/:/')  # Fix double colons
+    fi
+    
+    if [[ -n "$NVIDIA_RAW" ]]; then
+        NVIDIA_BUS_ID="PCI:$(echo $NVIDIA_RAW | sed 's/^0*//' | sed 's/:0*/:/' | sed 's/\.0*$//' | tr ':.' '::')"
+        NVIDIA_BUS_ID=$(echo $NVIDIA_BUS_ID | sed 's/::/:/')  # Fix double colons
+    fi
+
+    # Simpler approach - manual parsing
+    if [[ -n "$INTEL_RAW" ]]; then
+        IFS=':.' read -r bus dev func <<< "$INTEL_RAW"
+        INTEL_BUS_ID="PCI:$((10#$bus)):$((10#$dev)):$((10#$func))"
+    fi
+    
+    if [[ -n "$NVIDIA_RAW" ]]; then
+        IFS=':.' read -r bus dev func <<< "$NVIDIA_RAW"
+        NVIDIA_BUS_ID="PCI:$((10#$bus)):$((10#$dev)):$((10#$func))"
+    fi
+
     if [[ -z "$INTEL_BUS_ID" || -z "$NVIDIA_BUS_ID" ]]; then
         echo "Warning: Could not auto-detect GPU bus IDs"
         echo "Run 'lspci | grep -i vga' to find your bus IDs"
@@ -112,7 +136,6 @@ if [[ $HAS_GPU == "true" ]]; then
     echo "Intel bus ID: $INTEL_BUS_ID"
     echo "NVIDIA bus ID: $NVIDIA_BUS_ID"
 fi
-
 # Create user-config.nix with actual values
 cat > user-config.nix << EOF
 # Perseus User Configuration
@@ -152,7 +175,7 @@ git config filter.userconfig.clean 'cat << "EOF"
   timezone = "Europe/Amsterdam";
   isLaptop = false;
   hasGPU = false;
-  browsers = ["brave" "firefox"];
+  browsers = ["librewolf" "firefox"];
   devTools = ["python" "go"];
   vpn = true;
   gitName = "user";
