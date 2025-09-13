@@ -17,6 +17,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v9
       - uses: DeterminateSystems/magic-nix-cache-action@v3
+      - run: |
+          cat > user-config.nix << 'EOF'
+          {
+            username = "ci-user";
+            hostname = "perseus";
+            timezone = "Europe/Amsterdam";
+            isLaptop = false;
+            hasGPU = false;
+            browsers = ["librewolf" "firefox"];
+            devTools = ["python" "go"];
+            vpn = true;
+            gitName = "CI User";
+            gitEmail = "ci@example.com";
+            latitude = 52.4;
+            longitude = 4.9;
+            wallpaperPath = "assets/wallpaper.png";
+            avatarPath = "assets/king.png";
+          }
+          EOF
+
       - run: nix flake check
       - run: nix flake show
       - run: echo "=== user-config.nix content ===" && cat user-config.nix
