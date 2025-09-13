@@ -76,7 +76,7 @@ in
 
     # Bluetooth
     blueman.enable = true;
-  }
+  };
 
   # ========================
   # USERS & SECURITY
