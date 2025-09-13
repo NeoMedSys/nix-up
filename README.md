@@ -1,6 +1,7 @@
 ![CI/CD](https://github.com/NeoMedSys/perseus/actions/workflows/perseus.yaml/badge.svg)
 ![Version](https://img.shields.io/github/v/tag/NeoMedSys/perseus)
 [![FlakeHub](https://img.shields.io/badge/flakehub-NeoMedSys/perseus-blue)](https://flakehub.com/flake/NeoMedSys/perseus)
+
 # Perseus 🛡️
 
 > A privacy-first, developer-optimized NixOS configuration that protects you from the tech overlords while maximizing productivity.
@@ -13,22 +14,19 @@ Perseus is a fully declarative NixOS setup that combines **uncompromising privac
 
 What you get:
 
-1. **Desktop**: Sway compositor + Waybar + Alacritty terminal + Rofi launcher (Wayland-native) 
-3. **Privacy**: OpenSnitch firewall + encrypted DNS + Mullvad VPN + tracking protection
-4. **Development**: Neovim + Python/Go/Rust environments + Docker + Git integration
-5. **Daily Apps**: Brave browser + Slack/Teams (sandboxed) + Spotify + Signal
-6. **Gaming**: Steam + NVIDIA drivers (if GPU) + GameMode + controller support
+1. **Desktop**: Sway compositor + Waybar + Alacritty terminal + Rofi launcher (Wayland-native)
+2. **Privacy**: OpenSnitch firewall + encrypted DNS + Mullvad VPN + tracking protection
+3. **Development**: Neovim + Python/Go/Rust environments + Docker + Git integration
+4. **Daily Apps**: Brave browser + Slack/Teams (sandboxed) + Spotify + Signal
+5. **Gaming**: Steam + NVIDIA drivers (if GPU) + GameMode + controller support
 
 ###### i3/X11 included but being phased out
-
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8ec48a37-a0c3-4c76-8d18-b9ead35a5087" />
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ba326466-74ce-45eb-a042-8f52fd5f1d5e" />
 
-
 ## 🚀 Quick Start
-
 
 ### Prerequisites
 
@@ -49,7 +47,7 @@ The Perseus setup script is not optional - it configures your personal settings 
 ```
 
 1. **Personal Configuration**: Collects your username, hostname, git details, location, and preferences
-2. **Hardware Detection**: Auto-detects NVIDIA GPU, laptop status, and PCI bus IDs  
+2. **Hardware Detection**: Auto-detects NVIDIA GPU, laptop status, and PCI bus IDs
 3. **Git Filtering Setup**: Protects your privacy while enabling collaboration
 4. **File Protection**: Prevents `git pull` from overwriting your personal configs
 
@@ -59,23 +57,7 @@ Perseus uses a **privacy-first collaboration model**:
 
 - **Your Local Machine**: Contains real usernames, SSH keys, hardware configs, VPN settings
 - **GitHub Repository**: Contains only sanitized placeholder configs for CI/collaboration
-- **Git Filtering**: Automatically strips personal data when you push commits
-
-#### The Magic Behind the Scenes
-
-When you `git push`, the script's filters automatically transform:
-
-```diff
-# Your local user-config.nix
-- username = "alice";
-- gitEmail = "alice@company.com";
-- latitude = 40.7128;
-
-# What gets pushed to GitHub  
-+ username = "user";
-+ gitEmail = "user@user.com";
-+ latitude = 52.4;
-```
+- **Git Ignore**: Ignore user specific settings
 
 #### Collaboration Benefits
 
@@ -127,6 +109,7 @@ sudo nixos-generate-config --root /mnt
 ```
 
 #### 2. Perseus Installation
+
 ```bash
 # 2.1 Clone the repository and setup the args for your system
 git clone https://github.com/yourusername/perseus
@@ -156,9 +139,6 @@ sudo reboot
 3. All privacy protections enabled by default
 
 ##### NOTE: Add mullvad config to the setup before running install if you want the VPN
-
-
-
 
 ## 🎯 Philosophy
 
@@ -240,6 +220,7 @@ poetry add pandas   # Manage dependencies
 ### Editor Features
 
 Neovim (via nixvim) comes preconfigured with:
+
 - **LSP Support**: Auto-completion, go-to-definition, inline diagnostics
 - **Telescope**: Fuzzy file/content search (`<leader>t`)
 - **Treesitter**: Advanced syntax highlighting
@@ -266,6 +247,7 @@ perseus-gpu = mkSystem {
 ```
 
 Features:
+
 - Native Steam with Proton
 - GameMode for performance optimization
 - MangoHud for FPS/performance overlay
@@ -285,18 +267,19 @@ Features:
 
 Clean, keyboard-driven workflow with sensible defaults:
 
-| Keybinding | Action | 
-|------------|--------|
-| `Mod+Enter` | Terminal |
-| `Mod+b` | Brave browser |
-| `Mod+c` | Slack |
-| `Mod+d` | Application launcher |
-| `Mod+h/j/k/l` | Navigate windows |
-| `Mod+1-9` | Switch workspace |
+| Keybinding    | Action               |
+| ------------- | -------------------- |
+| `Mod+Enter`   | Terminal             |
+| `Mod+b`       | Brave browser        |
+| `Mod+c`       | Slack                |
+| `Mod+d`       | Application launcher |
+| `Mod+h/j/k/l` | Navigate windows     |
+| `Mod+1-9`     | Switch workspace     |
 
 ### Status Bar
 
 Interactive i3status-rust modules:
+
 - **Music Player**: ahows music that is playing
 - **Blue Light Filter**: Click to adjust screen temperature
 - **VPN**: click to toggle on or off
@@ -313,14 +296,13 @@ Interactive i3status-rust modules:
 - **Spotify**: Music streaming
 - **Stremio**: Media streaming
 
-
 ## 📊 System Architecture
 
 Perseus uses a **modular architecture** for flexibility and maintainability:
 
 ```
 modules/          # Individual system components
-configs/          # Application configuration files  
+configs/          # Application configuration files
 pkgs/             # Custom package definitions
 system/           # Core NixOS configuration
 ```
@@ -386,4 +368,4 @@ MIT - Use Perseus to build your own privacy fortress!
 
 ---
 
-*"In a world of tech overlords, be the rebel with root access"* - Perseus Project
+_"In a world of tech overlords, be the rebel with root access"_ - Perseus Project
