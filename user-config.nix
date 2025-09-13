@@ -5,7 +5,7 @@
   timezone = "Europe/Amsterdam";
   isLaptop = false;
   hasGPU = false;
-  browsers = ["brave" "firefox"];
+  browsers = ["librewolf" "firefox"];
   devTools = ["python" "go"];
   vpn = true;
   gitName = "user";
