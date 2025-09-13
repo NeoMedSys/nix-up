@@ -60,29 +60,6 @@ in
       };
       windowManager.i3.enable = true;
 
-      displayManager.lightdm = {
-        enable = true;
-        greeters.gtk = {
-          enable = true;
-            #theme = {
-            #  package = pkgs.juno-theme;
-            #  name = "Juno";
-            #};
-          iconTheme = {
-            package = pkgs.papirus-icon-theme;
-            name = "Papirus-Dark";
-          };
-          extraConfig = ''
-            background = ${inputs.self}/${userConfig.wallpaperPath}
-            font-name = MesloLGS NF 12
-            indicators = ~host;~spacer;~clock;~spacer;~session;~power
-            clock-format = %H:%M:%S | %A, %d %B %Y
-            position = 50%,center 50%,center
-          '';
-        };
-      };
-    };
-
     displayManager.defaultSession = "none+i3";
 
     # Audio
@@ -275,6 +252,11 @@ in
       user.name = userConfig.gitName;
       user.email = userConfig.gitEmail;
     };
+  };
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   # ========================
