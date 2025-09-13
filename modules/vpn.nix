@@ -2,10 +2,14 @@
 let
   # Find the Mullvad config file (expects exactly 1 .conf file)
   mullvadConfigDir = ../configs/mullvad-config;
-  configFiles = builtins.attrNames (builtins.readDir mullvadConfigDir);
-  confFiles = builtins.filter (name: lib.hasSuffix ".conf" name) configFiles;
-  hasConfig = confFiles != [];
   
+  configDirExists = builtins.pathExists mullvadConfigDir;
+  configFiles = if configDirExists 
+                then builtins.attrNames (builtins.readDir mullvadConfigDir)
+                else [];
+  confFiles = builtins.filter (name: lib.hasSuffix ".conf" name) configFiles;
+  hasConfig = confFiles != [] && configDirExists;
+
   configFile = if hasConfig then builtins.head confFiles else "";
   configPath = if hasConfig then mullvadConfigDir + "/${configFile}" else null;
   configContent = if hasConfig then builtins.readFile configPath else "";
@@ -53,7 +57,7 @@ lib.mkIf hasConfig {
         echo "VPN connected"
       fi
     '')
-    
+
     (writeShellScriptBin "mullvad-status" ''
       if systemctl is-active --quiet wg-quick-mullvad; then
         echo "Connected"

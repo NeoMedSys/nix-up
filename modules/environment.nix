@@ -156,7 +156,6 @@ in
       XDG_CURRENT_DESKTOP = "sway";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "sway";
-      SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
     };
     etc = {
       # for ssh agent
