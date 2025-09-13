@@ -19,7 +19,6 @@ in
   environment.systemPackages = with pkgs; [
     # Development tools
     flakehub.packages.${pkgs.system}.default
-
     curl
     git
     gcc
@@ -44,50 +43,36 @@ in
     nemo
     juno-theme
 
-    # Desktop utilities (moved from other modules)
+    # Desktop utilities
     brightnessctl
     i3lock-fancy
     playerctl
     pavucontrol
-    dunst
-    gammastep
     gnupg
     libnotify
     mdcat
     networkmanagerapplet
-    xorg.xrandr
+    xorg.xrandr # Useful for arandr or manual display config
     xss-lock
 
-    # Window manager tools (moved from i3.nix)
-    arandr
+    # Window manager tools (some are needed for configs even if WM is module-managed)
+    arandr # X11 display config GUI
     dmenu
-    i3
-    i3status-rust
-    i3lock
-    i3blocks
-    rofi
-    feh
-    picom
-    polybar
+    feh # Sets wallpaper in i3
+    polybar # Bar for i3
     nitrogen
-    sweet
+    sweet # GTK theme
 
-    # sway
-    swayfx
-    swaylock-effects
-    swayidle
-    swaybg
+    # Wayland-specific tools
     wl-clipboard
     grim
     slurp
     rofi-wayland
-    waybar
     xdg-desktop-portal
     xdg-desktop-portal-wlr
 
     # Network and Bluetooth GUI tools
-    networkmanagerapplet
-    overskride  # Modern Rust+GTK4 Bluetooth manager
+    overskride # Modern Rust+GTK4 Bluetooth manager
 
     # Screenshot tools
     scrot
@@ -98,36 +83,23 @@ in
 
     # Entertainment
     wayland-apps.sandboxed-stremio-wayland
+    spotify
 
-    # comms
+    # Communication Apps (Sandboxed)
     wayland-apps.sandboxed-teams-wayland
     wayland-apps.sandboxed-slack-wayland
     wayland-apps.sandboxed-zoom-wayland
 
-    # Muzicha
-    spotify
-
-    # Gaming utilities (moved from steam.nix)
-    gamemode
-    gamescope
+    # Gaming utilities
     mangohud
     antimicrox
 
-    # VPN and network tools (moved from expressvpn.nix)
-    #openvpn
-    #networkmanager-openvpn
+    # Network tools
     dig
-    #wget
-
-    # Privacy and security tools
-    dnscrypt-proxy2
-    opensnitch
-    opensnitch-ui
     iftop
     nethogs
 
     # Encryption tools
-    gnupg
     age
     sops
 
@@ -144,19 +116,9 @@ in
     torsocks
     proxychains-ng
 
-    # System security
-    lynis  # Security auditing tool
+    # System security auditing tools
+    lynis
     chkrootkit
-    fail2ban
-
-    # Bluetooth tools
-    bluez
-    bluez-tools
-
-    # Zsh and theme
-    zsh
-    zsh-powerlevel10k
-    zsh-syntax-highlighting
 
     # Office and document tools
     onlyoffice-bin
@@ -173,34 +135,31 @@ in
     fira-code-symbols
     papirus-icon-theme
 
-    # Pandoc and live MD rendering
+    # Pandoc and live MD rendering script
     pandoc
     (pkgs.writeScriptBin "mdlive" ''
-        #!${pkgs.bash}/bin/bash
-        FILE="$1"
-        HTML="/tmp/$(basename "$FILE" .md).html"
-
+      #!/bin/bash
+      FILE="$1"
+      HTML="/tmp/$(basename "$FILE" .md).html"
+      pandoc "$FILE" -s -o "$HTML"
+      librewolf "$HTML" &
+      while inotifywait -e modify "$FILE"; do
         pandoc "$FILE" -s -o "$HTML"
-        librewolf "$HTML" &
-
-        while inotifywait -e modify "$FILE"; do
-            pandoc "$FILE" -s -o "$HTML"
-        done
+      done
     '')
     inotify-tools
 
-  # X11 versions with different names (for fallback)
-  (pkgs.writeScriptBin "stremio-x11" ''
-    exec ${sandboxed-stremio}/bin/stremio "$@"
-  '')
-  (pkgs.writeScriptBin "teams-x11" ''
-    exec ${sandboxed-teams}/bin/teams "$@"
-  '')
-  (pkgs.writeScriptBin "slack-x11" ''
-    exec ${sandboxed-slack}/bin/slack "$@"
-  '')
-  ] ++  browserPackages;
-
+    # X11 versions with different names (for fallback)
+    (pkgs.writeScriptBin "stremio-x11" ''
+      exec ${sandboxed-stremio}/bin/stremio "$@"
+    '')
+    (pkgs.writeScriptBin "teams-x11" ''
+      exec ${sandboxed-teams}/bin/teams "$@"
+    '')
+    (pkgs.writeScriptBin "slack-x11" ''
+      exec ${sandboxed-slack}/bin/slack "$@"
+    '')
+  ] ++ browserPackages;
 
   # This registers the fonts with your system so applications can find them.
   fonts.packages = with pkgs; [
@@ -214,7 +173,7 @@ in
     material-design-icons
     material-icons
     noto-fonts-emoji
-    nerd-fonts.symbols-only  # More comprehensive Nerd Fonts collection
+    nerd-fonts.symbols-only # More comprehensive Nerd Fonts collection
     nerd-fonts.fira-code
     font-awesome_5
   ];
