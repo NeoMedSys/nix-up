@@ -37,9 +37,4 @@ in
       NODE_OPTIONS = "--max-old-space-size=8192";
     })
   ];
-
-  # Development user groups
-  users.users.${userConfig.username} = lib.mkIf (devTools != []) {
-    extraGroups = [ "docker" ];
-  };
 }

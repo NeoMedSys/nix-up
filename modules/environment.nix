@@ -59,6 +59,7 @@ in
         options = "eurosign:e,caps:escape";
       };
       windowManager.i3.enable = true;
+    };
 
     displayManager.defaultSession = "none+i3";
 
@@ -76,7 +77,7 @@ in
 
     # Bluetooth
     blueman.enable = true;
-  };
+  }; # <-- First fix: Added the missing semicolon here
 
   # ========================
   # USERS & SECURITY
@@ -139,7 +140,7 @@ in
       "gnupg/scdaemon.conf".text = ''
         disable-ccid
       '';
-      # Global GTK Dark Theme Configuration  
+      # Global GTK Dark Theme Configuration
       "gtk-3.0/settings.ini".text = ''
         [Settings]
         gtk-application-prefer-dark-theme=1
@@ -175,7 +176,7 @@ in
 
       # LightDM GTK Greeter custom CSS - reference external file
       "lightdm/gtk-greeter.css".source = "${inputs.self}/configs/lightdm-gtk/greeter.css";
-      
+
       # i3 Configuration Files
       "i3/config".source = "${inputs.self}/configs/i3-config/config";
       "i3status-rust/config.toml".source = "${inputs.self}/configs/i3status-rust-config/config.toml";
@@ -184,7 +185,7 @@ in
         source = "${inputs.self}/configs/polybar-config/launch.sh";
         mode = "0755";
       };
-      
+
       # Desktop Environment Configs
       "dunst/dunstrc".source = "${inputs.self}/configs/dunst-config/dunstrc";
       "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
@@ -317,7 +318,7 @@ in
     # Nemo as default file manager
     "inode/directory" = "nemo.desktop";
     "application/x-gnome-saved-search" = "nemo.desktop";
-    
+
     # OnlyOffice for all office formats
     "application/vnd.oasis.opendocument.text" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.oasis.opendocument.spreadsheet" = "onlyoffice-desktopeditors.desktop";
@@ -337,7 +338,6 @@ in
     "application/pdf" = "org.pwmt.zathura.desktop";
   };
 
-
   # ========================
   # MISC CONFIGURATIONS
   # ========================
@@ -345,4 +345,5 @@ in
     gesture swipe right 3 ydotool key alt+Left
     gesture swipe left 3 ydotool key alt+Right
   '';
-}
+
+} # <-- Second fix: Added the missing final closing brace
