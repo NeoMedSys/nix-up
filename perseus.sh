@@ -100,39 +100,56 @@ esac
 # Detect GPU bus IDs if GPU is enabled
 if [[ $HAS_GPU == "true" ]]; then
     echo "Detecting GPU bus IDs..."
-    
-    # Get raw bus addresses
+
     INTEL_RAW=$(lspci | grep -i "vga.*intel" | head -1 | cut -d' ' -f1)
     NVIDIA_RAW=$(lspci | grep -i "vga.*nvidia\|3d.*nvidia" | head -1 | cut -d' ' -f1)
-    
-    # Convert to NVIDIA prime format (remove leading zeros, use colons)
+    INTEL_BUS_ID=""
+    NVIDIA_BUS_ID=""
+
+    # --- Function to robustly parse standard or complex PCI addresses ---
+    parse_pci_bus_id() {
+        local raw_address=$1
+        # Return early if input is empty
+        [[ -z "$raw_address" ]] && return
+
+        local cleaned_address=$raw_address
+
+        # Check for the optional domain (e.g., "0000:01:00.0") and strip it
+        if [[ "$cleaned_address" == *:*.* && $(echo "$cleaned_address" | grep -o ':' | wc -l) -eq 2 ]]; then
+            cleaned_address="${cleaned_address#*:}"
+        fi
+
+        # Now parse the remaining "bus:device.function"
+        IFS=':.' read -r bus dev func <<< "$cleaned_address"
+
+        # Convert hex values to decimal for the final format "PCI:X:Y:Z"
+        # The '16#' prefix is crucial for correct hex-to-decimal conversion.
+        echo "PCI:$((16#$bus)):$((16#$dev)):$((16#$func))"
+    }
+    # --- End of function ---
+
     if [[ -n "$INTEL_RAW" ]]; then
-        INTEL_BUS_ID="PCI:$(echo $INTEL_RAW | sed 's/^0*//' | sed 's/:0*/:/' | sed 's/\.0*$//' | tr ':.' '::')"
-        INTEL_BUS_ID=$(echo $INTEL_BUS_ID | sed 's/::/:/')  # Fix double colons
-    fi
-    
-    if [[ -n "$NVIDIA_RAW" ]]; then
-        NVIDIA_BUS_ID="PCI:$(echo $NVIDIA_RAW | sed 's/^0*//' | sed 's/:0*/:/' | sed 's/\.0*$//' | tr ':.' '::')"
-        NVIDIA_BUS_ID=$(echo $NVIDIA_BUS_ID | sed 's/::/:/')  # Fix double colons
+        INTEL_BUS_ID=$(parse_pci_bus_id "$INTEL_RAW")
     fi
 
-    # Simpler approach - manual parsing
-    if [[ -n "$INTEL_RAW" ]]; then
-        IFS=':.' read -r bus dev func <<< "$INTEL_RAW"
-        INTEL_BUS_ID="PCI:$((10#$bus)):$((10#$dev)):$((10#$func))"
-    fi
-    
     if [[ -n "$NVIDIA_RAW" ]]; then
-        IFS=':.' read -r bus dev func <<< "$NVIDIA_RAW"
-        NVIDIA_BUS_ID="PCI:$((10#$bus)):$((10#$dev)):$((10#$func))"
+        NVIDIA_BUS_ID=$(parse_pci_bus_id "$NVIDIA_RAW")
     fi
 
+    # Fallback to manual input if auto-detection fails for any reason
     if [[ -z "$INTEL_BUS_ID" || -z "$NVIDIA_BUS_ID" ]]; then
-        echo "Warning: Could not auto-detect GPU bus IDs"
-        echo "Run 'lspci | grep -i vga' to find your bus IDs"
-        read -p "Enter Intel bus ID (format PCI:X:Y:Z): " INTEL_BUS_ID
-        read -p "Enter NVIDIA bus ID (format PCI:X:Y:Z): " NVIDIA_BUS_ID
+        echo "Warning: Could not auto-detect one or more GPU bus IDs."
+        echo "Please run 'lspci | grep -Ei \"vga|3d\"' to find your bus IDs."
+
+        if [[ -z "$INTEL_BUS_ID" ]]; then
+            read -p "Enter Intel bus ID (e.g., PCI:0:2:0): " INTEL_BUS_ID
+        fi
+
+        if [[ -z "$NVIDIA_BUS_ID" ]]; then
+            read -p "Enter NVIDIA bus ID (e.g., PCI:1:0:0): " NVIDIA_BUS_ID
+        fi
     fi
+
     echo "Intel bus ID: $INTEL_BUS_ID"
     echo "NVIDIA bus ID: $NVIDIA_BUS_ID"
 fi
