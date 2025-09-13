@@ -14,15 +14,6 @@ in
     };
   };
 
-  # Modern gpg-agent with SSH support (systemd managed)
-  services.gpg-agent = {
-    enable = true;
-    enableSSHSupport = true;
-    pinentryPackage = pkgs.pinentry-gtk2;
-    defaultCacheTtl = 3600;
-    defaultCacheTtlSsh = 3600;
-  };
-
   # User SSH keys (if they exist)
   users.users.${userConfig.username}.openssh.authorizedKeys.keys =
     lib.optionals (sshKeys ? ${userConfig.username}) [ sshKeys.${userConfig.username} ];
