@@ -23,15 +23,6 @@ in
     defaultCacheTtlSsh = 3600;
   };
 
-  # SSH client config
-  programs.ssh = {
-    enable = true;
-    extraConfig = ''
-      AddKeysToAgent yes
-      IdentityAgent ~/.gnupg/S.gpg-agent.ssh
-    '';
-  };
-
   # User SSH keys (if they exist)
   users.users.${userConfig.username}.openssh.authorizedKeys.keys =
     lib.optionals (sshKeys ? ${userConfig.username}) [ sshKeys.${userConfig.username} ];
