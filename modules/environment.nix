@@ -59,11 +59,6 @@ in
         options = "eurosign:e,caps:escape";
       };
       windowManager.i3.enable = true;
-      pointerCursor = {
-        name = "Bibata-Modern-Classic";
-        package = pkgs.bibata-cursors;
-        size = 24;
-      };
     };
 
     displayManager = {
