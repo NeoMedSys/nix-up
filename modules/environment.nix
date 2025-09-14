@@ -61,7 +61,10 @@ in
       windowManager.i3.enable = true;
     };
 
-    displayManager.defaultSession = "none+i3";
+    displayManager = {
+      defaultSession = "none+i3";
+    };
+
 
     # Audio
     pulseaudio.enable = false;
@@ -134,6 +137,8 @@ in
       XDG_CURRENT_DESKTOP = "sway";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "sway";
+      XCURSOR_THEME = "Bibata-Modern-Classic";
+      XCURSOR_SIZE = "24";
     };
     etc = {
       # for ssh agent
@@ -147,7 +152,7 @@ in
         gtk-theme-name=Juno
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
-        gtk-cursor-theme-name=Adwaita
+        gtk-cursor-theme-name=Bibata-Modern-Classic
         gtk-cursor-theme-size=24
       '';
 
@@ -162,6 +167,7 @@ in
         gtk-theme-name=Juno
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
+        gtk-cursor-theme-name=Bibata-Modern-Classic
       '';
 
       "gtk-4.0/gtk.css".text = ''
