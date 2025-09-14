@@ -1,3 +1,4 @@
+# flake.nix (Simplified and Corrected)
 {
   description = "Perseus - NixOS Laptop Configuration";
 
@@ -9,27 +10,19 @@
     flakehub.url = "github:DeterminateSystems/fh";
   };
 
-  outputs = { nixpkgs, flakehub, ... }@inputs:
+  outputs = { self, nixpkgs, ... }@inputs:
   let
     version = "1.0.0";
-    userConfig = import ./user-config.nix;
-    mkSystem = { ... }:
-      nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs version flakehub userConfig;
-        };
-        modules = [
-          ./system/configuration.nix
-          inputs.nixvim.nixosModules.nixvim
-          inputs.disko.nixosModules.disko
-        ];
-      };
+    user-configuration = import ./user-config.nix;
   in
   {
-    nixosConfigurations = {
-      # Use hostname from config
-      "${userConfig.hostname}" = mkSystem {};
+    nixosConfigurations.perseus = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        { _module.args.userConfig = user-configuration; }
+        { _module.args.inputs = inputs; }
+        ./system/configuration.nix
+      ];
     };
   };
 }
