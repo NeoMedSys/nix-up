@@ -1,6 +1,6 @@
 # Perseus User Configuration
 {
-  username = "jon";
+  username = "user";
   hostname = "perseus";
   timezone = "UTC";
   isLaptop = false;
