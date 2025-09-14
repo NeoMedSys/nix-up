@@ -85,18 +85,20 @@ echo "6. Custom coordinates"
 read -p "Choose [1-6]: " LOCATION_CHOICE
 
 case $LOCATION_CHOICE in
-    1) LAT=40.7; LON=-74.0 ;;
-    2) LAT=34.0; LON=-118.2 ;;
-    3) LAT=52.4; LON=4.9 ;;
-    4) LAT=35.7; LON=139.7 ;;
-    5) LAT=51.5; LON=-0.1 ;;
+    1) LAT=40.7; LON=-74.0; TIMEZONE="America/New_York" ;;
+    2) LAT=34.0; LON=-118.2; TIMEZONE="America/Los_Angeles" ;;
+    3) LAT=52.4; LON=4.9; TIMEZONE="Europe/Amsterdam" ;;
+    4) LAT=35.7; LON=139.7; TIMEZONE="Asia/Tokyo" ;;
+    5) LAT=51.5; LON=-0.1; TIMEZONE="Europe/London" ;;
     6)
         read -p "Enter latitude: " LAT
         read -p "Enter longitude: " LON
+        read -p "Enter timezone: " TIMEZONE
         ;;
-    *) LAT=52.4; LON=4.9 ;; # Default to Amsterdam
+    *) LAT=52.4; LON=4.9; TIMEZONE="Europe/Amsterdam" ;;
 esac
-
+#
+#
 # Detect GPU bus IDs if GPU is enabled
 if [[ $HAS_GPU == "true" ]]; then
     echo "Detecting GPU bus IDs..."
@@ -159,7 +161,7 @@ cat > user-config.nix << EOF
 {
   username = "$USERNAME";
   hostname = "$HOSTNAME";
-  timezone = "$(timedatectl show -p Timezone --value 2>/dev/null || echo "Europe/Amsterdam")";
+  timezone = "$TIMEZONE";
   isLaptop = $IS_LAPTOP;
   hasGPU = $HAS_GPU;
   browsers = $BROWSERS;

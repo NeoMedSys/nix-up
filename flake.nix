@@ -12,7 +12,9 @@
   outputs = { nixpkgs, flakehub, ... }@inputs:
   let
     version = "1.0.0";
+    
     userConfig = import ./user-config.nix;
+    
     mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -23,12 +25,13 @@
           ./system/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
+          
+
         ];
       };
   in
   {
     nixosConfigurations = {
-      # Use hostname from config
       "${userConfig.hostname}" = mkSystem {};
     };
   };
