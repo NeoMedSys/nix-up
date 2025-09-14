@@ -3,8 +3,22 @@ let
   # Use coordinates from userConfig or fallback to Amsterdam
   latitude = if userConfig != null then toString userConfig.latitude else "52.37";
   longitude = if userConfig != null then toString userConfig.longitude else "4.89";
+
+  gammastep-toggle = pkgs.writeShellScriptBin "gammastep-toggle" ''
+    #!${pkgs.stdenv.shell}
+    if pgrep -x gammastep > /dev/null
+    then
+        killall gammastep
+        notify-send "Gammastep Paused" -i display-brightness
+    else
+        gammastep &
+        notify-send "Gammastep Resumed" -i display-brightness
+    fi
+  '';
 in
 {
+  environment.systemPackages = [ gammastep-toggle ];
+
   # Gammastep blue light filter service (Wayland native)
   systemd.user.services.gammastep = {
     description = "Gammastep blue light filter";
