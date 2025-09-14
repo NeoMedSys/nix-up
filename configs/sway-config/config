@@ -12,6 +12,12 @@ shadow_blur_radius 20
 
 seat * hide_cursor 2000
 
+# --- Lid Close Handling ---
+# This is more reliable than acpid because it runs directly within the Sway session.
+# It suspends the system ONLY if no active external monitors are found.
+# An "external" monitor is defined as any active display whose name does not start with "eDP".
+bindswitch --reload lid:on exec 'swaymsg -t get_outputs --raw | jq -e \'.[] | select(.active and (.name | startswith("eDP") | not))\' > /dev/null || systemctl suspend'
+
 default_border none
 default_floating_border none
 floating_modifier $mod normal

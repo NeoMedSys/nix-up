@@ -15,7 +15,6 @@
     "${inputs.self}/modules/zsh.nix"
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
-    "${inputs.self}/modules/lid-close.nix"
     "${inputs.self}/modules/sway.nix"
     "${inputs.self}/modules/thunderbolt-ethernet.nix"
 
