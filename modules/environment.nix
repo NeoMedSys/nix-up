@@ -63,6 +63,8 @@ in
 
     displayManager = {
       defaultSession = "none+i3";
+    };
+    xserver.displayManager.defaultSessionXhr = {
       cursorTheme = {
         name = "Bibata-Modern-Classic";
         package = pkgs.bibata-cursors;
