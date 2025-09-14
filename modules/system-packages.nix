@@ -27,7 +27,7 @@ in
 
     # System utilities
     direnv
-    htop
+    btop
     jq
     fastfetch
     fzf
