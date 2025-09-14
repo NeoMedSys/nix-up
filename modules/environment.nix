@@ -59,18 +59,17 @@ in
         options = "eurosign:e,caps:escape";
       };
       windowManager.i3.enable = true;
-    };
-
-    displayManager = {
-      defaultSession = "none+i3";
-    };
-    xserver.displayManager.defaultSessionXhr = {
-      cursorTheme = {
+      pointerCursor = {
         name = "Bibata-Modern-Classic";
         package = pkgs.bibata-cursors;
         size = 24;
       };
     };
+
+    displayManager = {
+      defaultSession = "none+i3";
+    };
+
 
     # Audio
     pulseaudio.enable = false;
