@@ -38,15 +38,12 @@ cmd = "playerctl play-pause"
 [[block]]
 block    = "custom"
 command  = '''
-if systemctl --user is-active gammastep.service >/dev/null; then
-  temp=$(gammastep -p 2>/dev/null | awk '/Color temperature:/ {print int($3)}' | head -1)
-  if [ -n "$temp" ]; then
-    printf "\ue30d ${temp} K"
-  else
-    printf "\ue30d K"
-  fi
+if pgrep -x gammastep > /dev/null; then
+  printf "\ue30d Running"
+elif systemctl --user is-active gammastep.service >/dev/null; then
+  printf "\ue30d Paused" 
 else
-  printf "\ue30d Paused"
+  printf "\ue30d Off"
 fi
 '''
 shell    = "bash"
@@ -54,7 +51,7 @@ interval = 5
 
 [[block.click]]
 button = "left"
-cmd    = "gammastep-pause"
+cmd    = "gammastep-toggle"
 
 [[block]]
 block = "custom"
