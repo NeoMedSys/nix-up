@@ -1,41 +1,108 @@
 {
     "layer": "top",
-    "position": "bottom", 
-    "height": 50,
-    "spacing": 10,
+    "position": "top",
+    "height": 30,
+    "spacing": 4,
     "margin-top": 0,
     "margin-bottom": 0,
     "margin-left": 0,
     "margin-right": 0,
-    "modules-center": ["custom/slack", "custom/librewolf", "custom/nemo", "custom/steam", "custom/stremio", "custom/spotify"],
-    "custom/slack": {
-        "format": " ",
-        "on-click": "slack",
-        "tooltip-format": "Slack"
+    "modules-left": ["custom/launcher"],
+    "modules-center": [],
+    "modules-right": [
+        "custom/music",
+        "custom/gammastep", 
+        "custom/vpn",
+        "custom/network",
+        "custom/bluetooth",
+        "custom/disk",
+        "custom/memory",
+        "custom/cpu",
+        "custom/volume",
+        "custom/battery",
+        "custom/clock"
+    ],
+
+    "custom/launcher": {
+        "format": "\uf00a",
+        "on-click": "rofi -show drun >/dev/null 2>&1 &",
+        "on-click-right": "rofi -show run >/dev/null 2>&1 &",
+        "tooltip": true,
+        "tooltip-format": "Applications"
     },
-    "custom/librewolf": {
-        "format": " ",
-        "on-click": "librewolf", 
-        "tooltip-format": "LibreWolf Browser"
+
+    "custom/music": {
+        "format": "{}",
+        "max-length": 60,
+        "interval": 3,
+        "exec": "song=$(playerctl --player=spotify metadata --format '{{ artist }} - {{ title }}' 2>/dev/null); if [ -n \"$song\" ] && [ \"$song\" != \" - \" ]; then if [ ${#song} -gt 50 ]; then song=$(echo \"$song\" | cut -c1-47)...; fi; printf \"\uf001 $song\"; else song=$(playerctl metadata --format '{{ artist }} - {{ title }}' 2>/dev/null); if [ -n \"$song\" ] && [ \"$song\" != \" - \" ]; then if [ ${#song} -gt 50 ]; then song=$(echo \"$song\" | cut -c1-47)...; fi; printf \"\uf001 $song\"; fi; fi",
+        "on-click": "playerctl play-pause >/dev/null 2>&1 &",
+        "return-type": "json",
+        "exec-if": "command -v playerctl"
     },
-    "custom/nemo": {
-        "format": " ",
-        "on-click": "nemo",
-        "tooltip-format": "File Manager"
+
+    "custom/gammastep": {
+        "format": "{}",
+        "interval": 5,
+        "exec": "if pgrep -x gammastep > /dev/null; then printf '\ue30d Running'; elif systemctl --user is-active gammastep.service >/dev/null; then printf '\ue30d Paused'; else printf '\ue30d Off'; fi",
+        "on-click": "gammastep-toggle >/dev/null 2>&1 &"
     },
-    "custom/steam": {
-        "format": " ",
-        "on-click": "steam",
-        "tooltip-format": "Steam"
+
+    "custom/vpn": {
+        "format": "{}",
+        "interval": 5,
+        "exec": "if systemctl is-active --quiet wg-quick-mullvad; then printf '\ued25 VPN-On'; else printf '\ued25 VPN-Off'; fi",
+        "on-click": "mullvad-toggle >/dev/null 2>&1 &"
     },
-    "custom/stremio": {
-        "format": " ",
-        "on-click": "stremio",
-        "tooltip-format": "Stremio"
+
+    "custom/network": {
+        "format": "{}",
+        "interval": 5,
+        "exec": "ethernet_device=$(nmcli -t -f device,type,state dev | grep 'ethernet:connected' | head -1 | cut -d: -f1); if [ -n \"$ethernet_device\" ]; then printf '\\uef44 Ethernet'; else wifi_ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes:' | cut -d: -f2); if [ -n \"$wifi_ssid\" ]; then printf '\\uf1eb %s' \"$wifi_ssid\"; else wifi_conn=$(nmcli -t -f name con show --active | head -1); if [ -n \"$wifi_conn\" ] && [ \"$wifi_conn\" != \"lo\" ]; then printf '\\uf1eb %s' \"$wifi_conn\"; else printf '\\uf1eb Connect'; fi; fi; fi",
+        "on-click": "nm-connection-editor >/dev/null 2>&1 &"
     },
-    "custom/spotify": {
-        "format": " ",
-        "on-click": "spotify",
-        "tooltip-format": "Spotify"
+
+    "custom/bluetooth": {
+        "format": "{}",
+        "interval": 5,
+        "exec": "connected_device=$(bluetoothctl devices Connected | head -n1 | cut -d ' ' -f 3-); if [ -n \"$connected_device\" ]; then printf '\uf294 $connected_device'; else printf '\uf294 Off'; fi",
+        "on-click": "overskride >/dev/null 2>&1 &"
+    },
+
+    "custom/disk": {
+        "format": "{}",
+        "interval": 60,
+        "exec": "printf '\uf0a0 %s' \"$(df -h / | awk 'END{print $4}')\""
+    },
+
+    "custom/memory": {
+        "format": "{}",
+        "interval": 5,
+        "exec": "mem_percent=$(free -m | awk '/Mem:/ {print int($3/$2*100)}'); printf '\uefc5 %s%%' \"$mem_percent\""
+    },
+
+    "custom/cpu": {
+        "format": "{}",
+        "interval": 1,
+        "exec": "cpu_percent=$(vmstat 1 2 | tail -1 | awk '{print 100-$15}'); printf '\uf4bc %s%%' \"$cpu_percent\""
+    },
+
+    "custom/volume": {
+        "format": "{}",
+        "interval": 1,
+        "exec": "volume=$(pactl get-sink-volume @DEFAULT_SINK@ | awk '{print $5}' | tr -d '%'); if [ -n \"$volume\" ]; then printf '\uf028 %s%%' \"$volume\"; else printf '\uf028 --%%'; fi",
+        "on-click": "pavucontrol >/dev/null 2>&1 &"
+    },
+
+    "custom/battery": {
+        "format": "{}",
+        "interval": 2,
+        "exec": "capacity=$(cat /sys/class/power_supply/BAT0/capacity); status=$(cat /sys/class/power_supply/BAT0/status); if [ \"$status\" = \"Charging\" ]; then printf '\uf1e6 %s%%' \"$capacity\"; else if [ \"$capacity\" -ge 90 ]; then icon=$'\uf240'; elif [ \"$capacity\" -ge 70 ]; then icon=$'\uf241'; elif [ \"$capacity\" -ge 50 ]; then icon=$'\uf242'; elif [ \"$capacity\" -ge 25 ]; then icon=$'\uf243'; else icon=$'\uf244'; fi; printf '%s %s%%' \"$icon\" \"$capacity\"; fi"
+    },
+
+    "custom/clock": {
+        "format": "{}",
+        "interval": 1,
+        "exec": "date +'%Y-%m-%d %H:%M:%S'"
     }
 }

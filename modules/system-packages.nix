@@ -54,7 +54,6 @@ in
     networkmanagerapplet
     xorg.xrandr # Useful for arandr or manual display config
     xss-lock
-    i3status-rust
     gammastep
     dunst
 
