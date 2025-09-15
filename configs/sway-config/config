@@ -164,7 +164,7 @@ bindsym $mod+l exec $lock
 exec_always swayidle -w \
     timeout 300 '$lock -f -c 000000' \
     timeout 600 'swaymsg "output * power off"' \
-    # resume 'swaymsg "output * power on"' \
+    resume 'swaymsg "output * power on"' \
     before-sleep '$lock -f -c 000000'
 
 # Reboot
@@ -188,20 +188,20 @@ bar {
         statusline            #C5C8C680
         separator             #373B4180
 
-        #                     border    background   text
-        focused_workspace     #4a90e2   #4a90e2      #ffffff
-        active_workspace      #373B41   #373B41      #ffffff
-        inactive_workspace    #282A2E   #282A2E      #888888
-        urgent_workspace      #A54242   #A54242      #ffffff
+        #                     border    background     text
+        focused_workspace     #4a90e2   #4a90e280      #ffffff
+        active_workspace      #373B41   #373B4180      #ffffff
+        inactive_workspace    #282A2E   #282A2E80      #888888
+        urgent_workspace      #A54242   #A5424280      #ffffff
     }
 }
 
 output * bg ~/.config/sway/wallpaper.png fill
 
 # Autostart waybar
-exec waybar
+exec_always sh -c 'pkill waybar; waybar &'
 exec_always opensnitch-ui >/dev/null 2>&1
-exec dunst
+exec_always dunst
 
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME
