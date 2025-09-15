@@ -141,6 +141,13 @@ in
       XCURSOR_SIZE = "24";
     };
     etc = {
+      # three finger swipe for panels
+      "libinput-gestures.conf".text = ''
+        gesture swipe right 3 ydotool key alt+Left
+        gesture swipe left 3 ydotool key alt+Right
+        gesture swipe left 3 swaymsg workspace next
+        gesture swipe right 3 swaymsg workspace prev
+      '';
       # for ssh agent
       "gnupg/scdaemon.conf".text = ''
         disable-ccid
@@ -343,13 +350,4 @@ in
     # PDF documents
     "application/pdf" = "org.pwmt.zathura.desktop";
   };
-
-  # ========================
-  # MISC CONFIGURATIONS
-  # ========================
-  environment.etc."libinput-gestures.conf".text = ''
-    gesture swipe right 3 ydotool key alt+Left
-    gesture swipe left 3 ydotool key alt+Right
-  '';
-
-} # <-- Second fix: Added the missing final closing brace
+}

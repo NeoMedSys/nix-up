@@ -184,9 +184,9 @@ bar {
     font pango:MesloLGS NF 10
 
     colors {
-        background            #282A2E
-        statusline            #C5C8C6
-        separator             #373B41
+        background            #282A2E80
+        statusline            #C5C8C680
+        separator             #373B4180
 
         #                     border    background   text
         focused_workspace     #4a90e2   #4a90e2      #ffffff
