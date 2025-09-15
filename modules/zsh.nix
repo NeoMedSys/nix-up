@@ -14,6 +14,7 @@
         "z"
         "vi-mode"
         "fzf"
+        "ssh-agent"
       ];
     };
     # add extras to .zshrc
