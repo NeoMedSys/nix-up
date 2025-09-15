@@ -62,11 +62,17 @@ in
     arandr # X11 display config GUI
     dmenu
     feh # Sets wallpaper in i3
+    i3
+    i3blocks
+    picom
     polybar # Bar for i3
     nitrogen
     sweet # GTK theme
 
     # Wayland-specific tools
+    swayfx
+    swayidle
+    swaybg
     wl-clipboard
     grim
     slurp
@@ -97,6 +103,8 @@ in
     wayland-apps.sandboxed-zoom-wayland
 
     # Gaming utilities
+    gamemode
+    gamescope
     mangohud
     antimicrox
 
@@ -117,6 +125,11 @@ in
     signal-desktop
     element-desktop
 
+    # Privacy and security tools
+    dnscrypt-proxy2
+    opensnitch
+    opensnitch-ui
+
     # Privacy utilities
     tor
     torsocks
@@ -131,6 +144,15 @@ in
     zathura
     evince
     tectonic
+
+    # Bluetooth tools
+    bluez
+    bluez-tools
+
+    # Zsh and theme
+    zsh
+    zsh-powerlevel10k
+    zsh-syntax-highlighting
 
     # Fonts
     fira-code
