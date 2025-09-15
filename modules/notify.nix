@@ -31,6 +31,16 @@
     };
   };
 
+  systemd.user.timers.battery-critical-suspend = {
+    description = "Check for critical battery level periodically";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "1min";
+      OnUnitActiveSec = "1min";  # Check every minute for critical levels
+      Persistent = true;
+    };
+  };
+
   systemd.user.services.battery-critical-suspend = {
     description = "Suspend laptop when battery critically low";
     serviceConfig = {

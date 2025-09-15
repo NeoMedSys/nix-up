@@ -17,6 +17,7 @@
     "${inputs.self}/modules/ssh-config.nix"
     "${inputs.self}/modules/sway.nix"
     "${inputs.self}/modules/thunderbolt-ethernet.nix"
+    "${inputs.self}/modules/notify.nix"
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"

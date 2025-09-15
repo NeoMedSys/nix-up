@@ -143,10 +143,8 @@ in
     etc = {
       # three finger swipe for panels
       "libinput-gestures.conf".text = ''
-        gesture swipe right 3 ydotool key alt+Left
-        gesture swipe left 3 ydotool key alt+Right
-        gesture swipe left 3 swaymsg workspace next
-        gesture swipe right 3 swaymsg workspace prev
+        bindgesture swipe:3:left workspace next
+        bindgesture swipe:3:right workspace prev
       '';
       # for ssh agent
       "gnupg/scdaemon.conf".text = ''
@@ -288,8 +286,16 @@ in
           Restart = "always";
         };
       };
+      sway-bar = {
+        description = "Sway status bar";
+        wantedBy = [ "graphical-session.target" ];
+        after = [ "graphical-session.target" ];
+        serviceConfig = {
+          ExecStart = "${pkgs.i3status-rust}/bin/i3status-rs /etc/i3status-rust/config.toml";
+          Restart = "always";
+        };
+      };
     };
-
     services.display-manager.serviceConfig = {
       Environment = [
         "XDG_DATA_DIRS=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
