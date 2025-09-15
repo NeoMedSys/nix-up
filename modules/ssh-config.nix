@@ -16,10 +16,8 @@ in
 
   programs.gnupg.agent = {
     enable = true;
-    enableSSHSupport = true;
   };
 
-  # User SSH keys (if they exist)
   users.users.${userConfig.username}.openssh.authorizedKeys.keys =
     lib.optionals (sshKeys ? ${userConfig.username}) [ sshKeys.${userConfig.username} ];
 }
