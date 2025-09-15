@@ -54,6 +54,9 @@ in
     networkmanagerapplet
     xorg.xrandr # Useful for arandr or manual display config
     xss-lock
+    i3status-rust
+    gammastep
+    dunst
 
     # Window manager tools (some are needed for configs even if WM is module-managed)
     arandr # X11 display config GUI
@@ -70,6 +73,9 @@ in
     rofi-wayland
     xdg-desktop-portal
     xdg-desktop-portal-wlr
+    waybar
+    swaylock-effects
+
 
     # Network and Bluetooth GUI tools
     overskride # Modern Rust+GTK4 Bluetooth manager

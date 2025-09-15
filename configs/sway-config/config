@@ -164,7 +164,7 @@ bindsym $mod+l exec $lock
 exec_always swayidle -w \
     timeout 300 '$lock -f -c 000000' \
     timeout 600 'swaymsg "output * power off"' \
-    resume 'swaymsg "output * power on"' \
+    # resume 'swaymsg "output * power on"' \
     before-sleep '$lock -f -c 000000'
 
 # Reboot

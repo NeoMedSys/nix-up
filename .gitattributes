@@ -1,0 +1,3 @@
+user-config.nix filter=userconfig
+modules/ssh-keys.nix filter=sshkeys
+system/hardware-configuration.nix filter=hardware
