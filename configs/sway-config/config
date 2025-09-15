@@ -176,25 +176,6 @@ bindsym $mod+g exec steam
 # Keyboard layout switching (Wayland version)
 bindsym $mod+u exec swaymsg input type:keyboard xkb_layout us
 bindsym $mod+n exec swaymsg input type:keyboard xkb_layout no
-#
-# i3status-rust bar
-bar {
-    status_command i3status-rs /etc/i3status-rust/config.toml
-    position top
-    font pango:MesloLGS NF 10
-
-    colors {
-        background            #282A2E80
-        statusline            #C5C8C680
-        separator             #373B4180
-
-        #                     border    background     text
-        focused_workspace     #4a90e2   #4a90e280      #ffffff
-        active_workspace      #373B41   #373B4180      #ffffff
-        inactive_workspace    #282A2E   #282A2E80      #888888
-        urgent_workspace      #A54242   #A5424280      #ffffff
-    }
-}
 
 output * bg ~/.config/sway/wallpaper.png fill
 

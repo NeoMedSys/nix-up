@@ -42,8 +42,8 @@
       dns = "none";  # Don't let NetworkManager override DNS
       
       # Enable MAC address randomization
-      wifi.macAddress = "random";
-      ethernet.macAddress = "random";
+      wifi.macAddress = "stable";
+      ethernet.macAddress = "stable";
       settings = {
         connection = {
           "wifi.cloned-mac-address" = "random";

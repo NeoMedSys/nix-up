@@ -41,8 +41,12 @@ in
       settings = {
         RESTORE_DEVICE_STATE_ON_STARTUP = 1;
         DEVICES_TO_DISABLE_ON_STARTUP = "";
+        #WIFI_PWR_ON_AC = "off";
+        #WIFI_PWR_ON_BAT = "off";
       };
     };
+
+    gnome.gnome-keyring.enable = true;
 
     # for librewolf
     upower.enable = true;
@@ -117,7 +121,14 @@ in
   # NETWORKING
   # ========================
   networking = {
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+        #    settings = {
+        #      wifi = {
+        #        powersave = 2;
+        #      };
+        #    };
+    };
     nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" ];
     firewall = {
       allowedTCPPorts = [ 7775 443 ];
@@ -139,6 +150,7 @@ in
       XDG_SESSION_DESKTOP = "sway";
       XCURSOR_THEME = "Bibata-Modern-Classic";
       XCURSOR_SIZE = "24";
+
     };
     etc = {
       # three finger swipe for panels
@@ -190,7 +202,6 @@ in
 
       # i3 Configuration Files
       "i3/config".source = "${inputs.self}/configs/i3-config/config";
-      "i3status-rust/config.toml".source = "${inputs.self}/configs/i3status-rust-config/config.toml";
       "polybar/config.ini".source = "${inputs.self}/configs/polybar-config/config.ini";
       "polybar/launch.sh" = {
         source = "${inputs.self}/configs/polybar-config/launch.sh";
@@ -286,16 +297,8 @@ in
           Restart = "always";
         };
       };
-      sway-bar = {
-        description = "Sway status bar";
-        wantedBy = [ "graphical-session.target" ];
-        after = [ "graphical-session.target" ];
-        serviceConfig = {
-          ExecStart = "${pkgs.i3status-rust}/bin/i3status-rs /etc/i3status-rust/config.toml";
-          Restart = "always";
-        };
-      };
     };
+
     services.display-manager.serviceConfig = {
       Environment = [
         "XDG_DATA_DIRS=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
@@ -316,10 +319,15 @@ in
         chmod 644 /home/${userConfig.username}/.face
       '';
 
+      rofi-configs = ''
+        mkdir -p ~/.config/rofi
+        ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
+        ln -sf /etc/rofi/quick-apps.sh ~/.config/rofi/quick-apps.sh
+      '';
+
       i3-configs = ''
-        mkdir -p ~/.config/{i3,i3status-rust,dunst,polybar,rofi,alacritty,picom,lightdm}
+        mkdir -p ~/.config/{i3,dunst,polybar,rofi,alacritty,picom,lightdm}
         ln -sf /etc/i3/config ~/.config/i3/config
-        ln -sf /etc/i3status-rust/config.toml ~/.config/i3status-rust/config.toml
         ln -sf /etc/polybar/config.ini ~/.config/polybar/config.ini
         ln -sf /etc/polybar/launch.sh ~/.config/polybar/launch.sh
         ln -sf /etc/dunst/dunstrc ~/.config/dunst/dunstrc
