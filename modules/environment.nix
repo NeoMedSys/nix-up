@@ -41,8 +41,6 @@ in
       settings = {
         RESTORE_DEVICE_STATE_ON_STARTUP = 1;
         DEVICES_TO_DISABLE_ON_STARTUP = "";
-        #WIFI_PWR_ON_AC = "off";
-        #WIFI_PWR_ON_BAT = "off";
       };
     };
 
@@ -84,7 +82,7 @@ in
 
     # Bluetooth
     blueman.enable = true;
-  }; # <-- First fix: Added the missing semicolon here
+  };
 
   # ========================
   # USERS & SECURITY
@@ -123,11 +121,6 @@ in
   networking = {
     networkmanager = {
       enable = true;
-        #    settings = {
-        #      wifi = {
-        #        powersave = 2;
-        #      };
-        #    };
     };
     nameservers = [ "1.1.1.1" "1.0.0.1" "8.8.8.8" "8.8.4.4" ];
     firewall = {
