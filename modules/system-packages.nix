@@ -38,6 +38,11 @@ in
     tmux
     xsel
     ydotool
+    pciutils
+    usbutils
+    iw
+    wirelesstools
+    bolt
 
     # File manager and themes
     nemo
