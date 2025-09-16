@@ -35,6 +35,7 @@ in
   # SERVICES
   # ========================
   services = {
+    hardware.bolt.enable = true;
     # Power Management
     tlp = {
       enable = true;
@@ -146,6 +147,11 @@ in
 
     };
     etc = {
+      "boltd.conf".text = ''
+        [Daemon]
+        AuthorizationMode = automatic
+      '';
+
       # three finger swipe for panels
       "libinput-gestures.conf".text = ''
         bindgesture swipe:3:left workspace next
