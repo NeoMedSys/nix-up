@@ -1,46 +1,19 @@
 { config, pkgs, userConfig, ... }:
 {
-	# Allow unfree packages for NVIDIA drivers
   nixpkgs.config.allowUnfree = true;
-  
-  # NVIDIA hardware configuration
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = true;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
+    open = true;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-    open = false;
-    prime = {
-      offload.enable = true;
-      sync.enable = false;
-      intelBusId = userConfig.intelBusId;
-      nvidiaBusId = userConfig.nvidiaBusId;
-    };
   };
-	
-  # NVIDIA container support for Docker/Podman
-  hardware.nvidia-container-toolkit.enable = true;
-  
-  # Boot configuration
-  boot = {
-          blacklistedKernelModules = [ "nouveau" "nvidiafb" ];
-          extraModulePackages = with config.boot.kernelPackages; [
-                  nvidiaPackages.stable
-          ];
-          initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
-          kernelParams = [ "nvidia-drm.modeset=1" ];
+
+  hardware.nvidia.prime = {
+    offload.enable = true;
+    intelBusId = userConfig.intelBusId;
+    nvidiaBusId = userConfig.nvidiaBusId;
   };
-  
-  # Xorg configuration
-  services.xserver.videoDrivers = [ "nvidia" ];
-  
-  # Udev rules for NVIDIA
-  services.udev.packages = [ config.boot.kernelPackages.nvidiaPackages.stable ];
-  
-  # System packages for NVIDIA support
-  environment.systemPackages = with pkgs; [
-          config.boot.kernelPackages.nvidiaPackages.stable
-          nvidia-container-toolkit
-          nvtopPackages.nvidia
-  ];
 }
