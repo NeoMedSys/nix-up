@@ -56,7 +56,6 @@ in
 
     gnome.gnome-keyring.enable = true;
 
-    # for librewolf
     upower.enable = true;
 
     # Security
