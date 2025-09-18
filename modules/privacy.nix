@@ -93,6 +93,7 @@
     table inet raw {
       chain output {
         type filter hook output priority -300; policy accept;
+
         # This will queue all outbound traffic from non-root users for OpenSnitch
         # If OpenSnitch isn't running, this can block traffic.
         meta skuid != 0 queue num 0 bypass

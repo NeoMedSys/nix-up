@@ -1,4 +1,4 @@
-{ pkgs, userConfig, ... }:
+{ pkgs, userConfig, config, ... }:
 let
   # The main audit script
   nastyTechLordsScript = pkgs.writeShellScriptBin "nastyTechLords" ''
@@ -381,6 +381,7 @@ ntlCli = pkgs.writeShellScriptBin "ntl" ''
               ;;
     esac
   '';
+  uid = toString config.users.users.${userConfig.username}.uid;
 in
 {
   # Install the scripts
@@ -412,7 +413,7 @@ in
                   # But send notifications to the user
                   Environment = [
                           "DISPLAY=:0"
-                          "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus"
+                          "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/bus"
                   ];
           };
   };

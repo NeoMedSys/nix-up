@@ -6,8 +6,8 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    package = config.boot.kernelPackages.nvidiaPackages.latest;
-    open = true;
+    package = config.boot.kernelPackages.nvidiaPackages.production;
+    open = false;
     nvidiaSettings = true;
   };
 
@@ -16,4 +16,6 @@
     intelBusId = userConfig.intelBusId;
     nvidiaBusId = userConfig.nvidiaBusId;
   };
+
+  hardware.nvidia-container-toolkit.enable = true;
 }
