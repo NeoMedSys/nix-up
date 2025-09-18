@@ -6,8 +6,17 @@ let
     convert ${inputs.self}/${userConfig.avatarPath} \
       -gravity center -resize 96x96^ -extent 96x96 $out
   '';
+
+  resolvConfForSandbox = pkgs.writeText "resolv.conf" ''
+    nameserver 1.1.1.1
+    nameserver 8.8.8.8
+  '';
 in
 {
+  # Inject the resolv into the Nix build sandbox env
+  nix.settings.extra-sandbox-paths = [
+    "/etc/resolv.conf=${resolvConfForSandbox}"
+  ];
   # ========================
   # BOOT CONFIGURATION
   # ========================
@@ -262,7 +271,6 @@ in
   # ========================
   virtualisation.docker = {
     enable = true;
-    enableNvidia = userConfig.hasGPU;
   };
 
   # ========================
