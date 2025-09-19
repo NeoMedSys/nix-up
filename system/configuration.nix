@@ -18,6 +18,7 @@
     "${inputs.self}/modules/sway.nix"
     "${inputs.self}/modules/thunderbolt-ethernet.nix"
     "${inputs.self}/modules/notify.nix"
+    "${inputs.self}/modules/librewolf.nix"
 
     # Desktop environment
     "${inputs.self}/modules/i3.nix"
@@ -45,6 +46,11 @@
 
   # System identification
   networking.hostName = userConfig.hostname;
+
+  # delete this when not necessary anymore
+  networking.hosts = {
+    "127.0.0.1" = [ "access.neomedsys.io" ];
+  };
 
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
