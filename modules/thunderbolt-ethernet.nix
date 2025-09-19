@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, userConfig, ... }:
 {
   # Thunderbolt dock ethernet support
   # Adds kernel modules for common USB/Thunderbolt ethernet controllers
@@ -30,6 +30,9 @@
   
   # Enable USB support (should already be enabled but ensure it)
   boot.kernelParams = [
+    "pcie_aspm=off"
     "usbcore.autosuspend=-1"  # Disable USB autosuspend for docks
+  ] ++ lib.optionals userConfig.hasGPU [
+   "nvidia_drm.modeset=1"
   ];
 }

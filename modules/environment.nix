@@ -162,8 +162,8 @@ in
 
       # three finger swipe for panels
       "libinput-gestures.conf".text = ''
-        bindgesture swipe:3:left workspace next
-        bindgesture swipe:3:right workspace prev
+        bindgesture swipe:3:left swaymsg workspace next
+        bindgesture swipe:3:right swaymsg workspace prev
       '';
       # for ssh agent
       "gnupg/scdaemon.conf".text = ''
