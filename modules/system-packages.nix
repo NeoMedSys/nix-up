@@ -1,4 +1,4 @@
-{ pkgs, userConfig ? null, flakehub, ... }:
+{ pkgs, userConfig ? null, flakehub, inputs, ... }:
 let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
@@ -6,7 +6,7 @@ let
   wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
 
   availableBrowsers = {
-    librewolf = pkgs.librewolf
+    librewolf = import ../pkgs/librewolf-with-policies.nix { inherit pkgs inputs; };
     firefox = pkgs.firefox;
   };
 
