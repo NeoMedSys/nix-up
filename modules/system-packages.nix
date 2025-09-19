@@ -6,7 +6,7 @@ let
   wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
 
   availableBrowsers = {
-    librewolf = import ../pkgs/librewolf-with-policies.nix { inherit pkgs inputs; };
+    librewolf = pkgs.librewolf;
     firefox = pkgs.firefox;
   };
 
