@@ -1,0 +1,80 @@
+/* --- COLOR & FONT VARIABLES --- */
+:root {
+  --bg-color: #2E3440; /* Nord Polar Night */
+  --secondary-bg-color: #3B4252;
+  --fg-color: #ECEFF4; /* Nord Snow Storm */
+  --inactive-tab-color: #4C566A;
+  
+  --accent-color: #88C0D0; /* Nord Frost - Cyan */
+  --hover-color: #B48EAD; /* Nord Frost - Magenta/Purple */
+
+  --glow-color: rgba(136, 192, 208, 0.7); /* Cyan glow */
+  --font-family: "Fira Code", monospace;
+}
+
+/* --- GLOBAL STYLES --- */
+#main-window, #navigator-toolbox {
+  background-color: var(--bg-color) !important;
+  color: var(--fg-color) !important;
+}
+
+/* --- COLLAPSING TAB BAR (Hides when only one tab is open) --- */
+#tabbrowser-tabs:not([movingtab]) > .tabbrowser-tab[first-visible-tab][last-visible-tab] {
+  visibility: collapse !important;
+}
+
+/* --- TAB STYLING --- */
+.tabbrowser-tab {
+  color: var(--inactive-tab-color) !important;
+  font-family: var(--font-family);
+}
+
+.tabbrowser-tab .tab-background {
+  background: var(--secondary-bg-color) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background: var(--bg-color) !important;
+}
+
+.tabbrowser-tab[selected] .tab-label {
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 5px var(--glow-color);
+}
+
+.tabbrowser-tab[selected]::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--accent-color);
+  box-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color);
+}
+
+.tabbrowser-tab:not([selected]):hover .tab-label {
+  color: var(--hover-color) !important;
+}
+
+/* --- URL BAR STYLING --- */
+#urlbar-background {
+  background-color: var(--secondary-bg-color) !important;
+  border: 1px solid var(--inactive-tab-color) !important;
+}
+#urlbar:focus-within > #urlbar-background {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 0 8px var(--glow-color) !important;
+}
+
+#urlbar-input-container {
+  color: var(--fg-color) !important;
+  font-family: var(--font-family);
+}
+
+/* --- REMOVE UGLY BOOKMARKS TOOLBAR MESSAGE --- */
+#PersonalToolbar #bookmarks-toolbar-placeholder {
+  display: none !important;
+}
