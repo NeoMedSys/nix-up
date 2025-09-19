@@ -17,5 +17,15 @@
     nvidiaBusId = userConfig.nvidiaBusId;
   };
 
+  environment = {
+    systemPackages = with pkgs; [
+      nvidia-vaapi-driver
+    ];
+    variables = {
+      NVD_BACKEND = "direct";
+      LIBVA_DRIVER_NAME = "nvidia";
+    };
+  };
+
   hardware.nvidia-container-toolkit.enable = true;
 }

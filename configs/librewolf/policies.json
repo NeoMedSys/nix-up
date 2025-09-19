@@ -5,6 +5,7 @@
     },
     "DisableTelemetry": true,
     "DisableFirefoxStudies": true,
+    "DefaultTheme": "firefox-compact-dark@mozilla.org",
     "DisablePocket": true,
     "Preferences": {
       "browser.startup.homepage": "about:blank",

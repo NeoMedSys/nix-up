@@ -22,14 +22,8 @@
     };
   };
 
-  security.pam.services.swaylock = {
-  text = ''
-    # First, try fingerprint authentication. If it succeeds, we're done.
-    auth sufficient pam_fprintd.so
-    # If fingerprint fails or isn't used, fall back to the standard login (password).
-    auth include login
-  '';
-};
+  security.pam.services.swaylock = {};
+  security.pam.services.swaylock.fprintAuth = true;
 
   # Basic Sway config only
   environment.etc."sway/config".source = "${inputs.self}/configs/sway-config/config";
