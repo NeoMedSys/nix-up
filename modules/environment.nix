@@ -199,6 +199,8 @@ in
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
 
+      "librewolf/chrome/userChrome.css".source = "${inputs.self}/configs/librewolf/chrome/userChrome.css";
+
       # User avatars and LightDM assets
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
       "lightdm/avatar.png".source = processedKing;
