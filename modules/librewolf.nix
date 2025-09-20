@@ -4,7 +4,6 @@
     enable = true;
     package = pkgs.librewolf;
     policies = {
-      # Your existing policies from configs/librewolf/policies.json go here
       Preferences = {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = {
           Value = true;
