@@ -1,53 +1,16 @@
-{ pkgs, lib, ... }:
-let
-  # Find the Mullvad config file (expects exactly 1 .conf file)
-  mullvadConfigDir = ../configs/mullvad-config;
+{ pkgs, lib, userConfig, ... }:
+
+lib.mkIf userConfig.vpn {
+  networking.wireguard.enable = true;
   
-  configDirExists = builtins.pathExists mullvadConfigDir;
-  configFiles = if configDirExists 
-                then builtins.attrNames (builtins.readDir mullvadConfigDir)
-                else [];
-  confFiles = builtins.filter (name: lib.hasSuffix ".conf" name) configFiles;
-  hasConfig = confFiles != [] && configDirExists;
-
-  configFile = if hasConfig then builtins.head confFiles else "";
-  configPath = if hasConfig then mullvadConfigDir + "/${configFile}" else null;
-  configContent = if hasConfig then builtins.readFile configPath else "";
-
-  # Parse WireGuard config
-  extractValue = regex: content:
-    let match = builtins.match regex content;
-    in if match != null then builtins.head match else null;
-
-  privateKey = extractValue ".*PrivateKey = ([^\n]+).*" configContent;
-  addresses = lib.splitString "," (extractValue ".*Address = ([^\n]+).*" configContent);
-  publicKey = extractValue ".*PublicKey = ([^\n]+).*" configContent;
-  endpoint = extractValue ".*Endpoint = ([^\n]+).*" configContent;
-in
-lib.mkIf hasConfig {
-  # Mullvad WireGuard VPN configuration
-  networking.wg-quick.interfaces = {
-    mullvad = {
-      privateKey = privateKey;
-      address = addresses;
-      dns = [ "127.0.0.1" ];  # Keep using your dnscrypt-proxy2
-
-      peers = [{
-        publicKey = publicKey;
-        allowedIPs = [ "0.0.0.0/0" "::/0" ];
-        endpoint = endpoint;
-        persistentKeepalive = 25;
-      }];
-    };
+  networking.wg-quick.interfaces.mullvad = {
+    configFile = "/etc/wireguard/dk-cph-wg-001.conf";
   };
 
-  # Service doesn't auto-start (on-demand only)
-  systemd.services.wg-quick-mullvad = {
-    wantedBy = lib.mkForce [ ];
-  };
+  systemd.services.wg-quick-mullvad.wantedBy = lib.mkForce [ ];
 
-  # Helper scripts for easy management
   environment.systemPackages = with pkgs; [
+    wireguard-tools
     (writeShellScriptBin "mullvad-toggle" ''
       if systemctl is-active --quiet wg-quick-mullvad; then
         sudo systemctl stop wg-quick-mullvad
@@ -57,7 +20,6 @@ lib.mkIf hasConfig {
         echo "VPN connected"
       fi
     '')
-
     (writeShellScriptBin "mullvad-status" ''
       if systemctl is-active --quiet wg-quick-mullvad; then
         echo "Connected"
