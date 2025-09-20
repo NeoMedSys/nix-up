@@ -156,8 +156,6 @@ set $lock swaylock -f \
     --separator-color 00000000 \
     --grace 3 \
     --fade-in 0.1 \
-    --ignore-empty-password \
-    --show-failed-attempts
 
 # Lock screen
 # bindsym $mod+l exec $lock -f -c 000000

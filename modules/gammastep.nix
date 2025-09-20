@@ -5,14 +5,14 @@ let
   longitude = if userConfig != null then toString userConfig.longitude else "4.89";
 
   gammastep-toggle = pkgs.writeShellScriptBin "gammastep-toggle" ''
-    #!${pkgs.stdenv.shell}
-    if pgrep -x gammastep > /dev/null
-    then
-        killall gammastep
-        notify-send "Gammastep Paused" -i display-brightness
+    if systemctl --user is-active --quiet gammastep.service; then
+        systemctl --user stop gammastep.service
+        notify-send "Gammastep Off" -i display-brightness
+        echo "Gammastep Off"
     else
-        gammastep &
-        notify-send "Gammastep Resumed" -i display-brightness
+        systemctl --user start gammastep.service
+        notify-send "Gammastep On" -i display-brightness  
+        echo "Gammastep On"
     fi
   '';
 in

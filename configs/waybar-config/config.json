@@ -42,10 +42,11 @@
     },
 
     "custom/gammastep": {
-        "format": "{}",
-        "interval": 5,
-        "exec": "if pgrep -x gammastep > /dev/null; then printf '\ue30d Running'; elif systemctl --user is-active gammastep.service >/dev/null; then printf '\ue30d Paused'; else printf '\ue30d Off'; fi",
-        "on-click": "gammastep-toggle >/dev/null 2>&1 &"
+	"format": "{}",
+	"interval": 5,
+	"exec": "if pgrep -f 'gammastep' > /dev/null; then printf '\\uf186'; else printf '\\uf185'; fi",
+	"on-click": "gammastep-toggle >/dev/null 2>&1 &",
+	"tooltip-format": "Toggle blue light filter"
     },
 
     "custom/vpn": {
@@ -67,24 +68,28 @@
         "interval": 5,
         "exec": "connected_device=$(bluetoothctl devices Connected | head -n1 | cut -d ' ' -f 3-); if [ -n \"$connected_device\" ]; then printf '\uf294 $connected_device'; else printf '\uf294 Off'; fi",
         "on-click": "overskride >/dev/null 2>&1 &"
+	"tooltip-format": "Run Overskride"
     },
 
     "custom/disk": {
         "format": "{}",
         "interval": 60,
         "exec": "printf '\uf0a0 %s' \"$(df -h / | awk 'END{print $4}')\""
+	"tooltip-format": "disk space"
     },
 
     "custom/memory": {
         "format": "{}",
         "interval": 5,
         "exec": "mem_percent=$(free -m | awk '/Mem:/ {print int($3/$2*100)}'); printf '\uefc5 %s%%' \"$mem_percent\""
+	"tooltip-format": "memory usage"
     },
 
     "custom/cpu": {
         "format": "{}",
         "interval": 1,
         "exec": "cpu_percent=$(vmstat 1 2 | tail -1 | awk '{print 100-$15}'); printf '\uf4bc %s%%' \"$cpu_percent\""
+	"tooltip-format": "cpu usage"
     },
 
     "custom/volume": {

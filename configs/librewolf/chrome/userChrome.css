@@ -1,14 +1,12 @@
 /* --- COLOR & FONT VARIABLES --- */
 :root {
-  --bg-color: #2E3440; /* Nord Polar Night */
+  --bg-color: #2E3440;
   --secondary-bg-color: #3B4252;
-  --fg-color: #ECEFF4; /* Nord Snow Storm */
+  --fg-color: #ECEFF4;
   --inactive-tab-color: #4C566A;
-  
-  --accent-color: #88C0D0; /* Nord Frost - Cyan */
-  --hover-color: #B48EAD; /* Nord Frost - Magenta/Purple */
-
-  --glow-color: rgba(136, 192, 208, 0.7); /* Cyan glow */
+  --accent-color: #88C0D0;
+  --hover-color: #B48EAD;
+  --glow-color: rgba(136, 192, 208, 0.7);
   --font-family: "Fira Code", monospace;
 }
 
@@ -18,52 +16,45 @@
   color: var(--fg-color) !important;
 }
 
-/* --- COLLAPSING TAB BAR (Hides when only one tab is open) --- */
-#tabbrowser-tabs:not([movingtab]) > .tabbrowser-tab[first-visible-tab][last-visible-tab] {
-  visibility: collapse !important;
+/* Target only the bookmarks placeholder message, not the whole toolbar */
+#PersonalToolbar #bookmarks-toolbar-placeholder,
+#PersonalToolbar .bookmarks-toolbar-customize,
+#PlacesToolbarItems + .bookmarks-toolbar-customize {
+  display: none !important;
 }
 
-/* --- TAB STYLING --- */
-.tabbrowser-tab {
-  color: var(--inactive-tab-color) !important;
-  font-family: var(--font-family);
+/* Keep the toolbar visible but hide empty state message */
+#PersonalToolbar[customizing] .bookmarks-toolbar-customize {
+  display: none !important;
 }
 
-.tabbrowser-tab .tab-background {
-  background: var(--secondary-bg-color) !important;
-  border: none !important;
-  box-shadow: none !important;
+/* --- TOOLBAR STYLING --- */
+#nav-bar {
+  background-color: var(--bg-color) !important;
+  border-bottom: 1px solid var(--secondary-bg-color) !important;
 }
 
-.tabbrowser-tab[selected] .tab-background {
-  background: var(--bg-color) !important;
+/* Style all toolbar buttons */
+#nav-bar .toolbarbutton-1 {
+  background-color: var(--secondary-bg-color) !important;
+  color: var(--fg-color) !important;
+  border: 1px solid var(--inactive-tab-color) !important;
+  border-radius: 4px !important;
+  margin: 2px !important;
 }
 
-.tabbrowser-tab[selected] .tab-label {
-  color: var(--accent-color) !important;
-  text-shadow: 0 0 5px var(--glow-color);
-}
-
-.tabbrowser-tab[selected]::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: var(--accent-color);
-  box-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color);
-}
-
-.tabbrowser-tab:not([selected]):hover .tab-label {
-  color: var(--hover-color) !important;
+#nav-bar .toolbarbutton-1:hover {
+  background-color: var(--hover-color) !important;
+  border-color: var(--accent-color) !important;
 }
 
 /* --- URL BAR STYLING --- */
 #urlbar-background {
   background-color: var(--secondary-bg-color) !important;
   border: 1px solid var(--inactive-tab-color) !important;
+  border-radius: 6px !important;
 }
+
 #urlbar:focus-within > #urlbar-background {
   border-color: var(--accent-color) !important;
   box-shadow: 0 0 8px var(--glow-color) !important;
@@ -71,10 +62,76 @@
 
 #urlbar-input-container {
   color: var(--fg-color) !important;
-  font-family: var(--font-family);
+  font-family: var(--font-family) !important;
 }
 
-/* --- REMOVE UGLY BOOKMARKS TOOLBAR MESSAGE --- */
-#PersonalToolbar #bookmarks-toolbar-placeholder {
-  display: none !important;
+/* URL bar text */
+#urlbar-input {
+  color: var(--fg-color) !important;
+}
+
+/* --- FORCE WHITE TEXT EVERYWHERE --- */
+* {
+  color: var(--fg-color) !important;
+}
+
+/* Override specific elements that might have dark text */
+.tabbrowser-tab .tab-label,
+#urlbar-input,
+.urlbar-input-box,
+toolbarbutton label,
+menuitem label,
+.panel-arrowcontent {
+  color: var(--fg-color) !important;
+}
+
+/* --- TAB STYLING --- */
+.tabbrowser-tab {
+  color: var(--inactive-tab-color) !important;
+  font-family: var(--font-family) !important;
+}
+
+.tabbrowser-tab .tab-background {
+  background: var(--secondary-bg-color) !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 8px 8px 0 0 !important;
+  margin: 0 2px !important;
+}
+
+.tabbrowser-tab[selected] .tab-background {
+  background: var(--bg-color) !important;
+  border-bottom: 2px solid var(--accent-color) !important;
+}
+
+.tabbrowser-tab[selected] .tab-label {
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 5px var(--glow-color) !important;
+}
+
+.tabbrowser-tab:not([selected]):hover .tab-label {
+  color: var(--fg-color) !important; /* Use white instead of purple */
+  text-shadow: 0 0 3px rgba(0,0,0,0.8) !important; /* Add text shadow for contrast */
+}
+
+.tabbrowser-tab:not([selected]):hover .tab-background {
+  background-color: var(--hover-color) !important;
+  opacity: 0.5 !important; /* Reduce opacity so text stands out more */
+}
+
+/* --- MENU AND DROPDOWN STYLING --- */
+menupopup {
+  background-color: var(--secondary-bg-color) !important;
+  border: 1px solid var(--accent-color) !important;
+  border-radius: 4px !important;
+}
+
+menuitem {
+  color: var(--fg-color) !important;
+  background-color: transparent !important;
+}
+
+menuitem:hover {
+  background-color: var(--hover-color) !important;
+  color: var(--fg-color) !important;
 }

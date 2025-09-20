@@ -41,7 +41,6 @@ in
     pciutils
     usbutils
     iw
-    wirelesstools
     bolt
 
     # File manager and themes
@@ -116,6 +115,7 @@ in
     dig
     iftop
     nethogs
+      
 
     # Encryption tools
     age
