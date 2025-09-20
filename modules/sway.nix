@@ -25,6 +25,22 @@
   security.pam.services.swaylock = {};
   security.pam.services.swaylock.fprintAuth = true;
 
+  # Ensure fprintd service is available and started
+  systemd.services.fprintd.wantedBy = [ "multi-user.target" ];
+  systemd.services.fprintd.serviceConfig.Type = "simple";
+  
+  # Force fprintd to start early
+  systemd.user.services.fprintd-user = {
+    description = "Ensure fprintd is available for user session";
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.coreutils}/bin/true";
+      ExecStartPost = "${pkgs.systemd}/bin/systemctl --no-block start fprintd";
+      RemainAfterExit = true;
+    };
+  };
+
   # Basic Sway config only
   environment.etc."sway/config".source = "${inputs.self}/configs/sway-config/config";
   environment.etc."waybar/config".source = "${inputs.self}/configs/waybar-config/config.json";
