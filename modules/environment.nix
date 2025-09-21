@@ -77,11 +77,6 @@ in
       windowManager.i3.enable = true;
     };
 
-    displayManager = {
-      defaultSession = "none+i3";
-    };
-
-
     # Audio
     pulseaudio.enable = false;
     pipewire = {
@@ -127,6 +122,8 @@ in
       });
     '';
   };
+
+
 
   # ========================
   # NETWORKING
