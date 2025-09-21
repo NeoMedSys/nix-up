@@ -20,9 +20,14 @@ in
   # ========================
   # BOOT CONFIGURATION
   # ========================
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    kernelParams = [
+      "mem_sleep_default=deep"
+    ];
   };
 
   # ========================
@@ -113,15 +118,6 @@ in
       }];
     }];
     rtkit.enable = true;
-    pam.services.lightdm = {
-      text = ''
-        auth      sufficient  pam_fprintd.so
-        auth      substack    login
-        account   include     login
-        password  substack    login
-        session   include     login
-      '';
-    };
     polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
         if (action.id == "net.reactivated.fprint.device.enroll" &&
