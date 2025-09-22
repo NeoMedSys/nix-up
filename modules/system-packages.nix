@@ -1,6 +1,7 @@
 { pkgs, userConfig ? null, flakehub, inputs, ... }:
 let
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
+  sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
 
   availableBrowsers = {
     firefox = pkgs.firefox;
@@ -73,7 +74,10 @@ in
     alacritty
 
     # Entertainment - now handled by Flatpak
+    sandboxed-spotify
+
     # Communication Apps - now handled by Flatpak
+    sandboxed-slack
 
     # Gaming utilities
     gamemode
