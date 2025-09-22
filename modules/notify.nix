@@ -20,13 +20,13 @@
     };
   };
 
-  # Timer to check battery every 2 minutes
+  # Timer to check battery every 10 minutes
   systemd.user.timers.battery-notify = {
     description = "Check battery level periodically";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnBootSec = "2min";
-      OnUnitActiveSec = "2min";
+      OnUnitActiveSec = "10min";
       Persistent = true;
     };
   };
@@ -35,8 +35,8 @@
     description = "Check for critical battery level periodically";
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnBootSec = "1min";
-      OnUnitActiveSec = "1min";  # Check every minute for critical levels
+      OnBootSec = "2min";
+      OnUnitActiveSec = "10min";  # Check every minute for critical levels
       Persistent = true;
     };
   };
@@ -98,7 +98,7 @@
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnBootSec = "60s";
-      OnUnitActiveSec = "60s";
+      OnUnitActiveSec = "300s";
       Persistent = true;
     };
   };
