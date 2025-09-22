@@ -1,0 +1,9 @@
+diff --git a/.gitignore b/.gitignore
+index 969f528..d365a4e 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -14,3 +14,4 @@ init-config/
+ user-config.nix
+ system/hardware-configuration.nix
+ modules/ssh-keys.nix
++steam_trace.log
