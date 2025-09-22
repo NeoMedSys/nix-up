@@ -6,13 +6,12 @@ let
   wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
 
   availableBrowsers = {
-    librewolf = import ../pkgs/librewolf-with-policies.nix { inherit pkgs inputs; };
     firefox = pkgs.firefox;
   };
 
   browserPackages = if userConfig != null
-    then map (browserName: availableBrowsers.${browserName}) userConfig.browsers
-    else [ availableBrowsers.librewolf availableBrowsers.firefox ]; # fallback default
+    then map (browserName: availableBrowsers.${browserName}) (builtins.filter (browser: browser != "librewolf") userConfig.browsers)
+    else [ availableBrowsers.firefox ]; # fallback default
 in
 {
   # Global software packages to install
@@ -137,7 +136,7 @@ in
     zsh-powerlevel10k
     zsh-syntax-highlighting
 
-    # Fonts
+    # Fonts and cursors
     fira-code
     meslo-lgs-nf
     font-awesome_6
@@ -145,7 +144,9 @@ in
     liberation_ttf
     fira-code-symbols
     papirus-icon-theme
+    bibata-cursors
 
+    # Pandoc and live MD rendering script
     pandoc
     (pkgs.writeScriptBin "mdlive" ''
       #!/bin/bash
@@ -172,7 +173,7 @@ in
     material-design-icons
     material-icons
     noto-fonts-emoji
-    nerd-fonts.symbols-only
+    nerd-fonts.symbols-only # More comprehensive Nerd Fonts collection
     nerd-fonts.fira-code
     font-awesome_5
   ];

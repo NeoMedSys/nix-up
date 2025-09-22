@@ -294,17 +294,6 @@ in
   # ========================
   system = {
     userActivationScripts = {
-      librewolf-chrome = ''
-        # Setup userChrome.css for any existing LibreWolf profiles
-        mkdir -p ~/.librewolf
-        for profile_dir in ~/.librewolf/*; do
-          if [ -d "$profile_dir" ]; then
-            mkdir -p "$profile_dir/chrome"
-            ln -sf ${inputs.self}/configs/librewolf/chrome/userChrome.css "$profile_dir/chrome/userChrome.css"
-          fi
-        done
-      '';
-
       king = ''
         cp ${config.environment.etc."user-avatars/king-${userConfig.username}.png".source} /home/${userConfig.username}/.face
         chmod 644 /home/${userConfig.username}/.face
