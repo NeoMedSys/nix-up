@@ -2,6 +2,7 @@
 let
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
+  sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
 
   availableBrowsers = {
     firefox = pkgs.firefox;
@@ -75,6 +76,7 @@ in
 
     # Entertainment - now handled by Flatpak
     sandboxed-spotify
+    sandoxed-steam
 
     # Communication Apps - now handled by Flatpak
     sandboxed-slack

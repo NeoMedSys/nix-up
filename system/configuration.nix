@@ -23,9 +23,6 @@
     # Desktop environment
     "${inputs.self}/modules/gammastep.nix"
 
-    # Gaming
-    "${inputs.self}/modules/steam.nix"
-
     # General programming languages
     "${inputs.self}/modules/gpl.nix"
 
