@@ -1,5 +1,7 @@
 { pkgs, userConfig ? null, flakehub, inputs, ... }:
 let
+  sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
+
   availableBrowsers = {
     firefox = pkgs.firefox;
   };
