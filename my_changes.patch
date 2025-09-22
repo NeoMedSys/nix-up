@@ -1,12 +1,14 @@
-diff --git a/.gitignore b/.gitignore
-index 969f528..d365a4e 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -14,3 +14,4 @@ init-config/
- user-config.nix
- system/hardware-configuration.nix
- modules/ssh-keys.nix
-+steam_trace.log
 diff --git a/my_changes.patch b/my_changes.patch
-new file mode 100644
-index 0000000..e69de29
+index 4291d5c..e69de29 100644
+--- a/my_changes.patch
++++ b/my_changes.patch
+@@ -1,9 +0,0 @@
+-diff --git a/.gitignore b/.gitignore
+-index 969f528..d365a4e 100644
+---- a/.gitignore
+-+++ b/.gitignore
+-@@ -14,3 +14,4 @@ init-config/
+- user-config.nix
+- system/hardware-configuration.nix
+- modules/ssh-keys.nix
+-+steam_trace.log
