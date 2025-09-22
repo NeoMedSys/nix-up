@@ -11,7 +11,6 @@
   };
 
   console = {
-    font = "${pkgs.terminus_font}/share/consolefonts/ter-u28n.psf.gz";
     earlySetup = true;
     colors = [
       "0a0a14"  # black (dark navy)
