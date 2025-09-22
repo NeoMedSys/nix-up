@@ -13,6 +13,7 @@
 
   hardware.nvidia.prime = {
     offload.enable = true;
+    # sync.enable = true;
     intelBusId = userConfig.intelBusId;
     nvidiaBusId = userConfig.nvidiaBusId;
   };

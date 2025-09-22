@@ -20,9 +20,14 @@ in
   # ========================
   # BOOT CONFIGURATION
   # ========================
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+    kernelParams = [
+      "mem_sleep_default=deep"
+    ];
   };
 
   # ========================
@@ -72,11 +77,6 @@ in
       windowManager.i3.enable = true;
     };
 
-    displayManager = {
-      defaultSession = "none+i3";
-    };
-
-
     # Audio
     pulseaudio.enable = false;
     pipewire = {
@@ -113,15 +113,6 @@ in
       }];
     }];
     rtkit.enable = true;
-    pam.services.lightdm = {
-      text = ''
-        auth      sufficient  pam_fprintd.so
-        auth      substack    login
-        account   include     login
-        password  substack    login
-        session   include     login
-      '';
-    };
     polkit.extraConfig = ''
       polkit.addRule(function(action, subject) {
         if (action.id == "net.reactivated.fprint.device.enroll" &&
@@ -131,6 +122,8 @@ in
       });
     '';
   };
+
+
 
   # ========================
   # NETWORKING

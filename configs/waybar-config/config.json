@@ -32,19 +32,18 @@
     },
 
     "custom/music": {
-        "format": "{}",
-        "max-length": 60,
-        "interval": 3,
-        "exec": "song=$(playerctl --player=spotify metadata --format '{{ artist }} - {{ title }}' 2>/dev/null); if [ -n \"$song\" ] && [ \"$song\" != \" - \" ]; then if [ ${#song} -gt 50 ]; then song=$(echo \"$song\" | cut -c1-47)...; fi; printf \"\uf001 $song\"; else song=$(playerctl metadata --format '{{ artist }} - {{ title }}' 2>/dev/null); if [ -n \"$song\" ] && [ \"$song\" != \" - \" ]; then if [ ${#song} -gt 50 ]; then song=$(echo \"$song\" | cut -c1-47)...; fi; printf \"\uf001 $song\"; fi; fi",
-        "on-click": "playerctl play-pause >/dev/null 2>&1 &",
-        "return-type": "json",
-        "exec-if": "command -v playerctl"
+	"format": "{}",
+	"max-length": 60,
+	"interval": 3,
+	"exec": "song=$(playerctl --player=spotify metadata --format '{{ artist }} - {{ title }}' 2>/dev/null); if [ -n \"$song\" ] && [ \"$song\" != \" - \" ]; then if [ ${#song} -gt 50 ]; then song=$(echo \"$song\" | cut -c1-47)...; fi; printf \"\uf001 $song\"; else song=$(playerctl metadata --format '{{ artist }} - {{ title }}' 2>/dev/null); if [ -n \"$song\" ] && [ \"$song\" != \" - \" ]; then if [ ${#song} -gt 50 ]; then song=$(echo \"$song\" | cut -c1-47)...; fi; printf \"\uf001 $song\"; fi; fi",
+	"on-click": "playerctl play-pause >/dev/null 2>&1 &",
+	"exec-if": "command -v playerctl"
     },
 
     "custom/gammastep": {
 	"format": "{}",
 	"interval": 5,
-	"exec": "if pgrep -f 'gammastep' > /dev/null; then printf '\\uf186'; else printf '\\uf185'; fi",
+	"exec": "if ! pgrep -f 'gammastep' > /dev/null; then printf '\\uf185'; else hour=$(date +%H); if [ \"$hour\" -ge 6 ] && [ \"$hour\" -lt 19 ]; then printf '\\uf185'; else printf '\\uf186'; fi; fi",
 	"on-click": "gammastep-toggle >/dev/null 2>&1 &",
 	"tooltip-format": "Toggle blue light filter"
     },
@@ -67,28 +66,28 @@
         "format": "{}",
         "interval": 5,
         "exec": "connected_device=$(bluetoothctl devices Connected | head -n1 | cut -d ' ' -f 3-); if [ -n \"$connected_device\" ]; then printf '\uf294 $connected_device'; else printf '\uf294 Off'; fi",
-        "on-click": "overskride >/dev/null 2>&1 &"
+        "on-click": "overskride >/dev/null 2>&1 &",
 	"tooltip-format": "Run Overskride"
     },
 
     "custom/disk": {
         "format": "{}",
         "interval": 60,
-        "exec": "printf '\uf0a0 %s' \"$(df -h / | awk 'END{print $4}')\""
+        "exec": "printf '\uf0a0 %s' \"$(df -h / | awk 'END{print $4}')\"",
 	"tooltip-format": "disk space"
     },
 
     "custom/memory": {
         "format": "{}",
         "interval": 5,
-        "exec": "mem_percent=$(free -m | awk '/Mem:/ {print int($3/$2*100)}'); printf '\uefc5 %s%%' \"$mem_percent\""
+        "exec": "mem_percent=$(free -m | awk '/Mem:/ {print int($3/$2*100)}'); printf '\uefc5 %s%%' \"$mem_percent\"",
 	"tooltip-format": "memory usage"
     },
 
     "custom/cpu": {
         "format": "{}",
         "interval": 1,
-        "exec": "cpu_percent=$(vmstat 1 2 | tail -1 | awk '{print 100-$15}'); printf '\uf4bc %s%%' \"$cpu_percent\""
+        "exec": "cpu_percent=$(vmstat 1 2 | tail -1 | awk '{print 100-$15}'); printf '\uf4bc %s%%' \"$cpu_percent\"",
 	"tooltip-format": "cpu usage"
     },
 
