@@ -1,10 +1,5 @@
 { pkgs, userConfig ? null, flakehub, inputs, ... }:
 let
-  sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
-  sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
-  sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
-  wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
-
   availableBrowsers = {
     firefox = pkgs.firefox;
   };
@@ -75,14 +70,8 @@ in
     # Terminal emulator
     alacritty
 
-    # Entertainment
-    wayland-apps.sandboxed-stremio-wayland
-    spotify
-
-    # Communication Apps (Sandboxed)
-    wayland-apps.sandboxed-teams-wayland
-    wayland-apps.sandboxed-slack-wayland
-    wayland-apps.sandboxed-zoom-wayland
+    # Entertainment - now handled by Flatpak
+    # Communication Apps - now handled by Flatpak
 
     # Gaming utilities
     gamemode

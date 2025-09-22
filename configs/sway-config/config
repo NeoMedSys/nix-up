@@ -11,6 +11,7 @@ shadows enable
 shadow_blur_radius 20
 
 seat * hide_cursor 2000
+seat * xcursor_theme Bibata-Modern-Amber 24
 
 # --- Lid Close Handling ---
 # This is more reliable than acpid because it runs directly within the Sway session.

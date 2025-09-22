@@ -138,7 +138,7 @@ in
       XDG_CURRENT_DESKTOP = "sway";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "sway";
-      XCURSOR_THEME = "Bibata-Modern-Classic";
+      XCURSOR_THEME = "Bibata-Modern-Amber";
       XCURSOR_SIZE = "24";
     };
     etc = {
@@ -163,7 +163,7 @@ in
         gtk-theme-name=Juno
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
-        gtk-cursor-theme-name=Bibata-Modern-Classic
+        gtk-cursor-theme-name=Bibata-Modern-Amber
         gtk-cursor-theme-size=24
       '';
 
@@ -177,7 +177,7 @@ in
         gtk-theme-name=Juno
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
-        gtk-cursor-theme-name=Bibata-Modern-Classic
+        gtk-cursor-theme-name=Bibata-Modern-Amber
       '';
 
       "gtk-4.0/gtk.css".text = ''
