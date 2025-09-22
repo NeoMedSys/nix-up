@@ -67,16 +67,6 @@ in
     opensnitch.enable = true;
     fprintd.enable = true;
 
-    # Display & Window Management
-    xserver = {
-      enable = true;
-      xkb = {
-        layout = "us";
-        options = "eurosign:e,caps:escape";
-      };
-      windowManager.i3.enable = true;
-    };
-
     # Audio
     pulseaudio.enable = false;
     pipewire = {
@@ -123,8 +113,6 @@ in
     '';
   };
 
-
-
   # ========================
   # NETWORKING
   # ========================
@@ -153,7 +141,6 @@ in
       XDG_SESSION_DESKTOP = "sway";
       XCURSOR_THEME = "Bibata-Modern-Classic";
       XCURSOR_SIZE = "24";
-
     };
     etc = {
       "boltd.conf".text = ''
@@ -182,7 +169,6 @@ in
       '';
 
       "gtk-3.0/gtk.css".text = ''
-        @import url("file:///etc/lightdm/gtk-greeter.css");
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
 
@@ -196,32 +182,17 @@ in
       '';
 
       "gtk-4.0/gtk.css".text = ''
-        @import url("file:///etc/lightdm/gtk-greeter.css");
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
 
       "librewolf/chrome/userChrome.css".source = "${inputs.self}/configs/librewolf/chrome/userChrome.css";
 
-      # User avatars and LightDM assets
+      # User avatars
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
-      "lightdm/avatar.png".source = processedKing;
-      "lightdm/wallpaper.png".source = "${inputs.self}/${userConfig.wallpaperPath}";
 
-      # LightDM GTK Greeter custom CSS - reference external file
-      "lightdm/gtk-greeter.css".source = "${inputs.self}/configs/lightdm-gtk/greeter.css";
-
-      # i3 Configuration Files
-      "i3/config".source = "${inputs.self}/configs/i3-config/config";
-      "polybar/config.ini".source = "${inputs.self}/configs/polybar-config/config.ini";
-      "polybar/launch.sh" = {
-        source = "${inputs.self}/configs/polybar-config/launch.sh";
-        mode = "0755";
-      };
-
-      # Desktop Environment Configs
+      # Desktop Environment Configs - Wayland only
       "dunst/dunstrc".source = "${inputs.self}/configs/dunst-config/dunstrc";
       "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
-      "picom.conf".source = "${inputs.self}/configs/picom-config/picom.conf";
       "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
     };
   };
@@ -342,18 +313,6 @@ in
       rofi-configs = ''
         mkdir -p ~/.config/rofi
         ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
-        ln -sf /etc/rofi/quick-apps.sh ~/.config/rofi/quick-apps.sh
-      '';
-
-      i3-configs = ''
-        mkdir -p ~/.config/{i3,dunst,polybar,rofi,alacritty,picom,lightdm}
-        ln -sf /etc/i3/config ~/.config/i3/config
-        ln -sf /etc/polybar/config.ini ~/.config/polybar/config.ini
-        ln -sf /etc/polybar/launch.sh ~/.config/polybar/launch.sh
-        ln -sf /etc/dunst/dunstrc ~/.config/dunst/dunstrc
-        ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
-        ln -sf /etc/picom.conf ~/.config/picom.conf
-        ln -sf /etc/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml
       '';
     };
   };

@@ -21,8 +21,6 @@
     # "${inputs.self}/modules/librewolf.nix"
 
     # Desktop environment
-    "${inputs.self}/modules/i3.nix"
-    # "${inputs.self}/modules/redshift.nix"
     "${inputs.self}/modules/gammastep.nix"
 
     # Gaming
@@ -50,7 +48,7 @@
 
   # delete this when not necessary anymore
   networking.hosts = {
-    "127.0.0.1" = [ "access.neomedsys.io" ];
+    "10.54.218.1" = [ "access.neomedsys.io" ];
   };
 
   # Enable flakes

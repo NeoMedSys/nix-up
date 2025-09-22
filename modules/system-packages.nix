@@ -6,7 +6,7 @@ let
   wayland-apps = import ../pkgs/sandboxed-apps.nix { inherit pkgs; };
 
   availableBrowsers = {
-    librewolf = import ../pkgs/librewolf-with-policies.nix { inherit pkgs inputs; }; 
+    librewolf = import ../pkgs/librewolf-with-policies.nix { inherit pkgs inputs; };
     firefox = pkgs.firefox;
   };
 
@@ -34,9 +34,7 @@ in
     libinput-gestures
     libinput
     ripgrep
-    rofi
     tmux
-    xsel
     ydotool
     pciutils
     usbutils
@@ -49,28 +47,14 @@ in
 
     # Desktop utilities
     brightnessctl
-    i3lock-fancy
     playerctl
     pavucontrol
     gnupg
     libnotify
     mdcat
     networkmanagerapplet
-    xorg.xrandr # Useful for arandr or manual display config
-    xss-lock
     gammastep
     dunst
-
-    # Window manager tools (some are needed for configs even if WM is module-managed)
-    arandr # X11 display config GUI
-    dmenu
-    feh # Sets wallpaper in i3
-    i3
-    i3blocks
-    picom
-    polybar # Bar for i3
-    nitrogen
-    sweet # GTK theme
 
     # Wayland-specific tools
     swayfx
@@ -84,14 +68,10 @@ in
     xdg-desktop-portal-wlr
     waybar
     swaylock-effects
-
+    sweet # GTK theme
 
     # Network and Bluetooth GUI tools
     overskride # Modern Rust+GTK4 Bluetooth manager
-
-    # Screenshot tools
-    scrot
-    flameshot
 
     # Terminal emulator
     alacritty
@@ -115,7 +95,6 @@ in
     dig
     iftop
     nethogs
-      
 
     # Encryption tools
     age
@@ -167,7 +146,6 @@ in
     fira-code-symbols
     papirus-icon-theme
 
-    # Pandoc and live MD rendering script
     pandoc
     (pkgs.writeScriptBin "mdlive" ''
       #!/bin/bash
@@ -180,17 +158,6 @@ in
       done
     '')
     inotify-tools
-
-    # X11 versions with different names (for fallback)
-    (pkgs.writeScriptBin "stremio-x11" ''
-      exec ${sandboxed-stremio}/bin/stremio "$@"
-    '')
-    (pkgs.writeScriptBin "teams-x11" ''
-      exec ${sandboxed-teams}/bin/teams "$@"
-    '')
-    (pkgs.writeScriptBin "slack-x11" ''
-      exec ${sandboxed-slack}/bin/slack "$@"
-    '')
   ] ++ browserPackages;
 
   # This registers the fonts with your system so applications can find them.
@@ -205,7 +172,7 @@ in
     material-design-icons
     material-icons
     noto-fonts-emoji
-    nerd-fonts.symbols-only # More comprehensive Nerd Fonts collection
+    nerd-fonts.symbols-only
     nerd-fonts.fira-code
     font-awesome_5
   ];
