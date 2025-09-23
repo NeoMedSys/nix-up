@@ -1,12 +1,9 @@
 { pkgs, lib, userConfig, config, ... }:
 
-lib.mkIf userConfig.vpn {
+{
   networking.wireguard.enable = true;
-
-  # sops-nix will create this file for us using the decrypted secret.
-  # We just need to grant it the right permissions.
   systemd.tmpfiles.rules = [
-    "f /etc/wireguard/mullvad.conf 0600 root systemd-network - ${config.sops.secrets.mullvad-conf.path}"
+    "L+ /etc/wireguard/mullvad.conf 0600 root systemd-network - ${config.sops.secrets.mullvad-conf.path}"
   ];
 
   networking.wg-quick.interfaces.mullvad = {
@@ -16,7 +13,6 @@ lib.mkIf userConfig.vpn {
   # Ensure the wg-quick service doesn't start automatically on boot.
   systemd.services.wg-quick-mullvad.wantedBy = lib.mkForce [ ];
 
-  # Install helper scripts for toggling and status checks.
   environment.systemPackages = with pkgs; [
     wireguard-tools
     (writeShellScriptBin "mullvad-toggle" ''

@@ -1,4 +1,4 @@
 creation_rules:
   - path_regex: secrets/.*\.yaml$
-    encrypted_regex: '^(data|stringData)$'
+    encrypted_regex: '^(data|stringData|mullvad_conf)$'
     age: age1aar6lt5t4hwed6u3e2qw5eukepm8tjv63a7cxz9p5jw3dnvnpy9sn0dd0j

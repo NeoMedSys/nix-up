@@ -14,8 +14,8 @@
   outputs = { nixpkgs, flakehub, ... }@inputs:
   let
     version = "1.0.0";
-    
     userConfig = import ./user-config.nix;
+    lib = nixpkgs.lib;
     
     mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
@@ -27,6 +27,7 @@
           ./system/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
+          ] ++ lib.optionals userConfig.vpn [
           inputs.sops-nix.nixosModules.sops
         ];
       };
