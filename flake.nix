@@ -7,6 +7,8 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     flakehub.url = "github:DeterminateSystems/fh";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { nixpkgs, flakehub, ... }@inputs:
@@ -25,8 +27,7 @@
           ./system/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
-          
-
+          inputs.sops-nix.nixosModules.sops
         ];
       };
   in

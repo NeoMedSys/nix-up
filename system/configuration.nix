@@ -31,6 +31,7 @@
     "${inputs.self}/modules/techoverlord_protection.nix"
     "${inputs.self}/modules/app-telemetry-deny.nix"
     "${inputs.self}/modules/tuigreeter.nix"
+    "${inputs.self}/modules/secrets.nix"
 
 
   # Conditionally import nvidia.nix based on the hasGPU flag
