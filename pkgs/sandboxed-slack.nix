@@ -1,24 +1,41 @@
 { pkgs, ... }:
+
 pkgs.stdenv.mkDerivation {
-  name = "sandboxed-slack";
+  name = "sandboxed-slack-wayland";
   version = "1.0";
   nativeBuildInputs = [ pkgs.makeWrapper ];
   dontUnpack = true;
   installPhase = ''
-    mkdir -p $out/bin
-    makeWrapper ${pkgs.bubblewrap}/bin/bwrap $out/bin/slack \
-      --run 'mkdir -p "$HOME/.local/share/slack-sandboxed"' \
-      --add-flags "--dev-bind / /" \
-      --add-flags "--ro-bind /nix/store /nix/store" \
-      --add-flags "--proc /proc" \
-      --add-flags "--dev /dev" \
-      --add-flags "--ro-bind /etc/resolv.conf /etc/resolv.conf" \
-      --add-flags "--ro-bind /var/run/dbus /var/run/dbus" \
-      --add-flags "--ro-bind /tmp/.X11-unix /tmp/.X11-unix" \
-      --add-flags "--bind \"\$HOME/.local/share/slack-sandboxed\" \"\$HOME/.config/Slack\"" \
-      --add-flags "--ro-bind \"\$XDG_RUNTIME_DIR/pulse\" \"\$XDG_RUNTIME_DIR/pulse\"" \
-      --add-flags "--ro-bind \"\$XDG_RUNTIME_DIR/bus\" \"\$XDG_RUNTIME_DIR/bus\"" \
-      --add-flags "--setenv DISPLAY \"\$DISPLAY\"" \
-      --add-flags "${pkgs.slack}/bin/slack"
+    mkdir -p $out/bin $out/share/applications
+    # Create the slack wrapper
+    makeWrapper ${pkgs.systemd}/bin/systemd-run $out/bin/slack \
+      --run 'mkdir -p "$HOME/.local/share/app-isolation/slack"' \
+      --add-flags "--user --scope -p MemoryHigh=4G -p MemoryMax=6G" \
+      --add-flags "--property=\"DeviceAllow=/dev/video0 rw\"" \
+      --add-flags "--property=\"DeviceAllow=/dev/video1 rw\"" \
+      --add-flags "${pkgs.slack}/bin/slack" \
+      --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/slack\"" \
+      --add-flags "--force-device-scale-factor=1.0" \
+      --add-flags "--high-dpi-support=1" \
+      --add-flags "--enable-wayland-ime" \
+      --set HOSTNAME "research-workstation" \
+      --set USER "researcher" \
+      --set SLACK_DISABLE_TELEMETRY "1" \
+      --set GDK_SCALE "1" \
+      --set GDK_DPI_SCALE "1"
+    # Create desktop file for URL handler registration
+    cat > $out/share/applications/slack.desktop << EOF
+[Desktop Entry]
+Type=Application
+Name=Slack
+Comment=Slack Desktop App (Privacy-focused)
+Exec=$out/bin/slack %u
+Icon=slack
+Terminal=false
+MimeType=x-scheme-handler/slack;
+Categories=Network;InstantMessaging;
+StartupWMClass=Slack
+NoDisplay=false
+EOF
   '';
 }

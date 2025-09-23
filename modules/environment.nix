@@ -138,7 +138,7 @@ in
       XDG_CURRENT_DESKTOP = "sway";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "sway";
-      XCURSOR_THEME = "Bibata-Modern-Classic";
+      XCURSOR_THEME = "Bibata-Modern-Amber";
       XCURSOR_SIZE = "24";
     };
     etc = {
@@ -147,11 +147,40 @@ in
         AuthorizationMode = automatic
       '';
 
-      # three finger swipe for panels
-      "libinput-gestures.conf".text = ''
-        bindgesture swipe:3:left swaymsg workspace next
-        bindgesture swipe:3:right swaymsg workspace prev
+      # Fusuma gesture configuration (replacing libinput-gestures)
+      "fusuma/config.yml".text = ''
+        swipe:
+          3:
+            left:
+              command: "swaymsg workspace next"
+            right:
+              command: "swaymsg workspace prev"
+          4:
+            up:
+              command: "rofi -show drun"
+            down:
+              command: "swaymsg '[con_id=__focused__] scratchpad show' || swaymsg 'workspace back_and_forth'"
+            left:
+              command: "swaymsg workspace next"
+            right:
+              command: "swaymsg workspace prev"
+        pinch:
+          2:
+            in:
+              command: "swaymsg '[con_id=__focused__] fullscreen toggle'"
+            out:
+              command: "swaymsg '[con_id=__focused__] floating toggle'"
+        hold:
+          4:
+            command: "rofi -show window"
+        threshold:
+          swipe: 0.4
+          pinch: 0.4
+        interval:
+          swipe: 0.8
+          pinch: 0.1
       '';
+
       # for ssh agent
       "gnupg/scdaemon.conf".text = ''
         disable-ccid
@@ -163,7 +192,7 @@ in
         gtk-theme-name=Juno
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
-        gtk-cursor-theme-name=Bibata-Modern-Classic
+        gtk-cursor-theme-name=Bibata-Modern-Amber
         gtk-cursor-theme-size=24
       '';
 
@@ -177,7 +206,7 @@ in
         gtk-theme-name=Juno
         gtk-icon-theme-name=Papirus-Dark
         gtk-font-name=MesloLGS NF 11
-        gtk-cursor-theme-name=Bibata-Modern-Classic
+        gtk-cursor-theme-name=Bibata-Modern-Amber
       '';
 
       "gtk-4.0/gtk.css".text = ''
@@ -265,19 +294,6 @@ in
   # SYSTEMD SERVICES
   # ========================
   systemd = {
-    user.services = {
-      mpris-proxy.enable = true;
-      libinput-gestures = {
-        enable = true;
-        description = "Libinput gestures";
-        wantedBy = [ "graphical-session.target" ];
-        serviceConfig = {
-          ExecStart = "${pkgs.libinput-gestures}/bin/libinput-gestures";
-          Restart = "always";
-        };
-      };
-    };
-
     services.display-manager.serviceConfig = {
       Environment = [
         "XDG_DATA_DIRS=${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
@@ -301,6 +317,11 @@ in
       rofi-configs = ''
         mkdir -p ~/.config/rofi
         ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
+      '';
+
+      fusuma-config = ''
+        mkdir -p ~/.config/fusuma
+        ln -sf /etc/fusuma/config.yml ~/.config/fusuma/config.yml
       '';
     };
   };

@@ -96,7 +96,14 @@
 
         # This will queue all outbound traffic from non-root users for OpenSnitch
         # If OpenSnitch isn't running, this can block traffic.
-        meta skuid != 0 queue num 0 bypass
+        # this doesnt allow steam ->meta skuid != 0 queue num 0 bypass
+        # this works -> oifname != "lo" meta skuid != 0 queue num 0 bypass
+
+        # Queue traffic for OpenSnitch, unless it is:
+        #  - on the loopback interface ("lo")
+        #  - from the root user (UID 0)
+        #  - standard DNS traffic (UDP port 53)
+        oifname != "lo" skuid != 0 udp dport != 53 queue num 0 bypass
       }
     }
   '';

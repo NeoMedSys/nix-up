@@ -7,13 +7,15 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     flakehub.url = "github:DeterminateSystems/fh";
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { nixpkgs, flakehub, ... }@inputs:
   let
     version = "1.0.0";
-    
     userConfig = import ./user-config.nix;
+    lib = nixpkgs.lib;
     
     mkSystem = { ... }:
       nixpkgs.lib.nixosSystem {
@@ -25,8 +27,8 @@
           ./system/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
-          
-
+          ] ++ lib.optionals userConfig.vpn [
+          inputs.sops-nix.nixosModules.sops
         ];
       };
   in

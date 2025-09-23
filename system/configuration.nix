@@ -23,9 +23,6 @@
     # Desktop environment
     "${inputs.self}/modules/gammastep.nix"
 
-    # Gaming
-    "${inputs.self}/modules/steam.nix"
-
     # General programming languages
     "${inputs.self}/modules/gpl.nix"
 
@@ -41,6 +38,7 @@
     "${inputs.self}/modules/nvidia.nix"
   ] ++ lib.optionals userConfig.vpn [
       "${inputs.self}/modules/vpn.nix"
+      "${inputs.self}/modules/secrets.nix"
   ];
 
   # System identification

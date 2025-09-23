@@ -12,15 +12,14 @@ Perseus is a fully declarative NixOS setup that combines **uncompromising privac
 
 **Designed for open collaboration** - your personal data stays local, GitHub gets sanitized configs for easy teamwork.
 
-What you get:
+### What you get:
 
-1. **Desktop**: Sway compositor + Waybar + Alacritty terminal + Rofi launcher (Wayland-native)
-2. **Privacy**: OpenSnitch firewall + encrypted DNS + Mullvad VPN + tracking protection
-3. **Development**: Neovim + Python/Go/Rust environments + Docker + Git integration
-4. **Daily Apps**: Brave browser + Slack/Teams (sandboxed) + Spotify + Signal
-5. **Gaming**: Steam + NVIDIA drivers (if GPU) + GameMode + controller support
-
-###### i3/X11 included but being phased out
+1.  **Desktop**: **Sway** compositor + **Waybar** + **Alacritty** terminal + **Rofi** launcher (fully Wayland-native)
+2.  **Login**: **Tuigreet** (minimalist text-based greeter) with **Fingerprint** (`fprintd`) support
+3.  **Privacy**: **OpenSnitch** firewall + encrypted DNS with **dnscrypt-proxy2** + **Mullvad VPN** integration
+4.  **Development**: **Neovim** (via nixvim) + Python/Go/Rust environments + Docker + Git integration
+5.  **Daily Apps**: LibreWolf browser + Sandboxed Slack/Spotify/Steam
+6.  **Gaming**: Steam + NVIDIA drivers (if enabled) + GameMode + controller support
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8ec48a37-a0c3-4c76-8d18-b9ead35a5087" />
 
@@ -30,194 +29,154 @@ What you get:
 
 ### Prerequisites
 
-1. NixOS 25.05 or later
-2. Git installed
-3. 20GB+ free disk space
+1.  NixOS 25.05 or later installed on bare metal
+2.  Git installed
+3.  20GB+ free disk space
 
-### Perseus Setup Script
+### 1. Perseus Setup Script
 
 **⚠️ CRITICAL: You MUST run `./perseus.sh` before installation!**
 
-The Perseus setup script is not optional - it configures your personal settings and sets up collaboration-safe git filtering.
-
-#### What the Script Does
+This script is not optional. It generates your private `user-config.nix` file and sets up Git filters to protect your personal data from being committed.
 
 ```bash
+# From the root of the cloned repository
 ./perseus.sh
 ```
 
-1. **Personal Configuration**: Collects your username, hostname, git details, location, and preferences
-2. **Hardware Detection**: Auto-detects NVIDIA GPU, laptop status, and PCI bus IDs
-3. **Git Filtering Setup**: Protects your privacy while enabling collaboration
+1.  **Personal Configuration**: Collects your username, hostname, git details, location, and preferences.
+2.  **Hardware Detection**: Auto-detects NVIDIA GPU, laptop status, and PCI bus IDs.
+3.  **Git Filtering Setup**: Protects your privacy while enabling collaboration.
 
-This generated file is **private** and is listed in `.gitignore`, ensuring your personal data is **never committed to the repository**.
+This generated file is **private**, listed in `.gitignore`, and ensures your personal data is **never committed to the repository**.
 
-#### Script Output Example
+### 2. Installation
 
-After running `./perseus.sh`, you will have a new file, `user-config.nix`, that looks something like this:
-
-```nix
-{
-  username = "banan";
-  hostname = "banan-laptop";
-  timezone = "Europe/Oslo";
-  isLaptop = true;
-  hasGPU = true;
-  intelBusId = "PCI:0:2:0";
-  nvidiaBusId = "PCI:1:0:0";
-  browsers = ["librewolf" "firefox"];
-  devTools = ["python" "go"];
-  vpn = true;
-  gitName = "Banan Developer";
-  gitEmail = "banan@company.com";
-  latitude = 59.91;
-  longitude = 10.75;
-  wallpaperPath = "assets/wallpaper.png";
-  avatarPath = "assets/king.png";
-}
-```
-
-#### Why This Matters
-
-Perseus uses a **privacy-first collaboration model**:
-
-- **Your Local Machine**: Contains real usernames, SSH keys, hardware configs, VPN settings
-- **GitHub Repository**: Contains only sanitized placeholder configs for CI/collaboration
-- **Git Ignore**: Ignore user specific settings
-
-#### Collaboration Benefits
-
-✅ **Privacy**: No personal data ever reaches GitHub  
-✅ **Security**: SSH keys and hardware details stay local  
-✅ **Teamwork**: Others can contribute without seeing your setup  
-✅ **CI/CD**: Automated testing works with placeholder configs  
-✅ **Pull Safety**: `git pull` won't overwrite your personal settings
-
-#### Script Output Example
-
-```
-Welcome to Perseus NixOS Configuration Setup
-===========================================
-Username [alice]: alice
-Hostname [perseus]: alice-laptop
-Full name for git: Alice Developer
-Email for git: alice@company.com
-Has NVIDIA GPU? [false]: true
-Detecting GPU bus IDs...
-Intel bus ID: PCI:0:2:0
-NVIDIA bus ID: PCI:1:0:0
-```
-
-**After running the script once, your configs are protected forever.**
-
-### Installation
-
-First step is to run the bare metal installation from ISO and then run the Perseus installation.
-
-#### 1 Bare Metal Installation
+With your base NixOS system running, follow these steps to deploy Perseus.
 
 ```bash
-# 1.1 Partition your disk (replace /dev/sda with your disk)
-sudo fdisk /dev/sda
-# Create: 512MB EFI partition (type EF00), rest for root (type 8300)
-
-# 1.2 Format partitions
-sudo mkfs.fat -F 32 /dev/sda1  # EFI
-sudo mkfs.ext4 /dev/sda2       # Root
-
-# 1.3 Mount the file systems
-sudo mount /dev/sda2 /mnt
-sudo mkdir -p /mnt/boot
-sudo mount /dev/sda1 /mnt/boot
-
-# 1.4 Generate hardware configuration
-sudo nixos-generate-config --root /mnt
-```
-
-#### 2. Perseus Installation
-
-```bash
-# 2.1 Clone the repository and setup the args for your system
-git clone https://github.com/yourusername/perseus
+# 2.1 Clone the repository
+git clone [https://github.com/yourusername/perseus](https://github.com/yourusername/perseus)
 cd perseus
 
-# 2.2
-# NB! this step is mandatory for reasons explained in the previous section
-sh perseus.sh
+# 2.2 Run the mandatory setup script
+# This creates your personalized user-config.nix
+./perseus.sh
 
-# 2.3 Copy the generated hardware config
-sudo cp /mnt/etc/nixos/hardware-configuration.nix system/
+# 2.3 Copy your machine's hardware configuration
+# This file was generated during the bare metal NixOS install
+sudo cp /etc/nixos/hardware-configuration.nix system/
 
-# 2.4 For system with VPN (Only Mullvad support for now)
-cp your-mullvad-config.conf configs/mullvad-config/
+# 2.4 (OPTIONAL) Set up VPN secrets if you plan to use the VPN
+# See the detailed "VPN Setup with Sops" section below before proceeding.
 
-# 2.5 Install your personalized system
+# 2.5 Install your personalized Perseus system
 sudo nixos-install --flake .#<your-hostname>
+# Replace <your-hostname> with the hostname you set in ./perseus.sh
 
 # 2.6 Reboot and enjoy your freedom
 sudo reboot
 ```
 
-### First Boot
+> **⚠️ IMPORTANT FIRST-TIME INSTALL ADVICE**
+> For the initial installation, it is strongly recommended to set `hasGPU` and `vpn` to `false` in your `user-config.nix`. You can easily enable them later by changing the flags and running `sudo nixos-rebuild switch --flake .#<hostname>`. This ensures a smoother first boot.
 
-1. Security daemon starts automatically
-2. Blue light filter activates at 10 PM
-3. All privacy protections enabled by default
+### 3. VPN Setup with Sops (Optional)
 
-##### NOTE: Add mullvad config to the setup before running install if you want the VPN
+Perseus uses **sops-nix** to manage the Mullvad WireGuard configuration securely. If you set `vpn = true;` in your `user-config.nix`, you must complete these steps.
+
+#### Step 1: Generate an `age` key
+
+`age` is a simple and secure encryption tool. We'll use it to encrypt your VPN configuration.
+
+```bash
+# Install age if you don't have it
+nix-shell -p age
+
+# Create the sops directory and generate your key
+mkdir -p ~/.config/sops/age
+age-keygen -o ~/.config/sops/age/keys.txt
+
+# The file keys.txt now contains your private and public keys.
+# The public key starts with "age1...".
+```
+
+#### Step 2: Create a `.sops.yaml` configuration file
+
+This file tells `sops` how to encrypt your secrets. Create a file named `.sops.yaml` in the root of the Perseus repository.
+
+```yaml
+# .sops.yaml
+creation_rules:
+  - path_regex: secrets/.*\.yaml$
+    encrypted_regex: '^(data|stringData|mullvad_conf)$'
+    age: >-
+      # PASTE YOUR PUBLIC KEY FROM keys.txt HERE
+      age1...
+```
+
+#### Step 3: Create the secret file
+
+Create a new file at `secrets/wireguard.yaml` and paste your Mullvad WireGuard configuration into it.
+
+```yaml
+# secrets/wireguard.yaml
+mullvad_conf: |
+  [Interface]
+  PrivateKey = ...
+  Address = ...
+  DNS = ...
+  [Peer]
+  PublicKey = ...
+  AllowedIPs = 0.0.0.0/0,::0/0
+  Endpoint = ...
+```
+**Note:** The `|` is important for multi-line strings in YAML.
+
+#### Step 4: Encrypt the file
+
+Now, use `sops` to encrypt the file in-place.
+
+```bash
+# Install sops if you don't have it
+nix-shell -p sops
+
+# Encrypt the file
+sops -e -i secrets/wireguard.yaml
+```
+
+Your secret is now securely encrypted! You can enable the VPN (`vpn = true;` in `user-config.nix`) and rebuild your system.
 
 ## 🎯 Philosophy
 
 **"Your machine, your rules"** - Perseus embodies the principle that you should have complete control over your computing environment:
 
-- **Privacy by Default**: Every connection monitored, every tracker blocked, every telemetry disabled
-- **Reproducible Everywhere**: One config file → identical system on any machine
-- **Zero Manual Configuration**: Everything from keybindings to themes defined in code
-- **Modular Architecture**: Enable only what you need, when you need it
-- **Community First**: Built on open standards, contributing back to the ecosystem
+-   **Privacy by Default**: Every connection monitored, every tracker blocked, every telemetry disabled.
+-   **Reproducible Everywhere**: One config file → identical system on any machine.
+-   **Zero Manual Configuration**: Everything from keybindings to themes defined in code.
+-   **Modular Architecture**: Enable only what you need, when you need it.
+-   **Community First**: Built on open standards, contributing back to the ecosystem.
 
 ## 🛡️ Privacy & Security Arsenal
 
 ### The Tech Overlord Defense System
 
-Perseus includes **NastyTechLords** - an automated security daemon that runs comprehensive audits every 6 hours:
+Perseus includes **NastyTechLords** - an automated security daemon that runs comprehensive audits every 6 hours using tools like `lynis` and `chkrootkit`.
 
 ```bash
-ntl status          # Check daemon status
-ntl run             # Manual security audit
-ntl report          # View latest findings
+ntl status         # Check daemon status
+ntl run            # Manual security audit
+ntl report         # View latest findings
 ntl run --full-check # Deep system verification
 ```
 
 ### Multi-Layer Protection
 
-1. **DNS Level** (First Line of Defense)
-   - `dnscrypt-proxy2` with encrypted DNS
-   - Automatic ad/tracker/malware blocking
-   - Anonymous DNS routing
-
-2. **Network Level**
-   - OpenSnitch application firewall (per-app rules)
-   - MAC address randomization
-   - Custom firewall rules blocking known trackers
-   - Fail2ban intrusion prevention
-
-3. **System Level**
-   - AppArmor mandatory access control
-   - Kernel hardening (sysctl tweaks)
-   - No swap (prevents memory dumps)
-   - Disabled telemetry for all development tools
-
-4. **Application Level**
-   - Sandboxed Teams (via bubblewrap)
-   - Brave browser with fingerprint protection
-   - Signal & Element for encrypted communication
-
-5. **VPN Level**
-   - Mullvad WireGuard integration (auto-configured)
-   - On-demand activation via status bar
-   - Local network access preserved
-   - Kill switch protection when active
+1.  **DNS Level**: `dnscrypt-proxy2` for encrypted, anonymous DNS with ad/tracker/malware blocking.
+2.  **Network Level**: **OpenSnitch** application firewall, MAC address randomization, and hardened `nftables` rules.
+3.  **System Level**: **AppArmor** mandatory access control, kernel hardening, and disabled swap to prevent memory dumps.
+4.  **Application Level**: **Sandboxed Slack, Spotify, and Steam** with restricted permissions, memory limits, and disabled telemetry.
+5.  **VPN Level**: **Mullvad WireGuard** integration with a kill switch, managed securely via sops.
 
 ## 💻 Developer Paradise
 
@@ -228,8 +187,8 @@ Perseus uses a modular approach - enable only the languages you need:
 ```nix
 # In flake.nix
 perseus = mkSystem {
-  hasGPU = false;
-  devTools = [ "python" "go" "rust" "nextjs" ];
+  hasGPU = false;
+  devTools = [ "python" "go" "rust" "nextjs" ];
 };
 ```
 
@@ -270,8 +229,8 @@ Neovim (via nixvim) comes preconfigured with:
 ```nix
 # Enable with GPU support
 perseus-gpu = mkSystem {
-  hasGPU = true;
-  devTools = [ "python" ];
+  hasGPU = true;
+  devTools = [ "python" ];
 };
 ```
 
@@ -296,14 +255,14 @@ Features:
 
 Clean, keyboard-driven workflow with sensible defaults:
 
-| Keybinding    | Action               |
+| Keybinding    | Action               |
 | ------------- | -------------------- |
-| `Mod+Enter`   | Terminal             |
-| `Mod+b`       | Brave browser        |
-| `Mod+c`       | Slack                |
-| `Mod+d`       | Application launcher |
-| `Mod+h/j/k/l` | Navigate windows     |
-| `Mod+1-9`     | Switch workspace     |
+| `Mod+Enter`   | Terminal             |
+| `Mod+b`       | Brave browser        |
+| `Mod+c`       | Slack                |
+| `Mod+d`       | Application launcher |
+| `Mod+h/j/k/l` | Navigate windows     |
+| `Mod+1-9`     | Switch workspace     |
 
 ### Status Bar
 
@@ -330,10 +289,10 @@ Interactive i3status-rust modules:
 Perseus uses a **modular architecture** for flexibility and maintainability:
 
 ```
-modules/          # Individual system components
-configs/          # Application configuration files
-pkgs/             # Custom package definitions
-system/           # Core NixOS configuration
+modules/          # Individual system components
+configs/          # Application configuration files
+pkgs/             # Custom package definitions
+system/           # Core NixOS configuration
 ```
 
 ### Why Modular?

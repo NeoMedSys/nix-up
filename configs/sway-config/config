@@ -11,6 +11,7 @@ shadows enable
 shadow_blur_radius 20
 
 seat * hide_cursor 2000
+seat * xcursor_theme Bibata-Modern-Amber 18
 
 # --- Lid Close Handling ---
 # This is more reliable than acpid because it runs directly within the Sway session.
@@ -183,6 +184,7 @@ output * bg ~/.config/sway/wallpaper.png fill
 exec_always sh -c 'pkill waybar; waybar &'
 exec_always opensnitch-ui >/dev/null 2>&1
 exec_always dunst
+exec_always fusuma
 
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME

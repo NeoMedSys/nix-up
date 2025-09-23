@@ -55,18 +55,18 @@
         "on-click": "mullvad-toggle >/dev/null 2>&1 &"
     },
 
-    "custom/network": {
-        "format": "{}",
-        "interval": 5,
-        "exec": "ethernet_device=$(nmcli -t -f device,type,state dev | grep 'ethernet:connected' | head -1 | cut -d: -f1); if [ -n \"$ethernet_device\" ]; then printf '\\uef44 Ethernet'; else wifi_ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes:' | cut -d: -f2); if [ -n \"$wifi_ssid\" ]; then printf '\\uf1eb %s' \"$wifi_ssid\"; else wifi_conn=$(nmcli -t -f name con show --active | head -1); if [ -n \"$wifi_conn\" ] && [ \"$wifi_conn\" != \"lo\" ]; then printf '\\uf1eb %s' \"$wifi_conn\"; else printf '\\uf1eb Connect'; fi; fi; fi",
-        "on-click": "nm-connection-editor >/dev/null 2>&1 &"
+  "custom/network": {
+	"format": "{}",
+	"interval": 5,
+	"exec": "ethernet_device=$(nmcli -t -f device,type,state dev | grep 'ethernet:connected' | head -1 | cut -d: -f1); if [ -n \"$ethernet_device\" ]; then printf '\\uef44 Ethernet'; else wifi_ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes:' | cut -d: -f2); if [ -n \"$wifi_ssid\" ]; then printf '\\uf1eb %s' \"$wifi_ssid\"; else printf '\\uf1eb Connect'; fi; fi",
+	"on-click": "wifi-menu"
     },
 
-    "custom/bluetooth": {
-        "format": "{}",
-        "interval": 5,
-        "exec": "connected_device=$(bluetoothctl devices Connected | head -n1 | cut -d ' ' -f 3-); if [ -n \"$connected_device\" ]; then printf '\uf294 $connected_device'; else printf '\uf294 Off'; fi",
-        "on-click": "overskride >/dev/null 2>&1 &",
+  "custom/bluetooth": {
+	"format": "{}",
+	"interval": 5,
+	"exec": "connected_device=$(bluetoothctl devices Connected | head -n1 | cut -d ' ' -f 3-); if [ -n \"$connected_device\" ]; then printf \"\\uf294 %s\" \"$connected_device\"; else printf \"\\uf294 Off\"; fi",
+	"on-click": "overskride >/dev/null 2>&1 &",
 	"tooltip-format": "Run Overskride"
     },
 
