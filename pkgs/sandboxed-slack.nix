@@ -15,6 +15,7 @@ pkgs.stdenv.mkDerivation {
       --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/slack\"" \
       --add-flags "--force-device-scale-factor=1.0" \
       --add-flags "--high-dpi-support=1" \
+      --add-flags "--disable-gpu" \
       --add-flags "--enable-wayland-ime" \
       --add-flags "--property=\"NoNewPrivileges=true\"" \
       --set HOSTNAME "research-workstation" \
