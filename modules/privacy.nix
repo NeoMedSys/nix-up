@@ -96,7 +96,8 @@
 
         # This will queue all outbound traffic from non-root users for OpenSnitch
         # If OpenSnitch isn't running, this can block traffic.
-        meta skuid != 0 queue num 0 bypass
+        # meta skuid != 0 queue num 0 bypass
+        oifname != "lo" meta skuid != 0 queue num 0 bypass
       }
     }
   '';
