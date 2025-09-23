@@ -7,12 +7,9 @@ pkgs.stdenv.mkDerivation {
   dontUnpack = true;
   installPhase = ''
     mkdir -p $out/bin $out/share/applications
-    # Create the steam wrapper with GPU access and game directory access
-    makeWrapper ${pkgs.systemd}/bin/systemd-run $out/bin/steam \
+    # Create a simpler steam wrapper that OpenSnitch can intercept
+    makeWrapper ${pkgs.steam}/bin/steam $out/bin/steam \
       --run 'mkdir -p "$HOME/.local/share/app-isolation/steam"' \
-      --add-flags "--user --scope -p MemoryHigh=8G -p MemoryMax=12G" \
-      --add-flags "${pkgs.steam}/bin/steam" \
-      --add-flags "-silent" \
       --set STEAM_RUNTIME_PREFER_HOST_LIBRARIES "0" \
       --set STEAM_RUNTIME "1" \
       --set HOSTNAME "research-workstation" \
@@ -23,7 +20,8 @@ pkgs.stdenv.mkDerivation {
       --set MESA_GL_VERSION_OVERRIDE "4.6" \
       --set MESA_GLSL_VERSION_OVERRIDE "460" \
       --set LIBVA_DRIVER_NAME "nvidia" \
-      --set VDPAU_DRIVER "nvidia"
+      --set VDPAU_DRIVER "nvidia" \
+      --add-flags "-silent"
     # Create desktop file
     cat > $out/share/applications/steam.desktop << EOF
 [Desktop Entry]

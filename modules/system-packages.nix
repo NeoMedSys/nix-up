@@ -29,7 +29,7 @@ in
     jq
     fastfetch
     fzf
-    libinput-gestures
+    fusuma
     libinput
     ripgrep
     tmux
@@ -76,7 +76,7 @@ in
 
     # Entertainment - now handled by Flatpak
     sandboxed-spotify
-    sandoxed-steam
+    sandboxed-steam
 
     # Communication Apps - now handled by Flatpak
     sandboxed-slack
@@ -156,6 +156,25 @@ in
       done
     '')
     inotify-tools
+    
+    # WiFi menu script for waybar
+    (pkgs.writeShellScriptBin "wifi-menu" ''
+      wifi_list=$(nmcli -t -f "SIGNAL,SSID" device wifi list | sort -rn | head -10 | awk -F: '{print $2}')
+      current=$(nmcli -t -f active,ssid dev wifi | grep '^yes:' | cut -d: -f2)
+      if [ -n "$current" ]; then
+          choice=$(echo -e "Disconnect from $current\n$wifi_list" | rofi -dmenu -p "WiFi")
+          if [ "$choice" = "Disconnect from $current" ]; then
+              nmcli connection down "$current"
+          elif [ -n "$choice" ]; then
+              nmcli device wifi connect "$choice"
+          fi
+      else
+          choice=$(echo "$wifi_list" | rofi -dmenu -p "Connect to WiFi")
+          if [ -n "$choice" ]; then
+              nmcli device wifi connect "$choice"
+          fi
+      fi
+    '')
   ] ++ browserPackages;
 
   # This registers the fonts with your system so applications can find them.
