@@ -17,7 +17,12 @@
       };
       sway = {
         default = lib.mkForce [ "wlr" "gtk" ];
+        # Explicitly route camera requests to GTK portal
+        "org.freedesktop.impl.portal.Camera" = [ "gtk" ];
         "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+        # Keep screen capture with WLR
+        "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "wlr" ];
       };
     };
   };
