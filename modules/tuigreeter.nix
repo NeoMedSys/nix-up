@@ -33,7 +33,7 @@
   };
 
   boot.kernelParams = [
-    "mem_sleep_default=deep"
+    # "mem_sleep_default=deep"
     "console=tty1"
     "quiet"
     "loglevel=3"
