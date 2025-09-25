@@ -46,7 +46,7 @@
 
   # delete this when not necessary anymore
   networking.hosts = {
-    "10.54.218.1" = [ "access.neomedsys.io" ];
+    "10.54.218.134" = [ "access.neomedsys.io" "neocoms.neomedsys.io" ];
   };
 
   # Enable flakes

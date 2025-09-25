@@ -38,8 +38,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+e exit
 
 input type:keyboard {
-    xkb_layout us
-    xkb_options caps:escape,eurosign:e
+    xkb_layout us,no
+    xkb_options caps:escape,eurosign:e,grp:win_space_toggle
 }
 
 input type:touchpad {
@@ -175,8 +175,13 @@ bindsym $mod+Shift+r exec sudo systemctl reboot
 bindsym $mod+g exec steam
 
 # Keyboard layout switching (Wayland version)
-bindsym $mod+u exec swaymsg input type:keyboard xkb_layout us
-bindsym $mod+n exec swaymsg input type:keyboard xkb_layout no
+# bindsym $mod+u exec swaymsg input type:keyboard xkb_layout us
+# bindsym $mod+n exec swaymsg input type:keyboard xkb_layout no
+
+input type:keyboard {
+    xkb_layout us,no
+    xkb_options caps:escape,eurosign:e,grp:lalt_lshift_toggle
+}
 
 output * bg ~/.config/sway/wallpaper.png fill
 

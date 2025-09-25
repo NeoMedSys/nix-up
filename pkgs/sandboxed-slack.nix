@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 pkgs.stdenv.mkDerivation {
   name = "sandboxed-slack-wayland";
   version = "1.0";
@@ -11,18 +10,23 @@ pkgs.stdenv.mkDerivation {
     makeWrapper ${pkgs.systemd}/bin/systemd-run $out/bin/slack \
       --run 'mkdir -p "$HOME/.local/share/app-isolation/slack"' \
       --add-flags "--user --scope -p MemoryHigh=4G -p MemoryMax=6G" \
-      --add-flags "--property=\"DeviceAllow=/dev/video0 rw\"" \
-      --add-flags "--property=\"DeviceAllow=/dev/video1 rw\"" \
       --add-flags "${pkgs.slack}/bin/slack" \
       --add-flags "--user-data-dir=\"\$HOME/.local/share/app-isolation/slack\"" \
       --add-flags "--force-device-scale-factor=1.0" \
       --add-flags "--high-dpi-support=1" \
       --add-flags "--enable-wayland-ime" \
+      --add-flags "--enable-features=UseOzonePlatform,WebRTCPipeWireCapturer" \
+      --add-flags "--ozone-platform=wayland" \
+      --add-flags "--disable-features=WebRtcUsePortal" \
       --set HOSTNAME "research-workstation" \
       --set USER "researcher" \
       --set SLACK_DISABLE_TELEMETRY "1" \
       --set GDK_SCALE "1" \
-      --set GDK_DPI_SCALE "1"
+      --set GDK_DPI_SCALE "1" \
+      --set WAYLAND_DISPLAY "wayland-1" \
+      --set XDG_SESSION_TYPE "wayland" \
+      --set XDG_CURRENT_DESKTOP "sway" \
+      --set XDG_RUNTIME_DIR "/run/user/1001"
     # Create desktop file for URL handler registration
     cat > $out/share/applications/slack.desktop << EOF
 [Desktop Entry]

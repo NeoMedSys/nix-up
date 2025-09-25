@@ -38,6 +38,20 @@ in
     usbutils
     iw
     bolt
+    v4l-utils
+    libcamera
+
+    # ipu6
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+    gst_all_1.gst-libav
+    gst_all_1.icamerasrc-ipu6
+    gst_all_1.gst-libav
+    libcamera
+    xdg-desktop-portal-gtk
 
     # File manager and themes
     nemo

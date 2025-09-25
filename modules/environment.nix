@@ -6,7 +6,6 @@ let
     convert ${inputs.self}/${userConfig.avatarPath} \
       -gravity center -resize 96x96^ -extent 96x96 $out
   '';
-
   resolvConfForSandbox = pkgs.writeText "resolv.conf" ''
     nameserver 1.1.1.1
     nameserver 8.8.8.8
@@ -27,24 +26,24 @@ in
     };
     kernelParams = [
       "mem_sleep_default=deep"
+      # REMOVED all manual IPU6 parameters - handled by hardware.ipu6
     ];
+    # REMOVED manual IPU6 kernel modules - handled by hardware.ipu6
+    # REMOVED manual IPU6 initrd modules - handled by hardware.ipu6  
+    # REMOVED manual IPU6 blacklisted modules - handled by hardware.ipu6
   };
-
   # ========================
   # LOCALIZATION & TIME
   # ========================
   time.timeZone = userConfig.timezone;
-
   i18n = {
     supportedLocales = [ "en_US.UTF-8/UTF-8" "nb_NO.UTF-8/UTF-8" ];
     defaultLocale = "en_US.UTF-8";
   };
-
   console = {
     font = "Lat2-Terminus16";
     useXkbConfig = true;
   };
-
   # ========================
   # SERVICES
   # ========================
@@ -58,15 +57,11 @@ in
         DEVICES_TO_DISABLE_ON_STARTUP = "";
       };
     };
-
     gnome.gnome-keyring.enable = true;
-
     upower.enable = true;
-
     # Security
     opensnitch.enable = true;
     fprintd.enable = true;
-
     # Audio
     pulseaudio.enable = false;
     pipewire = {
@@ -78,11 +73,9 @@ in
       pulse.enable = true;
       wireplumber.enable = true;
     };
-
     # Bluetooth
     blueman.enable = true;
   };
-
   # ========================
   # USERS & SECURITY
   # ========================
@@ -93,7 +86,6 @@ in
     packages = with pkgs; [ tree ];
     homeMode = "0751";
   };
-
   security = {
     sudo.extraRules = [{
       users = [ userConfig.username ];
@@ -112,7 +104,6 @@ in
       });
     '';
   };
-
   # ========================
   # NETWORKING
   # ========================
@@ -125,7 +116,6 @@ in
       allowedUDPPorts = [ 53 ];
     };
   };
-
   # ========================
   # ENVIRONMENT & VARIABLES
   # ========================
@@ -140,13 +130,14 @@ in
       XDG_SESSION_DESKTOP = "sway";
       XCURSOR_THEME = "Bibata-Modern-Amber";
       XCURSOR_SIZE = "24";
+      GST_PLUGIN_PATH = "/run/current-system/sw/lib/gstreamer-1.0";
+      PIPEWIRE_LATENCY = "256/48000";
     };
     etc = {
       "boltd.conf".text = ''
         [Daemon]
         AuthorizationMode = automatic
       '';
-
       # Fusuma gesture configuration (replacing libinput-gestures)
       "fusuma/config.yml".text = ''
         swipe:
@@ -180,7 +171,6 @@ in
           swipe: 0.8
           pinch: 0.1
       '';
-
       # for ssh agent
       "gnupg/scdaemon.conf".text = ''
         disable-ccid
@@ -195,11 +185,9 @@ in
         gtk-cursor-theme-name=Bibata-Modern-Amber
         gtk-cursor-theme-size=24
       '';
-
       "gtk-3.0/gtk.css".text = ''
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
-
       "gtk-4.0/settings.ini".text = ''
         [Settings]
         gtk-application-prefer-dark-theme=1
@@ -208,28 +196,22 @@ in
         gtk-font-name=MesloLGS NF 11
         gtk-cursor-theme-name=Bibata-Modern-Amber
       '';
-
       "gtk-4.0/gtk.css".text = ''
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
-
       "librewolf/chrome/userChrome.css".source = "${inputs.self}/configs/librewolf/chrome/userChrome.css";
-
       # User avatars
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
-
       # Desktop Environment Configs - Wayland only
       "dunst/dunstrc".source = "${inputs.self}/configs/dunst-config/dunstrc";
       "rofi/config.rasi".source = "${inputs.self}/configs/rofi-config/config.rasi";
       "alacritty/alacritty.toml".source = "${inputs.self}/configs/alacritty-config/alacritty.toml";
     };
   };
-
   # ========================
   # NIX CONFIGURATION
   # ========================
   nixpkgs.config.allowUnfree = true;
-
   nix = {
     gc = {
       automatic = true;
@@ -242,15 +224,18 @@ in
       cores = 0;
     };
   };
-
   # ========================
   # HARDWARE
   # ========================
   powerManagement = lib.mkIf userConfig.isLaptop {
     enable = true;
   };
-
   hardware = {
+    # Use NixOS's integrated IPU6 support - handles everything automatically
+    ipu6 = {
+      enable = true;
+      platform = "ipu6epmtl";  # Meteor Lake platform for your hardware
+    };
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -266,14 +251,27 @@ in
       enable32Bit = true;
     };
   };
-
+  # ========================
+  # XDG PORTAL CONFIGURATION
+  # ========================
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+    config = {
+      common = {
+        # Don't set default here - let sway.nix handle it
+        "org.freedesktop.impl.portal.Camera" = "gtk";
+        "org.freedesktop.impl.portal.Screenshot" = "wlr";
+        "org.freedesktop.impl.portal.ScreenCast" = "wlr";
+      };
+    };
+  };
   # ========================
   # VIRTUALIZATION
   # ========================
   virtualisation.docker = {
     enable = true;
   };
-
   # ========================
   # PROGRAMS
   # ========================
@@ -284,12 +282,10 @@ in
       user.email = userConfig.gitEmail;
     };
   };
-
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
   };
-
   # ========================
   # SYSTEMD SERVICES
   # ========================
@@ -303,7 +299,6 @@ in
       ];
     };
   };
-
   # ========================
   # SYSTEM SCRIPTS
   # ========================
@@ -313,19 +308,16 @@ in
         cp ${config.environment.etc."user-avatars/king-${userConfig.username}.png".source} /home/${userConfig.username}/.face
         chmod 644 /home/${userConfig.username}/.face
       '';
-
       rofi-configs = ''
         mkdir -p ~/.config/rofi
         ln -sf /etc/rofi/config.rasi ~/.config/rofi/config.rasi
       '';
-
       fusuma-config = ''
         mkdir -p ~/.config/fusuma
         ln -sf /etc/fusuma/config.yml ~/.config/fusuma/config.yml
       '';
     };
   };
-
   # ========================
   # XDG & FILE ASSOCIATIONS
   # ========================
@@ -333,22 +325,18 @@ in
     # Nemo as default file manager
     "inode/directory" = "nemo.desktop";
     "application/x-gnome-saved-search" = "nemo.desktop";
-
     # OnlyOffice for all office formats
     "application/vnd.oasis.opendocument.text" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.oasis.opendocument.spreadsheet" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.oasis.opendocument.presentation" = "onlyoffice-desktopeditors.desktop";
-
     # OnlyOffice for MS Office formats
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.openxmlformats-officedocument.presentationml.presentation" = "onlyoffice-desktopeditors.desktop";
-
     # Legacy MS Office formats
     "application/msword" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.ms-excel" = "onlyoffice-desktopeditors.desktop";
     "application/vnd.ms-powerpoint" = "onlyoffice-desktopeditors.desktop";
-
     # PDF documents
     "application/pdf" = "org.pwmt.zathura.desktop";
   };
