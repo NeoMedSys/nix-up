@@ -59,9 +59,16 @@ in
     };
     gnome.gnome-keyring.enable = true;
     upower.enable = true;
+
     # Security
-    opensnitch.enable = true;
+    opensnitch = {
+      enable = true;
+      settings = {
+        LogLevel = 3;
+      };
+    };
     fprintd.enable = true;
+
     # Audio
     pulseaudio.enable = false;
     pipewire = {
