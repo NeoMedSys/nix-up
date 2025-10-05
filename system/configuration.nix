@@ -20,6 +20,9 @@
     "${inputs.self}/modules/notify.nix"
     "${inputs.self}/modules/librewolf.nix"
 
+    # clamshell action
+    "${inputs.self}/modules/clammy.nix"
+
     # Desktop environment
     "${inputs.self}/modules/gammastep.nix"
 
