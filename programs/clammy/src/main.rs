@@ -7,367 +7,325 @@ use std::thread;
 use std::time::Duration;
 use swayipc::{Connection, Event, EventType};
 
-/// Clammy - Clamshell mode daemon for Sway
+/// Clammy - Lid and display management for Sway
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-	/// Enable verbose logging
-	#[arg(short, long)]
-	verbose: bool,
+    /// Enable verbose logging
+    #[arg(short, long)]
+    verbose: bool,
 }
 
 /// System state tracker
 #[derive(Debug, Clone)]
 struct State {
-	lid_closed: bool,
-	external_monitors: Vec<String>,
-	edp_name: Option<String>,
+    lid_closed: bool,
+    displays_off: bool,
+    external_monitors: Vec<String>,
+    edp_name: Option<String>,
 }
 
 impl State {
-	fn new() -> Self {
-		Self {
-			lid_closed: false,
-			external_monitors: Vec::new(),
-			edp_name: None,
-		}
-	}
+    fn new() -> Self {
+        Self {
+            lid_closed: false,
+            displays_off: false,
+            external_monitors: Vec::new(),
+            edp_name: None,
+        }
+    }
 
-	fn has_externals(&self) -> bool {
-		!self.external_monitors.is_empty()
-	}
+    fn has_externals(&self) -> bool {
+        !self.external_monitors.is_empty()
+    }
 }
 
 /// Execute swaymsg command
 fn run_swaymsg(args: &[&str]) -> Result<()> {
-	debug!("Running: swaymsg {}", args.join(" "));
+    debug!("Running: swaymsg {}", args.join(" "));
 
-	let output = Command::new("swaymsg")
-		.args(args)
-		.output()
-		.context("Failed to execute swaymsg")?;
+    let output = Command::new("swaymsg")
+        .args(args)
+        .output()
+        .context("Failed to execute swaymsg")?;
 
-	if !output.status.success() {
-		let stderr = String::from_utf8_lossy(&output.stderr);
-		warn!("swaymsg failed: {}", stderr);
-	}
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        warn!("swaymsg failed: {}", stderr);
+    }
 
-	Ok(())
+    Ok(())
 }
 
 /// Get current outputs from Sway
 fn get_outputs() -> Result<(Option<String>, Vec<String>)> {
-	let mut connection = Connection::new()
-		.context("Failed to connect to Sway")?;
+    let mut connection = Connection::new()
+        .context("Failed to connect to Sway")?;
 
-	let outputs = connection
-		.get_outputs()
-		.context("Failed to get outputs")?;
+    let outputs = connection
+        .get_outputs()
+        .context("Failed to get outputs")?;
 
-	let mut edp_name = None;
-	let mut externals = Vec::new();
+    let mut edp_name = None;
+    let mut externals = Vec::new();
 
-	for output in outputs {
-		if output.name.starts_with("eDP") {
-			edp_name = Some(output.name);
-		} else if output.active {
-			externals.push(output.name);
-		}
-	}
+    for output in outputs {
+        if output.name.starts_with("eDP") {
+            edp_name = Some(output.name);
+        } else if output.active {
+            externals.push(output.name);
+        }
+    }
 
-	externals.sort();
-	Ok((edp_name, externals))
+    externals.sort();
+    Ok((edp_name, externals))
 }
 
-/// Start swayidle
-fn start_swayidle() -> Result<()> {
-	info!("Starting swayidle...");
-
-	let lock_cmd = r#"swaylock -f \
-		--screenshots \
-		--clock \
-		--indicator \
-		--indicator-radius 120 \
-		--indicator-thickness 8 \
-		--effect-blur 7x5 \
-		--effect-vignette 0.5:0.5 \
-		--ring-color e94560 \
-		--key-hl-color 0f3460 \
-		--line-color 00000000 \
-		--inside-color 1a1a2e88 \
-		--separator-color 00000000 \
-		--grace 3 \
-		--fade-in 0.1"#;
-
-	Command::new("swayidle")
-		.arg("-w")
-		.arg("timeout")
-		.arg("300")
-		.arg(format!("{} -f -c 000000", lock_cmd))
-		.arg("timeout")
-		.arg("600")
-		.arg("swaymsg \"output * power off\"")
-		.arg("resume")
-		.arg("swaymsg \"output * power on\"")
-		.arg("before-sleep")
-		.arg(format!("{} -f -c 000000", lock_cmd))
-		.stdout(Stdio::null())
-		.stderr(Stdio::null())
-		.spawn()
-		.context("Failed to spawn swayidle")?;
-
-	Ok(())
+fn lock_screen() -> Result<()> {
+    info!("Locking screen...");
+    
+    // Use sway's $lock variable which already has all the visual settings
+    run_swaymsg(&["exec", "$lock"])?;
+    
+    Ok(())
 }
 
-/// Stop swayidle
-fn stop_swayidle() -> Result<()> {
-	info!("Stopping swayidle...");
-	let _ = Command::new("pkill").arg("swayidle").status();
-	Ok(())
+/// Turn displays off using DPMS
+fn displays_off() -> Result<()> {
+    info!("Turning displays off (DPMS)...");
+    run_swaymsg(&["output", "*", "power", "off"])?;
+    Ok(())
+}
+
+/// Turn displays on using DPMS
+fn displays_on() -> Result<()> {
+    info!("Turning displays on (DPMS)...");
+    run_swaymsg(&["output", "*", "power", "on"])?;
+    Ok(())
 }
 
 /// Configure monitors for clamshell mode (lid closed with externals)
 fn configure_clamshell(state: &State) -> Result<()> {
-	info!("Configuring clamshell mode...");
+    info!("Configuring clamshell mode...");
 
-	// Disable eDP
-	if let Some(edp) = &state.edp_name {
-		debug!("Disabling eDP: {}", edp);
-		run_swaymsg(&["output", edp, "disable"])?;
-	}
+    // Disable eDP
+    if let Some(edp) = &state.edp_name {
+        debug!("Disabling eDP: {}", edp);
+        run_swaymsg(&["output", edp, "disable"])?;
+    }
 
-	// Arrange external monitors left-to-right
-	let mut x_offset = 0;
+    // Arrange external monitors left-to-right
+    let mut x_offset = 0;
+    for monitor in &state.external_monitors {
+        debug!("Positioning monitor {} at x={}", monitor, x_offset);
+        run_swaymsg(&["output", monitor, "pos", &x_offset.to_string(), "0"])?;
+        x_offset += 1920;
+    }
 
-	for monitor in &state.external_monitors {
-		debug!("Positioning monitor {} at x={}", monitor, x_offset);
-		run_swaymsg(&["output", monitor, "pos", &x_offset.to_string(), "0"])?;
-		x_offset += 1920; // TODO: Get actual monitor width
-	}
-
-	// Restart waybar
-	debug!("Restarting waybar...");
-	let _ = Command::new("pkill").arg("waybar").status();
-	run_swaymsg(&["exec", "waybar"])?;
-
-	info!("Clamshell mode configured");
-	Ok(())
+    info!("Clamshell mode configured");
+    Ok(())
 }
 
 /// Configure monitors for lid open (eDP leftmost)
 fn configure_lid_open(state: &State) -> Result<()> {
-	info!("Configuring lid open mode...");
+    info!("Configuring lid open mode...");
 
-	let mut x_offset = 0;
+    let mut x_offset = 0;
 
-	// Enable and position eDP leftmost
-	if let Some(edp) = &state.edp_name {
-		debug!("Enabling eDP at x=0: {}", edp);
-		run_swaymsg(&["output", edp, "enable"])?;
-		run_swaymsg(&["output", edp, "pos", "0", "0"])?;
-		x_offset += 1920; // TODO: Get actual eDP width
-	}
+    // Enable and position eDP leftmost
+    if let Some(edp) = &state.edp_name {
+        debug!("Enabling eDP at x=0: {}", edp);
+        run_swaymsg(&["output", edp, "enable"])?;
+        run_swaymsg(&["output", edp, "pos", "0", "0"])?;
+        x_offset += 1920;
+    }
 
-	// Position external monitors after eDP
-	for monitor in &state.external_monitors {
-		debug!("Positioning monitor {} at x={}", monitor, x_offset);
-		run_swaymsg(&["output", monitor, "pos", &x_offset.to_string(), "0"])?;
-		x_offset += 1920; // TODO: Get actual monitor width
-	}
+    // Position external monitors after eDP
+    for monitor in &state.external_monitors {
+        debug!("Positioning monitor {} at x={}", monitor, x_offset);
+        run_swaymsg(&["output", monitor, "pos", &x_offset.to_string(), "0"])?;
+        x_offset += 1920;
+    }
 
-	// Restart waybar
-	debug!("Restarting waybar...");
-	let _ = Command::new("pkill").arg("waybar").status();
-	run_swaymsg(&["exec", "waybar"])?;
-
-	info!("Lid open mode configured");
-	Ok(())
+    info!("Lid open mode configured");
+    Ok(())
 }
 
-/// Handle state change and take appropriate action
-fn handle_state_change(state: &State) -> Result<()> {
-	info!(
-		"State: lid_closed={}, externals={}, edp={:?}",
-		state.lid_closed,
-		state.external_monitors.len(),
-		state.edp_name
-	);
+/// Handle lid close
+fn handle_lid_close(state: &mut State) -> Result<()> {
+    info!("Lid closed");
 
-	if state.lid_closed {
-		// Lid is closed
-		stop_swayidle()?;
+    lock_screen()?;
 
-		if state.has_externals() {
-			// Clamshell mode
-			configure_clamshell(state)?;
-		} else {
-			// No externals - suspend after delay
-			info!("No external monitors, suspending in 3 seconds...");
-			thread::sleep(Duration::from_secs(3));
+    // Configure displays
+    if state.has_externals() {
+        configure_clamshell(state)?;
+    }
 
-			Command::new("systemctl")
-				.arg("suspend")
-				.status()
-				.context("Failed to suspend")?;
-		}
-	} else {
-		// Lid is open
-		configure_lid_open(state)?;
-		start_swayidle()?;
-	}
-
-	Ok(())
+    Ok(())
 }
 
-/// Listen for Sway output events
-fn listen_output_events(state: Arc<Mutex<State>>) -> Result<()> {
-	info!("Starting Sway output listener...");
+/// Handle lid open
+fn handle_lid_open(state: &mut State) -> Result<()> {
+    info!("Lid opened");
+    displays_on()?;
+    configure_lid_open(state)?;
+    Ok(())
+}
 
-	let connection = Connection::new()
-		.context("Failed to connect to Sway")?;
+fn listen_sway_events(state: Arc<Mutex<State>>) -> Result<()> {
+    info!("Starting Sway event listener...");
 
-	for event in connection.subscribe([EventType::Output])? {
-		match event? {
-			Event::Output(_) => {
-				debug!("Output change detected");
+    loop {
+        let connection = match Connection::new() {
+            Ok(c) => c,
+            Err(e) => {
+                error!("Failed to connect to Sway: {}", e);
+                thread::sleep(Duration::from_secs(5));
+                continue;
+            }
+        };
 
-				// Refresh output list
-				let (edp, externals) = get_outputs()?;
+        let events = match connection.subscribe([EventType::Output]) {
+            Ok(e) => e,
+            Err(e) => {
+                error!("Failed to subscribe to events: {}", e);
+                thread::sleep(Duration::from_secs(5));
+                continue;
+            }
+        };
 
-				let mut state = state.lock().unwrap();
-				let old_externals = state.external_monitors.clone();
+        for event in events {
+            let event = match event {
+                Ok(e) => e,
+                Err(e) => {
+                    warn!("Event error: {}, reconnecting...", e);
+                    break;
+                }
+            };
 
-				state.edp_name = edp;
-				state.external_monitors = externals.clone();
+            if let Event::Output(_) = event {
+                debug!("Output change detected");
 
-				// Only reconfigure if externals changed AND lid is closed
-				if old_externals != externals && state.lid_closed {
-					info!("External monitors changed: {:?} -> {:?}", old_externals, externals);
+                if let Ok((edp, externals)) = get_outputs() {
+                    let mut state = state.lock().unwrap();
+                    let old_externals = state.external_monitors.clone();
 
-					// If lid closed and all externals gone - suspend after delay
-					if !state.has_externals() {
-						info!("All externals disconnected while lid closed, suspending in 5 seconds...");
-						drop(state); // Release lock before sleeping
+                    state.edp_name = edp;
+                    state.external_monitors = externals.clone();
 
-						thread::sleep(Duration::from_secs(5));
+                    if old_externals != externals && state.lid_closed {
+                        info!("External monitors changed while lid closed: {:?} -> {:?}", old_externals, externals);
 
-						Command::new("systemctl")
-							.arg("suspend")
-							.status()
-							.context("Failed to suspend")?;
-					} else {
-						// Reconfigure clamshell layout
-						if let Err(e) = handle_state_change(&state) {
-							error!("Failed to handle output change: {}", e);
-						}
-					}
-				}
-			}
-			_ => {}
-		}
-	}
+                        if state.has_externals() {
+                            if let Err(e) = configure_clamshell(&state) {
+                                error!("Failed to configure clamshell: {}", e);
+                            }
+                        } else {
+                            info!("No externals while lid closed, re-enabling eDP");
+                            if let Some(edp) = &state.edp_name {
+                                if let Err(e) = run_swaymsg(&["output", edp, "enable"]) {
+                                    error!("Failed to enable eDP: {}", e);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-	Ok(())
+        warn!("Event stream ended, reconnecting in 5 seconds...");
+        thread::sleep(Duration::from_secs(5));
+    }
 }
 
 fn main() -> Result<()> {
-	let args = Args::parse();
+    let args = Args::parse();
 
-	// Initialize logger
-	if args.verbose {
-		env_logger::Builder::from_default_env()
-			.filter_level(log::LevelFilter::Debug)
-			.init();
-	} else {
-		env_logger::Builder::from_default_env()
-			.filter_level(log::LevelFilter::Info)
-			.init();
-	}
+    if args.verbose {
+        env_logger::Builder::from_default_env()
+            .filter_level(log::LevelFilter::Debug)
+            .init();
+    } else {
+        env_logger::Builder::from_default_env()
+            .filter_level(log::LevelFilter::Info)
+            .init();
+    }
 
-	info!("Clammy daemon starting...");
+    info!("Clammy daemon starting...");
 
-	// Wait for Sway socket to be available (retry for up to 10 seconds)
-	let mut retries = 0;
-	let max_retries = 10;
-	
-	let (edp, externals) = loop {
-		match get_outputs() {
-			Ok(result) => {
-				info!("Connected to Sway successfully");
-				break result;
-			}
-			Err(e) => {
-				if retries < max_retries {
-					warn!("Failed to connect to Sway (attempt {}/{}): {}", retries + 1, max_retries, e);
-					retries += 1;
-					thread::sleep(Duration::from_secs(1));
-				} else {
-					error!("Failed to connect to Sway after {} attempts", max_retries);
-					return Err(e);
-				}
-			}
-		}
-	};
+    let mut retries = 0;
+    let max_retries = 10;
 
-	let state = Arc::new(Mutex::new(State {
-		lid_closed: false, // Assume lid open on start
-		external_monitors: externals,
-		edp_name: edp,
-	}));
+    let (edp, externals) = loop {
+        match get_outputs() {
+            Ok(result) => {
+                info!("Connected to Sway successfully");
+                break result;
+            }
+            Err(e) => {
+                if retries < max_retries {
+                    warn!("Failed to connect to Sway (attempt {}/{}): {}", retries + 1, max_retries, e);
+                    retries += 1;
+                    thread::sleep(Duration::from_secs(1));
+                } else {
+                    error!("Failed to connect to Sway after {} attempts", max_retries);
+                    return Err(e);
+                }
+            }
+        }
+    };
 
-	// Start swayidle initially (assuming lid open)
-	start_swayidle()?;
+    let state = Arc::new(Mutex::new(State {
+        lid_closed: false,
+        displays_off: false,
+        external_monitors: externals,
+        edp_name: edp,
+    }));
 
-	info!("Clammy initialized, starting event listeners...");
+    info!("Clammy initialized");
 
-	// Set up signal handlers for lid events (sent by Sway bindswitch)
-	let state_sigusr1 = state.clone();
-	let state_sigusr2 = state.clone();
+    let state_sigusr1 = state.clone();
+    let state_sigusr2 = state.clone();
 
-	unsafe {
-		signal_hook::low_level::register(signal_hook::consts::SIGUSR1, move || {
-			info!("Received SIGUSR1 - lid closed");
-			let mut state = state_sigusr1.lock().unwrap();
-			state.lid_closed = true;
-			
-			// Refresh monitors
-			if let Ok((edp, externals)) = get_outputs() {
-				state.edp_name = edp;
-				state.external_monitors = externals;
-			}
+    unsafe {
+        signal_hook::low_level::register(signal_hook::consts::SIGUSR1, move || {
+            let mut state = state_sigusr1.lock().unwrap();
+            state.lid_closed = true;
 
-			if let Err(e) = handle_state_change(&state) {
-				error!("Failed to handle lid close: {}", e);
-			}
-		})?;
+            if let Ok((edp, externals)) = get_outputs() {
+                state.edp_name = edp;
+                state.external_monitors = externals;
+            }
 
-		signal_hook::low_level::register(signal_hook::consts::SIGUSR2, move || {
-			info!("Received SIGUSR2 - lid opened");
-			let mut state = state_sigusr2.lock().unwrap();
-			state.lid_closed = false;
+            if let Err(e) = handle_lid_close(&mut state) {
+                error!("Failed to handle lid close: {}", e);
+            }
+        })?;
 
-			// Refresh monitors
-			if let Ok((edp, externals)) = get_outputs() {
-				state.edp_name = edp;
-				state.external_monitors = externals;
-			}
+        signal_hook::low_level::register(signal_hook::consts::SIGUSR2, move || {
+            let mut state = state_sigusr2.lock().unwrap();
+            state.lid_closed = false;
 
-			if let Err(e) = handle_state_change(&state) {
-				error!("Failed to handle lid open: {}", e);
-			}
-		})?;
-	}
+            if let Ok((edp, externals)) = get_outputs() {
+                state.edp_name = edp;
+                state.external_monitors = externals;
+            }
 
-	// Spawn output event listener
-	let state_output = state.clone();
-	let output_thread = thread::spawn(move || {
-		if let Err(e) = listen_output_events(state_output) {
-			error!("Output event listener failed: {}", e);
-		}
-	});
+            if let Err(e) = handle_lid_open(&mut state) {
+                error!("Failed to handle lid open: {}", e);
+            }
+        })?;
+    }
 
-	// Keep main thread alive
-	output_thread.join().unwrap();
+    let state_output = state.clone();
+    thread::spawn(move || {
+        if let Err(e) = listen_sway_events(state_output) {
+            error!("Output event listener failed: {}", e);
+        }
+    });
 
-	Ok(())
+    loop {
+        thread::sleep(Duration::from_secs(60));
+    }
 }

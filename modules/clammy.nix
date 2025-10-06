@@ -5,27 +5,19 @@ in
 {
   # Install clammy package
   environment.systemPackages = [ clammy ];
-
-  # User systemd service (started manually by Sway, not auto-started)
   systemd.user.services.clammy = {
     description = "Clammy - Clamshell mode daemon for Sway";
-    documentation = [ "https://github.com/NeoMedSys/perseus" ];
-
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${clammy}/bin/clammy --verbose"; # Remove --verbose after testing
+      ExecStart = "${clammy}/bin/clammy --verbose";
       Restart = "on-failure";
       RestartSec = "5s";
-
-      # Security hardening
-      PrivateTmp = true;
-      ProtectSystem = "strict";
-      ProtectHome = "read-only";
-      NoNewPrivileges = true;
-
-      Environment = [
-        "PATH=${pkgs.swayidle}/bin:${pkgs.sway}/bin:${pkgs.systemd}/bin:${pkgs.swaylock-effects}/bin:/run/current-system/sw/bin"
-      ];
     };
+
+    path = with pkgs; [ sway swaylock-effects ];
   };
 }

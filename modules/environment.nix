@@ -49,6 +49,14 @@ in
   # ========================
   services = {
     hardware.bolt.enable = true;
+
+    # let clammy handle lid actions
+    logind = {
+      lidSwitch = "ignore";
+      lidSwitchDocked = "ignore";
+      lidSwitchExternalPower = "ignore";
+    };
+
     # Power Management
     tlp = {
       enable = true;
@@ -111,6 +119,7 @@ in
       });
     '';
   };
+
   # ========================
   # NETWORKING
   # ========================
@@ -305,6 +314,12 @@ in
         "XDG_CONFIG_DIRS=/etc"
       ];
     };
+
+    # this is for clamshell action with clammy..
+    tmpfiles.rules = [
+      # Disable lid switch as wakeup source to prevent suspend loops
+      "w /proc/acpi/wakeup - - - - LID0"
+    ];
   };
   # ========================
   # SYSTEM SCRIPTS

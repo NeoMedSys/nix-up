@@ -170,10 +170,13 @@ bindsym $mod+l exec $lock
 
 #exec_always swayidle -w \
 #    timeout 300 '$lock -f -c 000000' \
-#    timeout 600 'swaymsg "output * power off"' \
+#    # timeout 600 'swaymsg "output * power off"' \
 #    resume 'swaymsg "output * power on"' \
-#    before-sleep '$lock -f -c 000000'
+#    # before-sleep '$lock -f -c 000000'
 
+exec_always swayidle -w \
+    timeout 300 '$lock && swaymsg "output * power off"' \
+    resume 'swaymsg "output * power on"'
 
 # Reboot
 bindsym $mod+Shift+r exec sudo systemctl reboot

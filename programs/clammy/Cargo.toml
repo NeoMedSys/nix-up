@@ -2,21 +2,12 @@
 name = "clammy"
 version = "0.1.0"
 edition = "2024"
-authors = ["JonENesvold"]
+authors = ["JonNesvold"]
 
 [dependencies]
-# Sway IPC communication
 swayipc = "3.0"
-
-# Signal handling for lid events
 signal-hook = "0.3"
-
-# Logging
 log = "0.4"
 env_logger = "0.11"
-
-# CLI argument parsing
 clap = { version = "4.5", features = ["derive"] }
-
-# Error handling
 anyhow = "1.0"
