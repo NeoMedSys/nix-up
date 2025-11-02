@@ -47,6 +47,10 @@
   # System identification
   networking.hostName = userConfig.hostname;
 
+  networking.hosts = {
+    "10.54.218.134" = [ "access.neomedsys.io" "neocoms.neomedsys.io" ];
+  };
+
   # Enable flakes
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
