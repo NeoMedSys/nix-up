@@ -1,4 +1,5 @@
-{ pkgs, lib, ... }: 
+# modules/clammy.nix
+{ pkgs, lib, ... }:
 let
   clammy = pkgs.callPackage ../pkgs/clammy.nix {};
 
@@ -20,7 +21,6 @@ let
   };
 
   clammyPath = lib.makeBinPath [ pkgs.sway pkgs.swaylock-effects pkgs.swayidle ];
-
 in
 {
   environment.systemPackages = [ clammy ];
@@ -41,7 +41,7 @@ in
       ExecStart = "${clammy}/bin/clammy --verbose";
       Restart = "on-failure";
       RestartSec = "5s";
-      
+
       Environment = [
         "PATH=${clammyPath}"
       ];
