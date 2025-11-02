@@ -26,11 +26,7 @@ in
     };
     kernelParams = [
       "mem_sleep_default=deep"
-      # REMOVED all manual IPU6 parameters - handled by hardware.ipu6
     ];
-    # REMOVED manual IPU6 kernel modules - handled by hardware.ipu6
-    # REMOVED manual IPU6 initrd modules - handled by hardware.ipu6  
-    # REMOVED manual IPU6 blacklisted modules - handled by hardware.ipu6
   };
   # ========================
   # LOCALIZATION & TIME
@@ -49,6 +45,8 @@ in
   # ========================
   services = {
     hardware.bolt.enable = true;
+
+    dbus.enable = true;
 
     # let clammy handle lid actions
     logind = {
@@ -150,6 +148,19 @@ in
       PIPEWIRE_LATENCY = "256/48000";
     };
     etc = {
+      "dbus-1/system.d/clammy-policy.conf".text = ''
+        <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+         "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+        <busconfig>
+          <policy user="*">
+            <allow receive_sender="org.freedesktop.login1"
+                   receive_interface="org.freedesktop.DBus.Properties"
+                   receive_member="PropertiesChanged"
+                   receive_path="/org/freedesktop/login1"/>
+          </policy>
+        </busconfig>
+      '';
+      
       "boltd.conf".text = ''
         [Daemon]
         AuthorizationMode = automatic
