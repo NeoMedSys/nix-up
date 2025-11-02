@@ -6,6 +6,7 @@ use std::thread;
 use std::time::Duration;
 use swayipc::{Connection, Event, EventType, Output};
 
+use crate::config; // Import the new config
 use crate::state::{SharedState, State};
 
 /// A struct to hold relevant monitor info, including resolution
@@ -73,8 +74,13 @@ pub fn get_outputs() -> Result<(Option<Monitor>, Vec<Monitor>)> {
 
 pub fn lock_screen() -> Result<()> {
     info!("Locking screen...");
-    // Use sway's $lock variable
-    run_swaymsg(&["exec", "$lock"])
+    // FIX: Execute the lock command from config.rs directly
+    // This avoids relying on the '$lock' variable from Sway's environment
+    debug!("Running: {}", config::LOCK_CMD);
+    Command::new(config::LOCK_CMD)
+        .spawn() // Use .spawn() for a non-blocking call
+        .context(format!("Failed to spawn lock command: {}", config::LOCK_CMD))?;
+    Ok(())
 }
 
 /// Turn displays off using DPMS
@@ -90,6 +96,7 @@ pub fn displays_on() -> Result<()> {
 }
 
 /// Configure monitors for clamshell mode (lid closed with externals)
+/// Uses actual monitor width instead of hardcoded 1920
 pub fn configure_clamshell(state: &State) -> Result<()> {
     info!("Configuring clamshell mode...");
 
@@ -100,7 +107,7 @@ pub fn configure_clamshell(state: &State) -> Result<()> {
     }
 
     // Arrange external monitors left-to-right
-    let mut x_offset = 0;
+    let mut x_offset: i64 = 0; // Use i64 for offset
     for monitor in &state.external_monitors {
         debug!("Enabling and positioning monitor {} (width={}) at x={}", monitor.name, monitor.width, x_offset);
         // Ensure monitor is enabled before positioning
@@ -116,10 +123,11 @@ pub fn configure_clamshell(state: &State) -> Result<()> {
 }
 
 /// Configure monitors for lid open (eDP leftmost)
+/// Uses actual monitor width instead of hardcoded 1920
 pub fn configure_lid_open(state: &State) -> Result<()> {
     info!("Configuring lid open mode...");
 
-    let mut x_offset = 0;
+    let mut x_offset: i64 = 0; // Use i64 for offset
 
     // Enable and position eDP leftmost
     if let Some(edp) = &state.edp_name {
@@ -138,7 +146,7 @@ pub fn configure_lid_open(state: &State) -> Result<()> {
         run_swaymsg(&["output", &monitor.name, "pos", &x_offset.to_string(), "0"])?;
         
         // Use the *actual* monitor width for the next offset
-        x_offset += monitor.width as i64;
+        x_offset += monitor.width as i64; 
     }
 
     info!("Lid open mode configured");

@@ -18,6 +18,6 @@ in
       RestartSec = "5s";
     };
 
-    path = with pkgs; [ sway swaylock-effects ];
+    path = with pkgs; [ sway swaylock-effects swayidle ];
   };
 }

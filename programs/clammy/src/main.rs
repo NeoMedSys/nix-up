@@ -1,3 +1,4 @@
+//! The main entry point for the Clammy daemon
 use anyhow::{Context, Result};
 use clap::Parser;
 use log::{debug, error, info, warn};
@@ -7,9 +8,10 @@ use std::time::Duration;
 use zbus::{proxy, Connection};
 use futures_util::stream::StreamExt;
 
+mod config; 
 mod state;
 mod sway;
-mod idle; // Import the new module
+mod idle;
 
 use state::{SharedState, State};
 
@@ -32,10 +34,12 @@ trait LoginManager {
     /// LidClosed property
     #[zbus(property)]
     fn lid_closed(&self) -> zbus::Result<bool>;
-    
+
+    /// Suspend method
+    fn suspend(&self, interactive: bool) -> zbus::Result<()>;
+
     // We can also listen for signals like PrepareForSleep
 }
-// NOTE: The macro above generates a struct named `LoginManagerProxy`
 
 /// Initializes logging based on args
 fn setup_logging(args: &Args) {
@@ -81,19 +85,19 @@ async fn main() -> Result<()> {
             }
         }
     };
-    
+
     debug!("Initial state: eDP={:?}, externals={:?}", edp, externals);
 
     // 2. Connect to D-Bus (system bus)
     let dbus_conn = Connection::system()
         .await
         .context("Failed to connect to D-Bus system bus")?;
-    
+
     // Create a proxy for logind
     let login_proxy = LoginManagerProxy::new(&dbus_conn)
         .await
         .context("Failed to create logind proxy")?;
-    
+
     info!("Connected to D-Bus and logind");
 
     // 3. Get initial lid state
@@ -101,9 +105,9 @@ async fn main() -> Result<()> {
         .lid_closed()
         .await
         .context("Failed to get initial lid state")?;
-    
+
     info!("Initial lid state: {}", if initial_lid_closed { "CLOSED" } else { "OPEN" });
-    
+
     // 4. Create the shared state
     let state = Arc::new(Mutex::new(State {
         lid_closed: initial_lid_closed,
@@ -141,27 +145,65 @@ async fn main() -> Result<()> {
         let is_closed = signal.get().await?;
         info!("D-Bus signal: Lid state changed to: {}", if is_closed { "CLOSED" } else { "OPEN" });
 
-        let mut state = state.lock().unwrap();
-        debug!("State lock acquired for lid event");
+        let has_externals = {
+            let mut state = state.lock().unwrap();
+            debug!("State lock acquired for lid event");
 
-        // Refresh monitor list, as monitors might have changed
-        if let Err(e) = state.refresh_outputs() {
-             error!("Failed to refresh outputs on lid event: {}", e);
-        }
+            // Refresh monitor list, as monitors might have changed
+            if let Err(e) = state.refresh_outputs() {
+                 error!("Failed to refresh outputs on lid event: {}", e);
+            }
 
-        if is_closed {
-            if let Err(e) = sway::handle_lid_close(&mut state) {
-                error!("Failed to handle lid close: {}", e);
+            if is_closed {
+                if let Err(e) = sway::handle_lid_close(&mut state) {
+                    error!("Failed to handle lid close: {}", e);
+                }
+            } else {
+                if let Err(e) = sway::handle_lid_open(&mut state) {
+                    error!("Failed to handle lid open: {}", e);
+                }
             }
-        } else {
-            if let Err(e) = sway::handle_lid_open(&mut state) {
-                error!("Failed to handle lid open: {}", e);
-            }
+            
+            // Get the value *before* the lock is released
+            let current_has_externals = state.has_externals();
+            debug!("State lock released for lid event");
+            current_has_externals // Return the boolean value
+        }; 
+
+        if is_closed && !has_externals {
+            info!(
+                "Lid closed with no external monitors. Scheduling suspend in {}s.",
+                config::LID_CLOSE_SUSPEND_DELAY_S
+            );
+
+            // Clone Arcs to move into the async task
+            let state_clone = state.clone();
+            let proxy_clone = login_proxy.clone();
+
+            tokio::spawn(async move {
+                tokio::time::sleep(Duration::from_secs(config::LID_CLOSE_SUSPEND_DELAY_S)).await;
+
+                // Re-check state before suspending
+                let (lid_closed, has_externals) = {
+                    let state = state_clone.lock().unwrap();
+                    debug!("Suspend task: checking state...");
+                    (state.lid_closed, state.has_externals())
+                };
+
+                if lid_closed && !has_externals {
+                    info!("Suspend task: Lid still closed with no externals. Suspending now.");
+                    if let Err(e) = proxy_clone.suspend(false).await {
+                        error!("Failed to send suspend request to logind: {}", e);
+                    } else {
+                        info!("Suspend request sent successfully to logind.");
+                    }
+                } else {
+                    info!("Suspend task: Aborting suspend. Lid was opened or monitor was plugged in.");
+                }
+            });
         }
-        debug!("State lock released for lid event");
     }
 
     warn!("D-Bus event stream ended. This should not happen.");
     Ok(())
 }
-

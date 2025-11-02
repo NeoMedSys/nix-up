@@ -5,43 +5,43 @@ use std::process::{Command, Stdio, Child};
 use std::thread;
 use std::time::Duration;
 
+use crate::config; // Import the new config
 use crate::state::SharedState;
 use crate::sway;
-
-// Define our timeouts here
-const IDLE_TIMEOUT: &str = "300"; // 5 minutes to idle
-const IDLE_CMD: &str = "echo idle";
-
-const RESUME_CMD: &str = "echo resume";
-
-const SLEEP_TIMEOUT: &str = "600"; // 10 minutes to sleep (relative to idle)
-const SLEEP_CMD: &str = "echo sleep"; // This is just a lock before logind suspends
 
 /// Spawns swayidle as a child process and listens for its events
 fn spawn_swayidle() -> Option<Child> {
     info!("Spawning swayidle process...");
-    debug!("swayidle cmd: timeout {} '{}' resume '{}' timeout {} '{}' resume '{}' before-sleep '{}'",
-        IDLE_TIMEOUT, IDLE_CMD,
-        RESUME_CMD,
-        SLEEP_TIMEOUT, SLEEP_CMD,
-        RESUME_CMD,
-        SLEEP_CMD
+
+    // Use values from config.rs
+    let idle_timeout_str = config::IDLE_TIMEOUT_S.to_string();
+    let sleep_timeout_str = config::SLEEP_TIMEOUT_S.to_string();
+
+    debug!(
+        "swayidle cmd: timeout {} '{}' resume '{}' timeout {} '{}' resume '{}' before-sleep '{}'",
+        idle_timeout_str,
+        config::IDLE_EVENT_CMD,
+        config::RESUME_EVENT_CMD,
+        sleep_timeout_str,
+        config::SLEEP_EVENT_CMD,
+        config::RESUME_EVENT_CMD,
+        config::SLEEP_EVENT_CMD
     );
 
     match Command::new("swayidle")
         .arg("-w") // -w flag makes it write events to stdout
         .arg("timeout")
-        .arg(IDLE_TIMEOUT)
-        .arg(IDLE_CMD)
+        .arg(&idle_timeout_str)
+        .arg(config::IDLE_EVENT_CMD)
         .arg("resume")
-        .arg(RESUME_CMD)
+        .arg(config::RESUME_EVENT_CMD)
         .arg("timeout")
-        .arg(SLEEP_TIMEOUT)
-        .arg(SLEEP_CMD)
+        .arg(&sleep_timeout_str)
+        .arg(config::SLEEP_EVENT_CMD)
         .arg("resume") // Also send resume after sleep
-        .arg(RESUME_CMD)
+        .arg(config::RESUME_EVENT_CMD)
         .arg("before-sleep") // Lock before suspend
-        .arg(SLEEP_CMD)
+        .arg(config::SLEEP_EVENT_CMD)
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
@@ -68,9 +68,10 @@ fn handle_idle_event(event: &str, state: &SharedState) {
         debug!("State lock released for idle event (ignored)");
         return;
     }
-
+    
+    // Match against the configured event commands
     match event {
-        "idle" => {
+        e if e == config::IDLE_EVENT_CMD => {
             info!("Swayidle: IDLE event received");
             if !state.displays_off {
                 debug!("Displays were on, turning off for idle");
@@ -82,7 +83,7 @@ fn handle_idle_event(event: &str, state: &SharedState) {
                 debug!("Displays already off, idle event ignored.");
             }
         }
-        "resume" => {
+        e if e == config::RESUME_EVENT_CMD => {
             info!("Swayidle: RESUME event received");
             if state.displays_off {
                 debug!("Displays were off, turning on for resume");
@@ -94,7 +95,7 @@ fn handle_idle_event(event: &str, state: &SharedState) {
                 debug!("Displays already on, resume event ignored.");
             }
         }
-        "sleep" => {
+        e if e == config::SLEEP_EVENT_CMD => {
             info!("Swayidle: SLEEP event (or before-sleep) received");
             // We just lock. systemd-logind will handle the actual suspend.
             if let Err(e) = sway::lock_screen() {
@@ -152,4 +153,3 @@ pub fn listen_idle_events(state: SharedState) {
         thread::sleep(Duration::from_secs(5));
     }
 }
-

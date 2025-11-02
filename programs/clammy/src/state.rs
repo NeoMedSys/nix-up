@@ -3,14 +3,14 @@ use anyhow::Result;
 use log::debug;
 use std::sync::{Arc, Mutex};
 
-use crate::sway::{self, Monitor}; // Import the new Monitor struct
+use crate::sway::{self, Monitor}; // Import the Monitor struct from sway.rs
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct State {
     pub lid_closed: bool,
     pub displays_off: bool,
-    pub external_monitors: Vec<Monitor>, // Was Vec<String>
-    pub edp_name: Option<Monitor>,     // Was Option<String>
+    pub external_monitors: Vec<Monitor>, // Use Monitor struct
+    pub edp_name: Option<Monitor>,     // Use Monitor struct
 }
 
 impl State {
@@ -23,7 +23,6 @@ impl State {
     }
 
     /// Rescans and updates the monitor state from Sway
-    /// This is useful after a lid or monitor change
     pub fn refresh_outputs(&mut self) -> Result<()> {
         debug!("Refreshing output state from Sway...");
         match sway::get_outputs() {
@@ -43,4 +42,3 @@ impl State {
 
 // A type alias for our shared, thread-safe state
 pub type SharedState = Arc<Mutex<State>>;
-
