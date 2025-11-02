@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }: 
 let
   clammy = pkgs.callPackage ../pkgs/clammy.nix {};
 
@@ -18,6 +18,8 @@ let
       </busconfig>
     '';
   };
+
+  clammyPath = lib.makeBinPath [ pkgs.sway pkgs.swaylock-effects pkgs.swayidle ];
 
 in
 {
@@ -39,8 +41,10 @@ in
       ExecStart = "${clammy}/bin/clammy --verbose";
       Restart = "on-failure";
       RestartSec = "5s";
+      
+      Environment = [
+        "PATH=${clammyPath}"
+      ];
     };
-
-    path = with pkgs; [ sway swaylock-effects swayidle ];
   };
 }
