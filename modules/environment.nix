@@ -148,19 +148,6 @@ in
       PIPEWIRE_LATENCY = "256/48000";
     };
     etc = {
-      "dbus-1/system.d/clammy-policy.conf".text = ''
-        <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
-         "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
-        <busconfig>
-          <policy user="*">
-            <allow receive_sender="org.freedesktop.login1"
-                   receive_interface="org.freedesktop.DBus.Properties"
-                   receive_member="PropertiesChanged"
-                   receive_path="/org/freedesktop/login1"/>
-          </policy>
-        </busconfig>
-      '';
-      
       "boltd.conf".text = ''
         [Daemon]
         AuthorizationMode = automatic
