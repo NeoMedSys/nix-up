@@ -1,6 +1,4 @@
-/// The command to execute to lock the screen.
-/// We use `swaylock-effects` directly, as it's in the systemd service's PATH.
-pub const LOCK_CMD: &str = "swaylock-effects";
+// === ./programs/clammy/src/config.rs ===
 
 // --- Timeouts (in seconds) ---
 
@@ -21,4 +19,3 @@ pub const LID_CLOSE_SUSPEND_DELAY_S: u64 = 20; // 20 seconds
 pub const IDLE_EVENT_CMD: &str = "echo idle";
 pub const RESUME_EVENT_CMD: &str = "echo resume";
 pub const SLEEP_EVENT_CMD: &str = "echo sleep";
-

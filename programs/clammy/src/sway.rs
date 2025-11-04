@@ -73,14 +73,8 @@ pub fn get_outputs() -> Result<(Option<Monitor>, Vec<Monitor>)> {
 }
 
 pub fn lock_screen() -> Result<()> {
-    info!("Locking screen...");
-    // FIX: Execute the lock command from config.rs directly
-    // This avoids relying on the '$lock' variable from Sway's environment
-    debug!("Running: {}", config::LOCK_CMD);
-    Command::new(config::LOCK_CMD)
-        .spawn() // Use .spawn() for a non-blocking call
-        .context(format!("Failed to spawn lock command: {}", config::LOCK_CMD))?;
-    Ok(())
+    info!("Telling Sway to execute $lock command...");
+    run_swaymsg(&["exec", "$lock"])
 }
 
 /// Turn displays off using DPMS

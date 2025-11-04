@@ -13,18 +13,6 @@ shadow_blur_radius 20
 seat * hide_cursor 2000
 seat * xcursor_theme Bibata-Modern-Amber 18
 
-# --- Lid Close Handling ---
-# This is more reliable than acpid because it runs directly within the Sway session.
-# It suspends the system ONLY if no active external monitors are found.
-# An "external" monitor is defined as any active display whose name does not start with "eDP".
-
-## Commented out to test clammy
-# bindswitch --reload lid:on exec 'swaymsg -t get_outputs --raw | jq -e \'.[] | select(.active and (.name | startswith("eDP") | not))\' > /dev/null || systemctl suspend'
-
-# this instead
-# bindswitch --reload lid:on exec systemctl --user kill -s SIGUSR1 clammy.service
-# bindswitch --reload lid:off exec systemctl --user kill -s SIGUSR2 clammy.service
-
 default_border none
 default_floating_border none
 floating_modifier $mod normal
@@ -148,7 +136,7 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-set $lock swaylock -f \
+set $lock swaylock-effects -f \
     --screenshots \
     --clock \
     --indicator \
@@ -165,28 +153,13 @@ set $lock swaylock -f \
     --fade-in 0.1 \
 
 # Lock screen
-# bindsym $mod+l exec $lock -f -c 000000
 bindsym $mod+l exec $lock
-
-#exec_always swayidle -w \
-#    timeout 300 '$lock -f -c 000000' \
-#    # timeout 600 'swaymsg "output * power off"' \
-#    resume 'swaymsg "output * power on"' \
-#    # before-sleep '$lock -f -c 000000'
-
-# exec_always swayidle -w \
-#     timeout 300 '$lock && swaymsg "output * power off"' \
-#     resume 'swaymsg "output * power on"'
 
 # Reboot
 bindsym $mod+Shift+r exec sudo systemctl reboot
 
 # Run steam
 bindsym $mod+g exec steam
-
-# Keyboard layout switching (Wayland version)
-# bindsym $mod+u exec swaymsg input type:keyboard xkb_layout us
-# bindsym $mod+n exec swaymsg input type:keyboard xkb_layout no
 
 input type:keyboard {
     xkb_layout us,no
@@ -204,4 +177,4 @@ exec_always fusuma
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME SWAYSOCK
 
-# exec systemctl --user start clammy
+exec_always clammy-start-sway

@@ -1,14 +1,26 @@
-# modules/clammy.nix
 { pkgs, lib, ... }:
 let
   clammy = pkgs.callPackage ../pkgs/clammy.nix {};
+
+  clammy-start-script = pkgs.writeShellScriptBin "clammy-start-sway" ''
+    #!${pkgs.bash}/bin/bash
+    # This command blocks until the import is done.
+    systemctl --user import-environment --wait \
+      WAYLAND_DISPLAY \
+      SWAYSOCK \
+      XDG_RUNTIME_DIR \
+      DBUS_SESSION_BUS_ADDRESS
+      
+    # Only after the import succeeds, restart clammy.
+    systemctl --user restart clammy.service
+  '';
 
   clammy-dbus-policy = pkgs.writeTextFile {
     name = "clammy-dbus-policy.conf";
     destination = "/share/dbus-1/system.d/clammy-policy.conf";
     text = ''
       <!DOCTYPE busconfig PUBLIC "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
-       "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+        "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
       <busconfig>
         <policy user="*">
           <allow receive_sender="org.freedesktop.login1"
@@ -20,7 +32,6 @@ let
     '';
   };
 
-  clammyPath = lib.makeBinPath [ pkgs.sway pkgs.swaylock-effects pkgs.swayidle ];
 in
 {
   environment.systemPackages = [ clammy ];
@@ -32,18 +43,21 @@ in
 
   systemd.user.services.clammy = {
     description = "Clammy - Clamshell mode daemon for Sway";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-
+    
+    # No auto-start. Sway config will start it.
+    
     serviceConfig = {
       Type = "simple";
       ExecStart = "${clammy}/bin/clammy --verbose";
       Restart = "on-failure";
       RestartSec = "5s";
 
+      # This is still needed for the 'swayidle' thread.
       Environment = [
-        "PATH=${clammyPath}"
+        "PATH=${lib.makeBinPath [
+          pkgs.swayidle
+          pkgs.coreutils
+        ]}"
       ];
     };
   };
