@@ -14,7 +14,7 @@ use std::sync::mpsc::Receiver;
 use tokio::sync::mpsc::Sender as TokioSender;
 use wayland_client::{
     delegate_noop,
-    globals::{registry_queue_init, GlobalListContents},
+    globals::registry_queue_init,
     protocol::{wl_output, wl_seat, wl_registry},
     Connection, Dispatch, QueueHandle,
 };
@@ -61,12 +61,18 @@ pub fn run_wayland_listener(
         temp_heads: HashMap::new(),
     };
 
-    let (globals, mut event_queue) =
-        registry_queue_init::<WlDelegate>(&conn).context("Failed to init registry queue")?;
+    let mut event_queue = conn.new_event_queue();
+    let qh = event_queue.handle();
+    let display = conn.display();
+        
+    debug!("Getting registry...");
+    let _registry = display.get_registry(&qh, ());
 
+    debug!("Performing initial Wayland roundtrip...");
     event_queue
         .roundtrip(&mut wl_delegate)
         .context("Failed initial Wayland roundtrip")?;
+    debug!("Roundtrip completed. Checking protocols...");
 
     // --- Check for necessary protocols ---
     if wl_delegate.output_manager.is_none() {
@@ -157,15 +163,16 @@ pub fn run_wayland_listener(
 
 // --- Dispatch Implementations ---
 
-impl Dispatch<wl_registry::WlRegistry, GlobalListContents> for WlDelegate {
+impl Dispatch<wl_registry::WlRegistry, ()> for WlDelegate {
     fn event(
         state: &mut Self,
         registry: &wl_registry::WlRegistry,
         event: wl_registry::Event,
-        _data: &GlobalListContents,
+        _data: &(),
         _conn: &Connection,
         queue_handle: &QueueHandle<Self>,
     ) {
+        debug!("Registry event received: {:?}", event);
         if let wl_registry::Event::Global {
             name,
             interface,
@@ -199,6 +206,5 @@ impl Dispatch<wl_registry::WlRegistry, GlobalListContents> for WlDelegate {
     }
 }
 
-delegate_noop!(WlDelegate: ignore wl_registry::WlRegistry);
 delegate_noop!(WlDelegate: wl_output::WlOutput);
 delegate_noop!(WlDelegate: wl_seat::WlSeat);
