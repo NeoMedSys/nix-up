@@ -114,25 +114,24 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
     ) {
         match event {
             zwlr_output_manager_v1::Event::Head { head } => {
-                trace!("DEBUG: Discovered new head object: {:?}", head.id());
+                debug!("=== OUTPUT MANAGER: New head event ===");
                 let head_info = Rc::new(RefCell::new(HeadInfo::default()));
                 state.temp_heads.insert(head, head_info);
+                debug!("Total heads tracked: {}", state.temp_heads.len());
             }
-            zwlr_output_manager_v1::Event::Done { .. } => {
-                debug!(
-                    "DEBUG: Output scan 'Done'. Parsing {} temp heads.",
-                    state.temp_heads.len()
-                );
+            zwlr_output_manager_v1::Event::Done { serial } => {
+                debug!("=== OUTPUT MANAGER: Done event (serial={}) ===", serial);
+                debug!("Total temp_heads before parsing: {}", state.temp_heads.len());
 
                 let mut edp: Option<Monitor> = None;
                 let mut externals: Vec<Monitor> = Vec::new();
 
                 for info_rc in state.temp_heads.values() {
                     let info = info_rc.borrow();
-                    trace!("DEBUG: Parsing head: {} (Active: {})", info.name, info.active);
+                    debug!("Parsing head: {} (Active: {})", info.name, info.active);
 
                     if !info.active {
-                        trace!("DEBUG: Head {} is not active, skipping.", info.name);
+                        debug!("Head {} is not active, skipping.", info.name);
                         continue;
                     }
 
@@ -144,14 +143,14 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
                             width: m.width,
                             active: info.active,
                         };
-                        trace!("DEBUG: Assembled Monitor: {:?}", monitor);
+                        debug!("Assembled Monitor: {:?}", monitor);
                         if info.name.starts_with("eDP") {
                             edp = Some(monitor);
                         } else {
                             externals.push(monitor);
                         }
                     } else {
-                        warn!("DEBUG: Head {} is active but has no modes?", info.name);
+                        warn!("Head {} is active but has no modes?", info.name);
                     }
                 }
 
@@ -203,6 +202,13 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, ()> for WlDelegate {
         let mut info = info_rc.borrow_mut();
         match event {
             zwlr_output_head_v1::Event::Name { name } => {
+                // Ensure we have an entry for this head
+                if !state.temp_heads.contains_key(head) {
+                    let head_info = Rc::new(RefCell::new(HeadInfo::default()));
+                    state.temp_heads.insert(head.clone(), head_info);
+                }
+                let info_rc = state.temp_heads.get(head).unwrap().clone();
+                let mut info = info_rc.borrow_mut();
                 trace!("DEBUG: Head {:?} has name: {}", head.id(), name);
                 info.name = name.to_string();
             }

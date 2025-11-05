@@ -8,6 +8,7 @@ use polling::{Event, Events, Poller};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::os::fd::AsRawFd;
+use std::time::Duration;
 use std::os::fd::AsFd;
 use std::rc::Rc;
 use std::sync::mpsc::Receiver;
@@ -90,6 +91,13 @@ pub fn run_wayland_listener(
         error!("Failed to create idle timers: {}", e);
     }
 
+    // Do another roundtrip to get output heads
+    debug!("Performing roundtrip to get output heads...");
+    event_queue
+        .roundtrip(&mut wl_delegate)
+        .context("Failed to get output heads")?;
+    debug!("Got output heads, {} tracked", wl_delegate.temp_heads.len());
+
     info!("Wayland listener started. Running event loop...");
 
     // --- The Poll Loop (Using keys from config) ---
@@ -104,7 +112,7 @@ pub fn run_wayland_listener(
 
     loop {
         events.clear();
-        poller.wait(&mut events, None).context("Poller failed")?;
+        poller.wait(&mut events, Some(std::time::Duration::from_millis(100))).context("Poller failed")?;
 
         for event in events.iter() {
             if event.key == config::WAYLAND_KEY {

@@ -16,6 +16,7 @@ pub fn request_lock() -> anyhow::Result<()> {
 
     match Command::new(cmd)
         .args(args)
+        .env("PATH", std::env::var("PATH").unwrap_or_default())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn()
