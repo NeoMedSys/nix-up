@@ -145,6 +145,8 @@ async fn main() -> Result<()> {
         let is_closed = signal.get().await?;
         info!("D-Bus signal: Lid state changed to: {}", if is_closed { "CLOSED" } else { "OPEN" });
 
+        tokio::time::sleep(Duration::from_millis(500)).await;
+
         let has_externals = {
             let mut state = state.lock().unwrap();
             debug!("State lock acquired for lid event");

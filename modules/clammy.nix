@@ -4,14 +4,17 @@ let
 
   clammy-start-script = pkgs.writeShellScriptBin "clammy-start-sway" ''
     #!${pkgs.bash}/bin/bash
-    # This command blocks until the import is done.
     systemctl --user import-environment --wait \
       WAYLAND_DISPLAY \
       SWAYSOCK \
       XDG_RUNTIME_DIR \
-      DBUS_SESSION_BUS_ADDRESS
+      DBUS_SESSION_BUS_ADDRESS \
+      XDG_CURRENT_DESKTOP \
+      XDG_SESSION_TYPE \
+      XDG_SESSION_DESKTOP \
+      XDG_DATA_DIRS \
+      XDG_CONFIG_DIRS
       
-    # Only after the import succeeds, restart clammy.
     systemctl --user restart clammy.service
   '';
 
@@ -34,7 +37,7 @@ let
 
 in
 {
-  environment.systemPackages = [ clammy ];
+  environment.systemPackages = [ clammy clammy-start-script ];
 
   services.dbus = {
     enable = true;

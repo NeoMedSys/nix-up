@@ -1,0 +1,288 @@
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z INFO  clammy] D-Bus signal: Lid state changed to: CLOSED
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy] State lock acquired for lid event
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z INFO  clammy::sway] Lid closed
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z INFO  clammy::sway] Telling Sway to execute $lock command...
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z DEBUG clammy::sway] Running: swaymsg exec $lock
+Nov 04 18:28:10 perseus clammy[864960]: [2025-11-04T17:28:10Z INFO  clammy::sway] Waiting for lock to establish before powering off displays...
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Displays were on, turning off for lid close
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z INFO  clammy::sway] Turning displays off (DPMS)...
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Running: swaymsg output * power off
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy] State lock released for lid event
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:11 perseus clammy[864960]: [2025-11-04T17:28:11Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:42 perseus clammy[864960]: [2025-11-04T17:28:42Z INFO  clammy] D-Bus signal: Lid state changed to: OPEN
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy] State lock acquired for lid event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z INFO  clammy::sway] Lid opened
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Configuring for lid open mode...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z INFO  clammy::sway] Configuring lid open mode...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Enabling and positioning eDP eDP-1 (width=1600) at x=0
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output eDP-1 enable
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output eDP-1 pos 0 0
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Enabling and positioning monitor DP-5 (width=2560) at x=1600
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output DP-5 enable
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output DP-5 pos 1600 0
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Enabling and positioning monitor DP-6 (width=2560) at x=4160
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output DP-6 enable
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output DP-6 pos 4160 0
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z INFO  clammy::sway] Lid open mode configured
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Displays were off, turning on for lid open
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z INFO  clammy::sway] Turning displays on (DPMS)...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Running: swaymsg output * power on
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy] State lock released for lid event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:43 perseus clammy[864960]: [2025-11-04T17:28:43Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:28:52 perseus systemd[2290]: Stopping Clammy - Clamshell mode daemon for Sway...
+Nov 04 18:28:52 perseus systemd[2290]: Stopped Clammy - Clamshell mode daemon for Sway.
+Nov 04 18:28:52 perseus systemd[2290]: Started Clammy - Clamshell mode daemon for Sway.
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy] Verbose logging enabled
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z INFO  clammy] Clammy daemon starting...
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z INFO  clammy] Connected to Sway successfully
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z DEBUG clammy] Initial state: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:52 perseus clammy[895745]: [2025-11-04T17:28:52Z INFO  clammy] Connected to D-Bus and logind
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy] Initial lid state: OPEN
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy] Sway IPC event listener started
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy] Swayidle event listener started
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy] Listening for logind lid events...
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy::sway] Starting Sway event listener...
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z DEBUG clammy::sway] Sway event listener connected
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy::idle] Starting swayidle event listener...
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy::idle] Spawning swayidle process...
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z DEBUG clammy::idle] swayidle cmd: timeout 300 'echo idle' resume 'echo resume' timeout 600 'echo sleep' resume 'echo resume' before-sleep 'echo sleep'
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z DEBUG clammy::sway] Sway event listener subscribed to Output events
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z INFO  clammy::idle] swayidle spawned with PID: 895783
+Nov 04 18:28:53 perseus clammy[895745]: [2025-11-04T17:28:53Z DEBUG clammy::idle] Reading stdout from swayidle...
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z INFO  clammy] D-Bus signal: Lid state changed to: CLOSED
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy] State lock acquired for lid event
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z INFO  clammy::sway] Lid closed
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z INFO  clammy::sway] Telling Sway to execute $lock command...
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z DEBUG clammy::sway] Running: swaymsg exec $lock
+Nov 04 18:28:55 perseus clammy[895745]: [2025-11-04T17:28:55Z INFO  clammy::sway] Waiting for lock to establish before powering off displays...
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Displays were on, turning off for lid close
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z INFO  clammy::sway] Turning displays off (DPMS)...
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Running: swaymsg output * power off
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy] State lock released for lid event
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:28:56 perseus clammy[895745]: [2025-11-04T17:28:56Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z INFO  clammy] D-Bus signal: Lid state changed to: OPEN
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy] State lock acquired for lid event
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z INFO  clammy::sway] Lid opened
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Configuring for lid open mode...
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z INFO  clammy::sway] Configuring lid open mode...
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Enabling and positioning eDP eDP-1 (width=1600) at x=0
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Running: swaymsg output eDP-1 enable
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Running: swaymsg output eDP-1 pos 0 0
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Enabling and positioning monitor DP-5 (width=2560) at x=1600
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Running: swaymsg output DP-5 enable
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Running: swaymsg output DP-5 pos 1600 0
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Enabling and positioning monitor DP-6 (width=2560) at x=4160
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Running: swaymsg output DP-6 enable
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z DEBUG clammy::sway] Running: swaymsg output DP-6 pos 4160 0
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z INFO  clammy::sway] Lid open mode configured
+Nov 04 18:29:21 perseus clammy[895745]: [2025-11-04T17:29:21Z INFO  clammy::sway] Waiting for monitors to be enabled before powering on...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Displays were off, turning on for lid open
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z INFO  clammy::sway] Turning displays on (DPMS)...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Running: swaymsg output * power on
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy] State lock released for lid event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Sway output change detected
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock acquired for output event
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshing output state from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Getting outputs from Sway...
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-6", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found eDP: Monitor { name: "eDP-1", width: 1600, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Found active external monitor: Monitor { name: "DP-5", width: 2560, active: true }
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Outputs found: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::state] Refreshed outputs: eDP=Some(Monitor { name: "eDP-1", width: 1600, active: true }), externals=[Monitor { name: "DP-5", width: 2560, active: true }, Monitor { name: "DP-6", width: 2560, active: true }]
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] Output event detected, but no change in active monitors. Ignoring.
+Nov 04 18:29:22 perseus clammy[895745]: [2025-11-04T17:29:22Z DEBUG clammy::sway] State lock released for output event (no change)

@@ -155,9 +155,6 @@ pub fn handle_lid_close(state: &mut State) -> Result<()> {
 
     lock_screen()?;
 
-    info!("Waiting for lock to establish before powering off displays...");
-    thread::sleep(Duration::from_millis(500)); // 0.5 second delay
-
     // Turn displays off if they aren't already
     if !state.displays_off {
         debug!("Displays were on, turning off for lid close");
@@ -185,12 +182,6 @@ pub fn handle_lid_open(state: &mut State) -> Result<()> {
     info!("Lid opened");
     state.lid_closed = false;
 
-    debug!("Configuring for lid open mode...");
-    configure_lid_open(state)?;
-    
-    info!("Waiting for monitors to be enabled before powering on...");
-    thread::sleep(Duration::from_millis(500)); // 0.5 second delay
-    //
     // Only turn displays on if they were off
     if state.displays_off {
         debug!("Displays were off, turning on for lid open");
@@ -200,6 +191,8 @@ pub fn handle_lid_open(state: &mut State) -> Result<()> {
          debug!("Displays already on, no action needed.");
     }
     
+    debug!("Configuring for lid open mode...");
+    configure_lid_open(state)?;
     Ok(())
 }
 

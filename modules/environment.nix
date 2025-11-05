@@ -52,6 +52,9 @@ in
       lidSwitch = "ignore";
       lidSwitchDocked = "ignore";
       lidSwitchExternalPower = "ignore";
+      extraConfig = ''
+      IdleAction = "ignore";
+      '';
     };
 
     # Power Management
@@ -60,10 +63,13 @@ in
       settings = {
         RESTORE_DEVICE_STATE_ON_STARTUP = 1;
         DEVICES_TO_DISABLE_ON_STARTUP = "";
+        TLP_LID_SWITCH_AC = "ignore";
+        TLP_LID_SWITCH_BAT = "ignore";
       };
     };
     gnome.gnome-keyring.enable = true;
-    upower.enable = true;
+    # TLP is primary
+    upower.enable = false;
 
     # Security
     opensnitch = {
@@ -324,6 +330,8 @@ in
       # Disable lid switch as wakeup source to prevent suspend loops
       "w /proc/acpi/wakeup - - - - LID0"
     ];
+    services."systemd-rfkill@".enable = false;
+    sockets.systemd-rfkill.enable = false;
   };
   # ========================
   # SYSTEM SCRIPTS
