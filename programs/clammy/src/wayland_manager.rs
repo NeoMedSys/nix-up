@@ -4,21 +4,22 @@ use crate::wayland_output::HeadInfo;
 use crate::{actions, state::SharedState, wayland_idle, wayland_output};
 use anyhow::{anyhow, Context, Result};
 use log::{debug, error, info, warn};
-use polling::{Event, Poller};
+use polling::{Event, Events, Poller};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::os::unix::io::AsRawFd;
+use std::os::fd::AsRawFd;
+use std::os::fd::AsFd;
 use std::rc::Rc;
 use std::sync::mpsc::Receiver;
 use tokio::sync::mpsc::Sender as TokioSender;
 use wayland_client::{
     delegate_noop,
-    globals::registry_queue_init,
-    protocol::{wl_output, wl_registry},
-    Connection, Dispatch, EventQueue, QueueHandle,
+    globals::{registry_queue_init, GlobalListContents},
+    protocol::{wl_output, wl_seat, wl_registry},
+    Connection, Dispatch, QueueHandle,
 };
-use wayland_protocols::staging::idle_notify::v1::client::{
-    zwp_idle_notification_v1, zwp_idle_notifier_v1,
+use wayland_protocols::ext::idle_notify::v1::client::{
+    ext_idle_notification_v1, ext_idle_notifier_v1,
 };
 use wayland_protocols_wlr::output_management::v1::client::{
     zwlr_output_head_v1, zwlr_output_manager_v1,
@@ -29,14 +30,16 @@ use wayland_protocols_wlr::output_management::v1::client::{
 pub struct WlDelegate {
     pub state: SharedState,
     pub output_manager: Option<zwlr_output_manager_v1::ZwlrOutputManagerV1>,
-    pub idle_notifier: Option<zwp_idle_notifier_v1::ZwpIdleNotifierV1>,
+    pub idle_notifier: Option<ext_idle_notifier_v1::ExtIdleNotifierV1>,
+    pub seat: Option<wl_seat::WlSeat>,
     pub heads: HashMap<wl_output::WlOutput, zwlr_output_head_v1::ZwlrOutputHeadV1>,
-    pub idle_timer_dpms: Option<zwp_idle_notification_v1::ZwpIdleNotificationV1>,
-    pub idle_timer_sleep: Option<zwp_idle_notification_v1::ZwpIdleNotificationV1>,
+    pub idle_timer_dpms: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
+    pub idle_timer_sleep: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub temp_heads: HashMap<zwlr_output_head_v1::ZwlrOutputHeadV1, Rc<RefCell<HeadInfo>>>,
     pub suspend_tx: TokioSender<DbusCommand>,
 }
 
+/// pub seat: Option<wl_seat::WlSeat>,
 /// Connects to Wayland and runs the event loop.
 pub fn run_wayland_listener(
     state: SharedState,
@@ -45,13 +48,13 @@ pub fn run_wayland_listener(
 ) -> Result<()> {
     info!("Connecting to Wayland display...");
     let conn = Connection::connect_to_env().context("Failed to connect to WAYLAND_DISPLAY")?;
-    let mut read_guard = conn.prepare_read()?;
 
     let mut wl_delegate = WlDelegate {
         state,
         suspend_tx,
         output_manager: None,
         idle_notifier: None,
+        seat: None,
         heads: HashMap::new(),
         idle_timer_dpms: None,
         idle_timer_sleep: None,
@@ -70,103 +73,96 @@ pub fn run_wayland_listener(
         return Err(anyhow!("Compositor does not support zwlr_output_manager_v1"));
     }
     if wl_delegate.idle_notifier.is_none() {
-        warn!("Compositor does not support zwp_idle_notify_v1. Idle/DPMS will not work.");
+        warn!("Compositor does not support ext_idle_notify_v1. Idle/DPMS will not work.");
     }
 
     // --- Initial Setup ---
-    if let Err(e) = wayland_output::scan_outputs(&mut wl_delegate, &event_queue.queue_handle()) {
+    if let Err(e) = wayland_output::scan_outputs(&mut wl_delegate, &event_queue.handle()) {
         error!("Failed initial output scan: {}", e);
     }
-    if let Err(e) = wayland_idle::create_idle_timers(&mut wl_delegate, &event_queue.queue_handle()) {
+    if let Err(e) = wayland_idle::create_idle_timers(&mut wl_delegate, &event_queue.handle()) {
         error!("Failed to create idle timers: {}", e);
     }
 
     info!("Wayland listener started. Running event loop...");
 
     // --- The Poll Loop (Using keys from config) ---
-    let wl_fd = read_guard.connection_fd();
-    let cmd_fd = cmd_rx.as_raw_fd();
+    let wl_fd = conn.as_fd();
 
     let poller = Poller::new()?;
-    poller.add(wl_fd, Event::readable(config::WAYLAND_KEY))?;
-    poller.add(cmd_fd, Event::readable(config::COMMAND_KEY))?;
+    unsafe {
+        poller.add(&wl_fd, Event::readable(config::WAYLAND_KEY))?;
+    }
 
-    let mut events = Vec::new();
+    let mut events = Events::new();
 
     loop {
         events.clear();
         poller.wait(&mut events, None).context("Poller failed")?;
 
-        for event in &events {
+        for event in events.iter() {
             if event.key == config::WAYLAND_KEY {
                 debug!("Event: Wayland event received");
-                if let Err(e) = read_guard.read() {
-                    error!("Wayland read error: {}. Exiting.", e);
-                    return Err(e.into());
-                }
-                // After reading, we must dispatch
+                // For wayland-client 0.31, we just dispatch
                 event_queue
                     .dispatch_pending(&mut wl_delegate)
                     .context("Wayland dispatch failed")?;
             }
-
-            if event.key == config::COMMAND_KEY {
-                debug!("Event: MPSC command received");
-                match cmd_rx.try_recv() {
-                    Ok(WaylandCommand::LidClosed) => {
-                        info!("Wayland thread: Received LidClosed command");
-                        let mut guard = wl_delegate.state.lock().unwrap();
-                        guard.lid_closed = true;
-
-                        actions::lock::request_lock();
-
-                        if let Err(e) = wayland_output::configure_clamshell(
-                            &guard,
-                            &wl_delegate,
-                            &event_queue.queue_handle(),
-                        ) {
-                            error!("Failed to configure clamshell: {}", e);
-                        }
-                    }
-                    Ok(WaylandCommand::LidOpened) => {
-                        info!("Wayland thread: Received LidOpened command");
-                        let mut guard = wl_delegate.state.lock().unwrap();
-                        guard.lid_closed = false;
-
-                        info!("Lid opened, requesting lock.");
-                        actions::lock::request_lock();
-
-                        if let Err(e) = wayland_output::configure_lid_open(
-                            &guard,
-                            &wl_delegate,
-                            &event_queue.queue_handle(),
-                        ) {
-                            error!("Failed to configure lid open: {}", e);
-                        }
-                    }
-                    Err(std::sync::mpsc::TryRecvError::Disconnected) => {
-                        error!("MPSC channel disconnected. Exiting.");
-                        return Err(anyhow!("Main thread disconnected"));
-                    }
-                    _ => {}
-                }
-            }
         }
 
-        // After dispatching, we must re-arm the poller for Wayland
-        poller.modify(wl_fd, Event::readable(config::WAYLAND_KEY))?;
-        poller.modify(cmd_fd, Event::readable(config::COMMAND_KEY))?;
+        // Check for MPSC commands (non-blocking)
+        match cmd_rx.try_recv() {
+            Ok(WaylandCommand::LidClosed) => {
+                info!("Wayland thread: Received LidClosed command");
+                let mut guard = wl_delegate.state.lock().unwrap();
+                guard.lid_closed = true;
+
+                actions::lock::request_lock();
+
+                if let Err(e) = wayland_output::configure_clamshell(
+                    &guard,
+                    &wl_delegate,
+                    &event_queue.handle(),
+                ) {
+                    error!("Failed to configure clamshell: {}", e);
+                }
+            }
+            Ok(WaylandCommand::LidOpened) => {
+                info!("Wayland thread: Received LidOpened command");
+                let mut guard = wl_delegate.state.lock().unwrap();
+                guard.lid_closed = false;
+
+                info!("Lid opened, requesting lock.");
+                actions::lock::request_lock();
+
+                if let Err(e) = wayland_output::configure_lid_open(
+                    &guard,
+                    &wl_delegate,
+                    &event_queue.handle(),
+                ) {
+                    error!("Failed to configure lid open: {}", e);
+                }
+            }
+            Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                error!("MPSC channel disconnected. Exiting.");
+                return Err(anyhow!("Main thread disconnected"));
+            }
+            _ => {}
+        }
+
+        // Re-arm the poller
+        poller.modify(&wl_fd, Event::readable(config::WAYLAND_KEY))?;
     }
 }
 
-// --- Dispatch Implementations (No changes) ---
+// --- Dispatch Implementations ---
 
-impl Dispatch<wl_registry::WlRegistry, ()> for WlDelegate {
+impl Dispatch<wl_registry::WlRegistry, GlobalListContents> for WlDelegate {
     fn event(
         state: &mut Self,
         registry: &wl_registry::WlRegistry,
         event: wl_registry::Event,
-        _data: &(),
+        _data: &GlobalListContents,
         _conn: &Connection,
         queue_handle: &QueueHandle<Self>,
     ) {
@@ -182,9 +178,12 @@ impl Dispatch<wl_registry::WlRegistry, ()> for WlDelegate {
                     state.output_manager =
                         Some(registry.bind(name, 1.min(version), queue_handle, ()));
                 }
-                "zwp_idle_notifier_v1" => {
+                "ext_idle_notifier_v1" => {
                     state.idle_notifier =
                         Some(registry.bind(name, 1.min(version), queue_handle, ()));
+                }
+                "wl_seat" => {
+                    state.seat = Some(registry.bind(name, 1.min(version), queue_handle, ()));
                 }
                 "wl_output" => {
                     let _output = registry.bind::<wl_output::WlOutput, _, _>(
@@ -200,4 +199,6 @@ impl Dispatch<wl_registry::WlRegistry, ()> for WlDelegate {
     }
 }
 
+delegate_noop!(WlDelegate: ignore wl_registry::WlRegistry);
 delegate_noop!(WlDelegate: wl_output::WlOutput);
+delegate_noop!(WlDelegate: wl_seat::WlSeat);

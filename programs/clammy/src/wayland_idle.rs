@@ -5,38 +5,39 @@ use crate::{actions, wayland_output};
 use anyhow::Result;
 use log::{debug, error, info};
 use wayland_client::{delegate_noop, Connection, Dispatch, QueueHandle};
-use wayland_protocols::staging::idle_notify::v1::client::{
-    zwp_idle_notification_v1, zwp_idle_notifier_v1,
+use wayland_protocols::ext::idle_notify::v1::client::{
+    ext_idle_notification_v1, ext_idle_notifier_v1,
 };
 
 /// Creates the two idle timers (DPMS and Sleep)
 pub fn create_idle_timers(delegate: &mut WlDelegate, qh: &QueueHandle<WlDelegate>) -> Result<()> {
     if let Some(notifier) = &delegate.idle_notifier {
+        let seat = delegate.seat.as_ref().ok_or(anyhow::anyhow!("No seat available"))?;
         info!("Creating idle timers...");
 
         // 1. DPMS timer
         let dpms_timeout_ms = config::IDLE_TIMEOUT_S * 1000;
-        let dpms_timer = notifier.get_idle_notification(dpms_timeout_ms, qh, ());
+        let dpms_timer = notifier.get_idle_notification(dpms_timeout_ms, seat, qh, ());
         delegate.idle_timer_dpms = Some(dpms_timer);
 
         // 2. Sleep timer (relative to DPMS)
         let sleep_timeout_ms = (config::IDLE_TIMEOUT_S + config::SLEEP_TIMEOUT_S) * 1000;
-        let sleep_timer = notifier.get_idle_notification(sleep_timeout_ms, qh, ());
+        let sleep_timer = notifier.get_idle_notification(sleep_timeout_ms, seat, qh, ());
         delegate.idle_timer_sleep = Some(sleep_timer);
-        
+
         info!("Idle timers created: {}ms (DPMS), {}ms (Sleep)", dpms_timeout_ms, sleep_timeout_ms);
     }
     Ok(())
 }
 
 // --- Dispatch Implementations ---
-delegate_noop!(WlDelegate: zwp_idle_notifier_v1::ZwpIdleNotifierV1);
+delegate_noop!(WlDelegate: ext_idle_notifier_v1::ExtIdleNotifierV1);
 
-impl Dispatch<zwp_idle_notification_v1::ZwpIdleNotificationV1, ()> for WlDelegate {
+impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegate {
     fn event(
         state: &mut Self,
-        notification: &zwp_idle_notification_v1::ZwpIdleNotificationV1,
-        event: zwp_idle_notification_v1::Event,
+        notification: &ext_idle_notification_v1::ExtIdleNotificationV1,
+        event: ext_idle_notification_v1::Event,
         _data: &(),
         _conn: &Connection,
         qh: &QueueHandle<Self>,
@@ -45,13 +46,13 @@ impl Dispatch<zwp_idle_notification_v1::ZwpIdleNotificationV1, ()> for WlDelegat
         let is_sleep_timer = state.idle_timer_sleep.as_ref() == Some(notification);
 
         match event {
-            zwp_idle_notification_v1::Event::Idled => {
+            ext_idle_notification_v1::Event::Idled => {
                 // Check if the lid is closed. If so, do nothing.
                 if state.state.lock().unwrap().lid_closed {
                     debug!("Idle timer fired, but lid is closed. Ignoring.");
                     return;
                 }
-                
+
                 if is_dpms_timer {
                     info!("Idle timer (DPMS) fired: IDLED");
                     // Point 3: Lock screen and turn displays off
@@ -71,7 +72,7 @@ impl Dispatch<zwp_idle_notification_v1::ZwpIdleNotificationV1, ()> for WlDelegat
                     }
                 }
             }
-            zwp_idle_notification_v1::Event::Resumed => {
+            ext_idle_notification_v1::Event::Resumed => {
                 if is_dpms_timer {
                     info!("Idle timer (DPMS) fired: RESUMED");
                     // We only turn displays on if they were off

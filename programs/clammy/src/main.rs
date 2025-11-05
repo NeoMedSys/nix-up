@@ -12,12 +12,11 @@ use tokio::sync::mpsc as tokio_mpsc;
 mod commands;
 mod config;
 mod state;
-mod actions
+mod actions;
 mod wayland_idle;
 mod wayland_manager;
 mod wayland_output;
 
-use commands::Command;
 use state::{SharedState, State};
 
 /// Clammy - Lid and display management for Sway

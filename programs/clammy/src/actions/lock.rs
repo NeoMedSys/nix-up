@@ -1,11 +1,8 @@
-// === ./programs/clammy/src/actions/lock.rs ===
-//! Spawns the screen locker process.
-
 use crate::config;
 use log::{debug, error, info};
 use std::process::{Command, Stdio};
 
-pub fn request_lock() {
+pub fn request_lock() -> anyhow::Result<()> {
     info!("Executing lock command...");
     
     // We need to check if a lock is already running
@@ -40,4 +37,6 @@ pub fn request_lock() {
             );
         }
     }
+
+    Ok(())
 }

@@ -24,7 +24,7 @@ pub fn apply_lid_open_config(
                     "Enabling eDP: {} at x=0 with mode {}x{}",
                     edp_monitor.name, mode.width, mode.height
                 );
-                let config_head = config.enable_head(head);
+                let config_head = config.enable_head(head, qh, ());
                 config_head.set_mode(&mode.wl_mode.unwrap());
                 config_head.set_position(0, 0);
                 x_offset += mode.width;
@@ -44,7 +44,7 @@ pub fn apply_lid_open_config(
                     "Enabling external monitor: {} at x={} with mode {}x{}",
                     monitor.name, x_offset, mode.width, mode.height
                 );
-                let config_head = config.enable_head(head);
+                let config_head = config.enable_head(head, qh, ());
                 config_head.set_mode(&mode.wl_mode.unwrap());
                 config_head.set_position(x_offset, 0);
                 x_offset += mode.width;

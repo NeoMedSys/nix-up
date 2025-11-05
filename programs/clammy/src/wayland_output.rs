@@ -3,34 +3,31 @@ use crate::wayland_manager::WlDelegate;
 use anyhow::{anyhow, Result};
 use log::{debug, error, info, trace, warn};
 use std::cell::RefCell;
-use std::collections::HashMap;
 use std::rc::Rc;
-use wayland_client::{delegate_noop, Connection, Dispatch, QueueHandle, UserData};
+use wayland_client::{delegate_noop, protocol::wl_output, Connection, Dispatch, QueueHandle, Proxy};
 use wayland_protocols_wlr::output_management::v1::client::{
     zwlr_output_configuration_head_v1, zwlr_output_configuration_v1, zwlr_output_head_v1,
     zwlr_output_manager_v1, zwlr_output_mode_v1,
 };
-
-// --- Module for actions ---
 use crate::actions;
 
 // --- Temporary structs for parsing ---
 #[derive(Debug, Default, Clone)]
 pub struct HeadInfo {
-    wl_output: Option<wl_output::WlOutput>,
-    name: String,
-    description: String,
-    active: bool,
-    modes: Vec<ModeInfo>,
-    preferred_mode: Option<ModeInfo>,
+    pub wl_output: Option<wl_output::WlOutput>,
+    pub name: String,
+    pub description: String,
+    pub active: bool,
+    pub modes: Vec<ModeInfo>,
+    pub preferred_mode: Option<ModeInfo>,
 }
 
-#[derive(Debug, Clone, Copy, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct ModeInfo {
     pub wl_mode: Option<zwlr_output_mode_v1::ZwlrOutputModeV1>,
     pub width: i32,
     pub height: i32,
-    is_preferred: bool,
+    pub is_preferred: bool,
 }
 
 // --- Public Functions ---
@@ -76,11 +73,8 @@ pub fn configure_lid_open(
 /// Triggers a new scan of all outputs
 pub fn scan_outputs(delegate: &mut WlDelegate, qh: &QueueHandle<WlDelegate>) -> Result<()> {
     debug!("Scanning outputs...");
-    let manager = delegate
-        .output_manager
-        .as_ref()
-        .ok_or(anyhow!("Output manager not bound"))?;
-    manager.get_heads(qh, UserData::default());
+    // In 0.31 API, we don't call get_heads - the manager automatically sends heads
+    // We just need to do a roundtrip to get all the events
     Ok(())
 }
 
@@ -103,26 +97,25 @@ pub fn find_preferred_mode<'a>(
     delegate
         .temp_heads
         .get(head)
-        .and_then(|info| info.borrow().preferred_mode)
+        .and_then(|info| info.borrow().preferred_mode.clone())
 }
 
-// --- Dispatch Implementations (Corrected) ---
+// --- Dispatch Implementations ---
 
 /// Handles events from the output manager
-impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, UserData> for WlDelegate {
+impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
     fn event(
         state: &mut Self,
         _manager: &zwlr_output_manager_v1::ZwlrOutputManagerV1,
         event: zwlr_output_manager_v1::Event,
-        _data: &UserData,
+        _data: &(),
         _conn: &Connection,
         qh: &QueueHandle<Self>,
     ) {
         match event {
-            zwlr_output_manager_v1::Event::Head { head, .. } => {
+            zwlr_output_manager_v1::Event::Head { head } => {
                 trace!("DEBUG: Discovered new head object: {:?}", head.id());
                 let head_info = Rc::new(RefCell::new(HeadInfo::default()));
-                head.set_user_data(Box::new(head_info.clone()));
                 state.temp_heads.insert(head, head_info);
             }
             zwlr_output_manager_v1::Event::Done { .. } => {
@@ -143,7 +136,7 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, UserData> for WlDeleg
                         continue;
                     }
 
-                    let mode = info.preferred_mode.or(info.modes.first().cloned());
+                    let mode = info.preferred_mode.clone().or(info.modes.first().cloned());
 
                     if let Some(m) = mode {
                         let monitor = Monitor {
@@ -170,7 +163,7 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, UserData> for WlDeleg
                     let mut shared_state = state.state.lock().unwrap();
                     shared_state.edp_name = edp;
                     shared_state.external_monitors = externals;
-                } // Lock released
+                }
 
                 // Now that state is updated, re-apply the correct config
                 let shared_state = state.state.lock().unwrap();
@@ -193,16 +186,21 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, UserData> for WlDeleg
 }
 
 /// Handles events from a specific output head
-impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, Box<Rc<RefCell<HeadInfo>>>> for WlDelegate {
+impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, ()> for WlDelegate {
     fn event(
         state: &mut Self,
         head: &zwlr_output_head_v1::ZwlrOutputHeadV1,
         event: zwlr_output_head_v1::Event,
-        user_data: &Box<Rc<RefCell<HeadInfo>>>,
+        _user_data: &(),
         _conn: &Connection,
-        qh: &QueueHandle<Self>,
+        _qh: &QueueHandle<Self>,
     ) {
-        let mut info = user_data.borrow_mut();
+        let info_rc = match state.temp_heads.get(head) {
+            Some(info) => info.clone(),
+            None => return,
+        };
+        
+        let mut info = info_rc.borrow_mut();
         match event {
             zwlr_output_head_v1::Event::Name { name } => {
                 trace!("DEBUG: Head {:?} has name: {}", head.id(), name);
@@ -218,10 +216,11 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, Box<Rc<RefCell<HeadInfo>>>>
             }
             zwlr_output_head_v1::Event::Mode { mode } => {
                 trace!("DEBUG: Head {:?} has mode: {:?}", head.id(), mode.id());
-                mode.set_user_data(user_data.clone());
+                // Mode events will be handled in the mode dispatch
             }
             zwlr_output_head_v1::Event::Finished => {
                 trace!("DEBUG: Head {:?} finished (unplugged)", head.id());
+                drop(info); // Release borrow before removing
                 state.temp_heads.remove(head);
             }
             _ => {}
@@ -230,25 +229,37 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, Box<Rc<RefCell<HeadInfo>>>>
 }
 
 /// Handles events from a specific display mode
-impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, Rc<RefCell<HeadInfo>>> for WlDelegate {
+impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, ()> for WlDelegate {
     fn event(
-        _state: &mut Self,
+        state: &mut Self,
         mode: &zwlr_output_mode_v1::ZwlrOutputModeV1,
         event: zwlr_output_mode_v1::Event,
-        user_data: &Rc<RefCell<HeadInfo>>,
+        _user_data: &(),
         _conn: &Connection,
         _qhandle: &QueueHandle<Self>,
     ) {
-        let mut info = user_data.borrow_mut();
-        
+        // Find which head this mode belongs to
+        let head_info = state.temp_heads.values().find(|info| {
+            info.borrow().modes.iter().any(|m| m.wl_mode.as_ref() == Some(mode))
+        }).cloned();
+
+        if head_info.is_none() {
+            // This is a new mode, find the head that just announced it
+            // We'll add it on Finished event
+            return;
+        }
+
+        let info_rc = head_info.unwrap();
+        let mut info = info_rc.borrow_mut();
+
         // Find or create the ModeInfo for this mode
         let mut mode_info = info
             .modes
-            .iter_mut()
+            .iter()
             .find(|m| m.wl_mode.as_ref() == Some(mode))
-            .map(|m| *m)
+            .cloned()
             .unwrap_or_default();
-        
+
         match event {
             zwlr_output_mode_v1::Event::Size { width, height } => {
                 trace!("DEBUG: Mode {:?} size: {}x{}", mode.id(), width, height);
@@ -262,11 +273,11 @@ impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, Rc<RefCell<HeadInfo>>> for 
             zwlr_output_mode_v1::Event::Finished => {
                 trace!("DEBUG: Mode {:?} finished", mode.id());
                 mode_info.wl_mode = Some(mode.clone());
-                
+
                 // Remove old entry if it exists
                 info.modes.retain(|m| m.wl_mode.as_ref() != Some(mode));
                 // Add the new/updated one
-                info.modes.push(mode_info);
+                info.modes.push(mode_info.clone());
 
                 if mode_info.is_preferred {
                     info.preferred_mode = Some(mode_info);

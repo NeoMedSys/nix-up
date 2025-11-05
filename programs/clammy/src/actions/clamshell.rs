@@ -33,7 +33,7 @@ pub fn apply_clamshell_config(
                     "Enabling external monitor: {} at x={} with mode {}x{}",
                     monitor.name, x_offset, mode.width, mode.height
                 );
-                let config_head = config.enable_head(head);
+                let config_head = config.enable_head(head, qh, ());
                 config_head.set_mode(&mode.wl_mode.unwrap()); // We unwrap, as it must be Some
                 config_head.set_position(x_offset, 0);
                 x_offset += mode.width;
