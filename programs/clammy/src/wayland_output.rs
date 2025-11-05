@@ -1,0 +1,282 @@
+use crate::state::{Monitor, State};
+use crate::wayland_manager::WlDelegate;
+use anyhow::{anyhow, Result};
+use log::{debug, error, info, trace, warn};
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
+use wayland_client::{delegate_noop, Connection, Dispatch, QueueHandle, UserData};
+use wayland_protocols_wlr::output_management::v1::client::{
+    zwlr_output_configuration_head_v1, zwlr_output_configuration_v1, zwlr_output_head_v1,
+    zwlr_output_manager_v1, zwlr_output_mode_v1,
+};
+
+// --- Module for actions ---
+use crate::actions;
+
+// --- Temporary structs for parsing ---
+#[derive(Debug, Default, Clone)]
+pub struct HeadInfo {
+    wl_output: Option<wl_output::WlOutput>,
+    name: String,
+    description: String,
+    active: bool,
+    modes: Vec<ModeInfo>,
+    preferred_mode: Option<ModeInfo>,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ModeInfo {
+    pub wl_mode: Option<zwlr_output_mode_v1::ZwlrOutputModeV1>,
+    pub width: i32,
+    pub height: i32,
+    is_preferred: bool,
+}
+
+// --- Public Functions ---
+
+/// Turns all active displays off (DPMS).
+pub fn dpms_off(delegate: &WlDelegate, qh: &QueueHandle<WlDelegate>) -> Result<()> {
+    actions::dpms::dpms_off(delegate, qh)
+}
+
+/// Turns all displays on (DPMS).
+pub fn dpms_on(delegate: &WlDelegate, qh: &QueueHandle<WlDelegate>) -> Result<()> {
+    actions::dpms::dpms_on(delegate, qh)
+}
+
+/// Applies a clamshell configuration (eDP off, externals on)
+pub fn configure_clamshell(
+    state: &State,
+    delegate: &WlDelegate,
+    qh: &QueueHandle<WlDelegate>,
+) -> Result<()> {
+    let manager = delegate
+        .output_manager
+        .as_ref()
+        .ok_or(anyhow!("Output manager not bound"))?;
+    let config = manager.create_configuration(0, qh, ());
+    actions::clamshell::apply_clamshell_config(state, delegate, &config, qh)
+}
+
+/// Applies a lid-open configuration (eDP on, externals on)
+pub fn configure_lid_open(
+    state: &State,
+    delegate: &WlDelegate,
+    qh: &QueueHandle<WlDelegate>,
+) -> Result<()> {
+    let manager = delegate
+        .output_manager
+        .as_ref()
+        .ok_or(anyhow!("Output manager not bound"))?;
+    let config = manager.create_configuration(0, qh, ());
+    actions::lid_open::apply_lid_open_config(state, delegate, &config, qh)
+}
+
+/// Triggers a new scan of all outputs
+pub fn scan_outputs(delegate: &mut WlDelegate, qh: &QueueHandle<WlDelegate>) -> Result<()> {
+    debug!("Scanning outputs...");
+    let manager = delegate
+        .output_manager
+        .as_ref()
+        .ok_or(anyhow!("Output manager not bound"))?;
+    manager.get_heads(qh, UserData::default());
+    Ok(())
+}
+
+// --- Helper functions (still needed here for actions) ---
+pub fn find_head_by_name<'a>(
+    delegate: &'a WlDelegate,
+    name: &str,
+) -> Option<&'a zwlr_output_head_v1::ZwlrOutputHeadV1> {
+    delegate
+        .temp_heads
+        .iter()
+        .find(|(_, info)| info.borrow().name == name)
+        .map(|(head, _)| head)
+}
+
+pub fn find_preferred_mode<'a>(
+    delegate: &'a WlDelegate,
+    head: &zwlr_output_head_v1::ZwlrOutputHeadV1,
+) -> Option<ModeInfo> {
+    delegate
+        .temp_heads
+        .get(head)
+        .and_then(|info| info.borrow().preferred_mode)
+}
+
+// --- Dispatch Implementations (Corrected) ---
+
+/// Handles events from the output manager
+impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, UserData> for WlDelegate {
+    fn event(
+        state: &mut Self,
+        _manager: &zwlr_output_manager_v1::ZwlrOutputManagerV1,
+        event: zwlr_output_manager_v1::Event,
+        _data: &UserData,
+        _conn: &Connection,
+        qh: &QueueHandle<Self>,
+    ) {
+        match event {
+            zwlr_output_manager_v1::Event::Head { head, .. } => {
+                trace!("DEBUG: Discovered new head object: {:?}", head.id());
+                let head_info = Rc::new(RefCell::new(HeadInfo::default()));
+                head.set_user_data(Box::new(head_info.clone()));
+                state.temp_heads.insert(head, head_info);
+            }
+            zwlr_output_manager_v1::Event::Done { .. } => {
+                debug!(
+                    "DEBUG: Output scan 'Done'. Parsing {} temp heads.",
+                    state.temp_heads.len()
+                );
+
+                let mut edp: Option<Monitor> = None;
+                let mut externals: Vec<Monitor> = Vec::new();
+
+                for info_rc in state.temp_heads.values() {
+                    let info = info_rc.borrow();
+                    trace!("DEBUG: Parsing head: {} (Active: {})", info.name, info.active);
+
+                    if !info.active {
+                        trace!("DEBUG: Head {} is not active, skipping.", info.name);
+                        continue;
+                    }
+
+                    let mode = info.preferred_mode.or(info.modes.first().cloned());
+
+                    if let Some(m) = mode {
+                        let monitor = Monitor {
+                            name: info.name.clone(),
+                            width: m.width,
+                            active: info.active,
+                        };
+                        trace!("DEBUG: Assembled Monitor: {:?}", monitor);
+                        if info.name.starts_with("eDP") {
+                            edp = Some(monitor);
+                        } else {
+                            externals.push(monitor);
+                        }
+                    } else {
+                        warn!("DEBUG: Head {} is active but has no modes?", info.name);
+                    }
+                }
+
+                externals.sort_by(|a, b| a.name.cmp(&b.name));
+                info!("Parse complete: eDP={:?}, externals={:?}", edp, externals);
+
+                // Update the global state
+                {
+                    let mut shared_state = state.state.lock().unwrap();
+                    shared_state.edp_name = edp;
+                    shared_state.external_monitors = externals;
+                } // Lock released
+
+                // Now that state is updated, re-apply the correct config
+                let shared_state = state.state.lock().unwrap();
+                if shared_state.lid_closed {
+                    if let Err(e) = configure_clamshell(&shared_state, state, qh) {
+                        error!("Failed to apply config after scan: {}", e);
+                    }
+                } else {
+                    if let Err(e) = configure_lid_open(&shared_state, state, qh) {
+                        error!("Failed to apply config after scan: {}", e);
+                    }
+                }
+            }
+            zwlr_output_manager_v1::Event::Finished => {
+                error!("Output manager protocol finished. Clammy can no longer function.");
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Handles events from a specific output head
+impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, Box<Rc<RefCell<HeadInfo>>>> for WlDelegate {
+    fn event(
+        state: &mut Self,
+        head: &zwlr_output_head_v1::ZwlrOutputHeadV1,
+        event: zwlr_output_head_v1::Event,
+        user_data: &Box<Rc<RefCell<HeadInfo>>>,
+        _conn: &Connection,
+        qh: &QueueHandle<Self>,
+    ) {
+        let mut info = user_data.borrow_mut();
+        match event {
+            zwlr_output_head_v1::Event::Name { name } => {
+                trace!("DEBUG: Head {:?} has name: {}", head.id(), name);
+                info.name = name.to_string();
+            }
+            zwlr_output_head_v1::Event::Description { description } => {
+                trace!("DEBUG: Head {:?} has desc: {}", head.id(), description);
+                info.description = description.to_string();
+            }
+            zwlr_output_head_v1::Event::Enabled { enabled } => {
+                trace!("DEBUG: Head {:?} enabled: {}", head.id(), enabled);
+                info.active = enabled != 0;
+            }
+            zwlr_output_head_v1::Event::Mode { mode } => {
+                trace!("DEBUG: Head {:?} has mode: {:?}", head.id(), mode.id());
+                mode.set_user_data(user_data.clone());
+            }
+            zwlr_output_head_v1::Event::Finished => {
+                trace!("DEBUG: Head {:?} finished (unplugged)", head.id());
+                state.temp_heads.remove(head);
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Handles events from a specific display mode
+impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, Rc<RefCell<HeadInfo>>> for WlDelegate {
+    fn event(
+        _state: &mut Self,
+        mode: &zwlr_output_mode_v1::ZwlrOutputModeV1,
+        event: zwlr_output_mode_v1::Event,
+        user_data: &Rc<RefCell<HeadInfo>>,
+        _conn: &Connection,
+        _qhandle: &QueueHandle<Self>,
+    ) {
+        let mut info = user_data.borrow_mut();
+        
+        // Find or create the ModeInfo for this mode
+        let mut mode_info = info
+            .modes
+            .iter_mut()
+            .find(|m| m.wl_mode.as_ref() == Some(mode))
+            .map(|m| *m)
+            .unwrap_or_default();
+        
+        match event {
+            zwlr_output_mode_v1::Event::Size { width, height } => {
+                trace!("DEBUG: Mode {:?} size: {}x{}", mode.id(), width, height);
+                mode_info.width = width;
+                mode_info.height = height;
+            }
+            zwlr_output_mode_v1::Event::Preferred => {
+                trace!("DEBUG: Mode {:?} is preferred", mode.id());
+                mode_info.is_preferred = true;
+            }
+            zwlr_output_mode_v1::Event::Finished => {
+                trace!("DEBUG: Mode {:?} finished", mode.id());
+                mode_info.wl_mode = Some(mode.clone());
+                
+                // Remove old entry if it exists
+                info.modes.retain(|m| m.wl_mode.as_ref() != Some(mode));
+                // Add the new/updated one
+                info.modes.push(mode_info);
+
+                if mode_info.is_preferred {
+                    info.preferred_mode = Some(mode_info);
+                }
+            }
+            _ => {}
+        }
+    }
+}
+
+// No-op implementations for configuration objects
+delegate_noop!(WlDelegate: zwlr_output_configuration_v1::ZwlrOutputConfigurationV1);
+delegate_noop!(WlDelegate: zwlr_output_configuration_head_v1::ZwlrOutputConfigurationHeadV1);

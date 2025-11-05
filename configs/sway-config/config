@@ -176,5 +176,4 @@ exec_always fusuma
 
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME SWAYSOCK
-
 exec_always clammy-start-script

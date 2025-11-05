@@ -1,21 +1,26 @@
-// === ./programs/clammy/src/config.rs ===
-
-// --- Timeouts (in seconds) ---
-
-/// Timeout in seconds until displays are turned off due to inactivity.
 pub const IDLE_TIMEOUT_S: u32 = 300; // 5 minutes
-
-/// Timeout in seconds *after* idle until the system is suspended.
-/// This is relative to the IDLE_TIMEOUT.
 pub const SLEEP_TIMEOUT_S: u32 = 600; // 10 minutes (total 15 min to sleep)
-
-/// Delay in seconds after lid close (with no externals) before suspending.
 pub const LID_CLOSE_SUSPEND_DELAY_S: u64 = 20; // 20 seconds
 
+pub const LOCK_COMMAND: &[&str] = &[
+    "swaylock-effects",
+    "-f",
+    "--screenshots",
+    "--clock",
+    "--indicator",
+    "--indicator-radius", "120",
+    "--indicator-thickness", "8",
+    "--effect-blur", "7x5",
+    "--effect-vignette", "0.5:0.5",
+    "--ring-color", "e94560",
+    "--key-hl-color", "0f3460",
+    "--line-color", "00000000",
+    "--inside-color", "1a1a2e88",
+    "--separator-color", "00000000",
+    "--grace", "3",
+    "--fade-in", "0.1"
+];
 
-// --- Internal swayidle commands ---
-// These are just the strings we pass to swayidle and parse back.
-
-pub const IDLE_EVENT_CMD: &str = "echo idle";
-pub const RESUME_EVENT_CMD: &str = "echo resume";
-pub const SLEEP_EVENT_CMD: &str = "echo sleep";
+// Keys for the `polling` crate event loop
+pub const WAYLAND_KEY: usize = 0;
+pub const COMMAND_KEY: usize = 1;

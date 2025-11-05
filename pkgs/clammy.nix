@@ -1,45 +1,51 @@
 { pkgs, lib, ... }:
 
 let
-  clammySourceDir = builtins.path { path = ../programs/clammy; };
+  clammySourceDir = builtins.path { path = ../programs/clammy; };
 
-  # The wrapper will provide the PATH for ALL binaries.
-  runtimeDeps = with pkgs; [
-    sway 
-    swayidle 
-  ];
+  # The wrapper will provide the PATH for our lock command.
+  runtimeDeps = with pkgs; [
+    swaylock-effects
+  ];
 in
 pkgs.rustPlatform.buildRustPackage {
-  pname = "clammy";
-  version = "0.1.0";
-  src = clammySourceDir;
+  pname = "clammy";
+  version = "0.1.0";
+  src = clammySourceDir;
 
-  cargoLock = {
-    lockFile = "${clammySourceDir}/Cargo.lock";
-  };
+  cargoLock = {
+    lockFile = "${clammySourceDir}/Cargo.lock";
+  };
 
-  nativeBuildInputs = with pkgs; [
-    pkg-config
-    makeWrapper
-  ];
+  nativeBuildInputs = with pkgs; [
+    pkg-config
+    makeWrapper
+  ];
 
-  buildInputs = with pkgs; [
-    dbus
-    systemd
-  ] ++ runtimeDeps;
+  # These are the C libraries our Rust code links against.
+  buildInputs = with pkgs; [
+    # For zbus
+    dbus
+    systemd
 
-  # This hook sets the PATH for both swaymsg and swayidle.
-  postInstall = ''
-    wrapProgram $out/bin/clammy \
-      --prefix PATH : ${lib.makeBinPath runtimeDeps}
-  '';
+    # For wayland-client
+    wayland
+    wayland-protocols
+    wlr-protocols # For wayland-protocols-wlr
+  ] ++ runtimeDeps;
 
-  
-  meta = with lib; {
-    description = "Clamshell mode daemon for Sway";
-    homepage = "https://github.com/NeoMedSys/perseus";
-    license = licenses.gpl3;
-    platforms = platforms.linux;
-    mainProgram = "clammy";
-  };
+  # This hook ensures $PATH contains swaylock-effects
+  # when the clammy service runs.
+  postInstall = ''
+    wrapProgram $out/bin/clammy \
+      --prefix PATH : ${lib.makeBinPath runtimeDeps}
+  '';
+
+  meta = with lib; {
+    description = "Clamshell mode daemon for Wayland";
+    homepage = "https://github.com/NeoMedSys/perseus";
+    license = licenses.gpl3;
+    platforms = platforms.linux;
+    mainProgram = "clammy";
+  };
 }

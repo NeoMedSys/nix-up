@@ -1,16 +1,24 @@
+// === ./programs/clammy/src/state.rs ===
 //! System state tracker
 use anyhow::Result;
 use log::debug;
 use std::sync::{Arc, Mutex};
 
-use crate::sway::{self, Monitor}; // Import the Monitor struct from sway.rs
+// NOTE: This Monitor struct is now generic.
+// It will be populated by wayland_output.rs
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct Monitor {
+    pub name: String,
+    pub width: i32,
+    pub active: bool,
+}
 
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct State {
     pub lid_closed: bool,
     pub displays_off: bool,
-    pub external_monitors: Vec<Monitor>, // Use Monitor struct
-    pub edp_name: Option<Monitor>,     // Use Monitor struct
+    pub external_monitors: Vec<Monitor>,
+    pub edp_name: Option<Monitor>,
 }
 
 impl State {
@@ -22,23 +30,11 @@ impl State {
         !self.external_monitors.is_empty()
     }
 
-    /// Rescans and updates the monitor state from Sway
-    pub fn refresh_outputs(&mut self) -> Result<()> {
-        debug!("Refreshing output state from Sway...");
-        match sway::get_outputs() {
-            Ok((edp, externals)) => {
-                debug!("Refreshed outputs: eDP={:?}, externals={:?}", edp, externals);
-                self.edp_name = edp;
-                self.external_monitors = externals;
-                Ok(())
-            }
-            Err(e) => {
-                log::error!("Failed to refresh outputs: {}", e);
-                Err(e)
-            }
-        }
+    pub fn update_monitors(&mut self, edp: Option<Monitor>, externals: Vec<Monitor>) {
+        debug!("State updating monitors: eDP={:?}, externals={:?}", edp, externals);
+        self.edp_name = edp;
+        self.external_monitors = externals;
     }
 }
 
-// A type alias for our shared, thread-safe state
 pub type SharedState = Arc<Mutex<State>>;
