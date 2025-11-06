@@ -1,6 +1,5 @@
 // === ./programs/clammy/src/state.rs ===
 //! System state tracker
-use anyhow::Result;
 use log::debug;
 use std::sync::{Arc, Mutex};
 

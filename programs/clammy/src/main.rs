@@ -17,7 +17,7 @@ mod wayland_idle;
 mod wayland_manager;
 mod wayland_output;
 
-use state::{SharedState, State};
+use state::State;
 
 /// Clammy - Lid and display management for Sway
 #[derive(Parser, Debug)]

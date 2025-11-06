@@ -18,10 +18,8 @@ pub const LOCK_COMMAND: &[&str] = &[
     "--line-color", "00000000",
     "--inside-color", "1a1a2e88",
     "--separator-color", "00000000",
-    "--grace", "3",
+    // "--grace", "3",
     "--fade-in", "0.1"
 ];
 
-// Keys for the `polling` crate event loop
 pub const WAYLAND_KEY: usize = 0;
-pub const COMMAND_KEY: usize = 1;

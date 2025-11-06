@@ -1,7 +1,7 @@
 use crate::state::State;
 use crate::wayland_manager::WlDelegate;
 use crate::wayland_output::{find_head_by_name, find_preferred_mode};
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use log::{debug, info, warn};
 use wayland_client::QueueHandle;
 use wayland_protocols_wlr::output_management::v1::client::zwlr_output_configuration_v1;

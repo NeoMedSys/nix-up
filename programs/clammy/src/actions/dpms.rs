@@ -42,7 +42,7 @@ pub fn dpms_on(delegate: &WlDelegate, qh: &QueueHandle<WlDelegate>) -> Result<()
     // To turn displays on, we *must* re-apply a valid configuration.
     // We check the lid state to see which configuration to apply.
     let config = manager.create_configuration(0, qh, ());
-    let mut state = delegate.state.lock().unwrap();
+    let state = delegate.state.lock().unwrap();
 
     if state.lid_closed {
         // Lid is closed, so re-apply clamshell mode

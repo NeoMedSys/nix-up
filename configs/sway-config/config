@@ -136,7 +136,7 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-set $lock swaylock-effects -f \
+set $lock swaylock -f \
     --screenshots \
     --clock \
     --indicator \

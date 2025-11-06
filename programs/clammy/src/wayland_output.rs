@@ -4,7 +4,7 @@ use anyhow::{anyhow, Result};
 use log::{debug, error, info, trace, warn};
 use std::cell::RefCell;
 use std::rc::Rc;
-use wayland_client::{delegate_noop, protocol::wl_output, Connection, Dispatch, QueueHandle, Proxy};
+use wayland_client::{delegate_noop, event_created_child,  protocol::wl_output, Connection, Dispatch, QueueHandle, Proxy};
 use wayland_protocols_wlr::output_management::v1::client::{
     zwlr_output_configuration_head_v1, zwlr_output_configuration_v1, zwlr_output_head_v1,
     zwlr_output_manager_v1, zwlr_output_mode_v1,
@@ -115,6 +115,7 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
         match event {
             zwlr_output_manager_v1::Event::Head { head } => {
                 debug!("=== OUTPUT MANAGER: New head event ===");
+                debug!("Head object: {:?}", head.id());
                 let head_info = Rc::new(RefCell::new(HeadInfo::default()));
                 state.temp_heads.insert(head, head_info);
                 debug!("Total heads tracked: {}", state.temp_heads.len());
@@ -182,6 +183,10 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
             _ => {}
         }
     }
+
+    event_created_child!(WlDelegate, zwlr_output_manager_v1::ZwlrOutputManagerV1, [
+        zwlr_output_manager_v1::EVT_HEAD_OPCODE => (zwlr_output_head_v1::ZwlrOutputHeadV1, ())
+    ]);
 }
 
 /// Handles events from a specific output head
@@ -202,6 +207,7 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, ()> for WlDelegate {
         let mut info = info_rc.borrow_mut();
         match event {
             zwlr_output_head_v1::Event::Name { name } => {
+                info!("!!! HEAD NAME EVENT: {} !!!", name);
                 // Ensure we have an entry for this head
                 if !state.temp_heads.contains_key(head) {
                     let head_info = Rc::new(RefCell::new(HeadInfo::default()));

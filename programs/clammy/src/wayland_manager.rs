@@ -7,15 +7,12 @@ use log::{debug, error, info, warn};
 use polling::{Event, Events, Poller};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::os::fd::AsRawFd;
-use std::time::Duration;
 use std::os::fd::AsFd;
 use std::rc::Rc;
 use std::sync::mpsc::Receiver;
 use tokio::sync::mpsc::Sender as TokioSender;
 use wayland_client::{
     delegate_noop,
-    globals::registry_queue_init,
     protocol::{wl_output, wl_seat, wl_registry},
     Connection, Dispatch, QueueHandle,
 };
@@ -106,10 +103,8 @@ pub fn run_wayland_listener(
 
         for event in events.iter() {
             if event.key == config::WAYLAND_KEY {
-                debug!("Event: Wayland event received");
-                // For wayland-client 0.31, we just dispatch
                 event_queue
-                    .dispatch_pending(&mut wl_delegate)
+                    .blocking_dispatch(&mut wl_delegate)
                     .context("Wayland dispatch failed")?;
             }
         }
