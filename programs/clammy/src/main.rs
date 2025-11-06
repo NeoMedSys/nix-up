@@ -126,10 +126,25 @@ async fn main() -> Result<()> {
                 // Suspend Logic (unchanged)
                 let has_externals = state.lock().unwrap().has_externals();
                 if is_closed && !has_externals {
-                    // ... (spawn the tokio::sleep task for timed suspend) ...
                     info!("Lid closed, no externals. Scheduling suspend.");
-                    // (Same suspend logic as before)
-                }
+                        let login_proxy_clone = login_proxy.clone();
+                        let state_clone = state.clone();
+                        let delay = Duration::from_secs(config::LID_CLOSE_SUSPEND_DELAY_S);
+
+                        tokio::spawn(async move {
+                            tokio::time::sleep(delay).await;
+                            let lid_still_closed = state_clone.lock().unwrap().lid_closed;
+
+                            if lid_still_closed {
+                                info!("Lid closed delay expired, suspending now.");
+                                if let Err(e) = login_proxy_clone.suspend(false).await {
+                                    error!("Failed to suspend: {}", e);
+                                }
+                            } else {
+                                info!("Suspend aborted: lid was opened during delay.");
+                            }
+                        });
+                    }
             }
 
             // --- Event 2: Suspend request from Wayland thread ---

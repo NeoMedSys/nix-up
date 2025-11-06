@@ -5,25 +5,35 @@ use std::process::{Command, Stdio};
 pub fn request_lock() -> anyhow::Result<()> {
     info!("Executing lock command...");
     
-    // We need to check if a lock is already running
-    // For now, we'll just spawn.
-    // TODO: Add a check to see if swaylock is already running
-    
     let args = &config::LOCK_COMMAND[1..];
     let cmd = config::LOCK_COMMAND[0];
+    
+    // Find the full path to the command by searching PATH
+    let cmd_path = if let Ok(path_env) = std::env::var("PATH") {
+        let mut found = None;
+        for dir in path_env.split(':') {
+            let full_path = format!("{}/{}", dir, cmd);
+            if std::path::Path::new(&full_path).exists() {
+                found = Some(full_path);
+                break;
+            }
+        }
+        found
+    } else {
+        None
+    };
 
-    debug!("Running lock command: {} {}", cmd, args.join(" "));
+    let cmd_to_run = cmd_path.as_deref().unwrap_or(cmd);
+    debug!("Running lock command: {} {}", cmd_to_run, args.join(" "));
 
-    match Command::new(cmd)
+    match Command::new(cmd_to_run)
         .args(args)
-        .env("PATH", std::env::var("PATH").unwrap_or_default())
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn()
     {
         Ok(mut child) => {
             debug!("Lock process spawned with PID: {}", child.id());
-            // We detach the child. We don't wait for it.
             std::thread::spawn(move || {
                 match child.wait() {
                     Ok(status) => debug!("Lock process exited with status: {}", status),
@@ -38,6 +48,5 @@ pub fn request_lock() -> anyhow::Result<()> {
             );
         }
     }
-
     Ok(())
 }

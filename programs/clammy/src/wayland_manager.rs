@@ -84,19 +84,9 @@ pub fn run_wayland_listener(
     }
 
     // --- Initial Setup ---
-    if let Err(e) = wayland_output::scan_outputs(&mut wl_delegate, &event_queue.handle()) {
-        error!("Failed initial output scan: {}", e);
-    }
     if let Err(e) = wayland_idle::create_idle_timers(&mut wl_delegate, &event_queue.handle()) {
         error!("Failed to create idle timers: {}", e);
     }
-
-    // Do another roundtrip to get output heads
-    debug!("Performing roundtrip to get output heads...");
-    event_queue
-        .roundtrip(&mut wl_delegate)
-        .context("Failed to get output heads")?;
-    debug!("Got output heads, {} tracked", wl_delegate.temp_heads.len());
 
     info!("Wayland listener started. Running event loop...");
 
@@ -130,8 +120,6 @@ pub fn run_wayland_listener(
                 info!("Wayland thread: Received LidClosed command");
                 let mut guard = wl_delegate.state.lock().unwrap();
                 guard.lid_closed = true;
-
-                actions::lock::request_lock();
 
                 if let Err(e) = wayland_output::configure_clamshell(
                     &guard,
