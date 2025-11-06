@@ -168,6 +168,32 @@ async fn main() -> Result<()> {
                              info!("Idle suspend: Aborting, state changed (Lid closed or displays on).");
                         }
                     }
+
+                    DbusCommand::RequestLidClosedSuspend => {
+                        info!("Received RequestLidClosedSuspend from Wayland thread.");
+                        let has_externals = state.lock().unwrap().has_externals();
+                        
+                        if !has_externals {
+                            info!("Lid closed, no externals. Scheduling suspend.");
+                            let login_proxy_clone = login_proxy.clone();
+                            let state_clone = state.clone();
+                            let delay = Duration::from_secs(config::LID_CLOSE_SUSPEND_DELAY_S);
+
+                            tokio::spawn(async move {
+                                tokio::time::sleep(delay).await;
+                                let lid_still_closed = state_clone.lock().unwrap().lid_closed;
+
+                                if lid_still_closed {
+                                    info!("Lid closed delay expired, suspending now.");
+                                    if let Err(e) = login_proxy_clone.suspend(false).await {
+                                        error!("Failed to suspend: {}", e);
+                                    }
+                                } else {
+                                    info!("Suspend aborted: lid was opened during delay.");
+                                }
+                            });
+                        }
+                    }
                 }
             }
         }

@@ -3,7 +3,7 @@ use crate::config;
 use crate::wayland_output::HeadInfo;
 use crate::{actions, state::SharedState, wayland_idle, wayland_output};
 use anyhow::{anyhow, Context, Result};
-use log::{debug, error, info, warn};
+use log::{debug, error, info, warn, trace};
 use polling::{Event, Events, Poller};
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -197,5 +197,35 @@ impl Dispatch<wl_registry::WlRegistry, ()> for WlDelegate {
     }
 }
 
-delegate_noop!(WlDelegate: wl_output::WlOutput);
-delegate_noop!(WlDelegate: wl_seat::WlSeat);
+// We bind to wl_seat (for the idle notifier), and the compositor might send
+// events (like 'capabilities'). delegate_noop! panics on any event,
+// so we provide a real, empty implementation to silently ignore them.
+impl Dispatch<wl_seat::WlSeat, ()> for WlDelegate {
+    fn event(
+        _state: &mut Self,
+        _seat: &wl_seat::WlSeat,
+        event: wl_seat::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &QueueHandle<Self>,
+    ) {
+        // Log the event if we're in debug mode, otherwise do nothing.
+        trace!("wl_seat event: {:?}", event);
+    }
+}
+
+// We bind wl_output in the registry, but its events are handled
+// by the zwlr_output_head objects. We just need to
+// silently ignore any events on the wl_output itself.
+impl Dispatch<wl_output::WlOutput, ()> for WlDelegate {
+    fn event(
+        _state: &mut Self,
+        _output: &wl_output::WlOutput,
+        event: wl_output::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &QueueHandle<Self>,
+    ) {
+        trace!("wl_output event: {:?}", event);
+    }
+}

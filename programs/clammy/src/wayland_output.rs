@@ -10,6 +10,7 @@ use wayland_protocols_wlr::output_management::v1::client::{
     zwlr_output_manager_v1, zwlr_output_mode_v1,
 };
 use crate::actions;
+use crate::commands::DbusCommand;
 
 // --- Temporary structs for parsing ---
 #[derive(Debug, Default, Clone)]
@@ -97,7 +98,11 @@ pub fn find_preferred_mode<'a>(
     delegate
         .temp_heads
         .get(head)
-        .and_then(|info| info.borrow().preferred_mode.clone())
+        .and_then(|info| {
+            let info_borrow = info.borrow();
+            // try to get the preffered or fallback to first
+            info_borrow.preferred_mode.clone().or(info_borrow.modes.first().cloned())
+        })
 }
 
 // --- Dispatch Implementations ---
@@ -161,8 +166,21 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
                 // Update the global state
                 {
                     let mut shared_state = state.state.lock().unwrap();
+                    let old_has_externals = shared_state.has_externals();
+
                     shared_state.edp_name = edp;
                     shared_state.external_monitors = externals;
+
+                    let new_has_externals = shared_state.has_externals();
+                    let lid_is_closed = shared_state.lid_closed;
+
+                    if lid_is_closed && old_has_externals && !new_has_externals {
+                        info!("External monitor disconnected while lid is closed. Requesting suspend timer.");
+                        match state.suspend_tx.blocking_send(DbusCommand::RequestLidClosedSuspend) {
+                            Ok(_) => info!("Sent RequestLidClosedSuspend to D-Bus thread."),
+                            Err(e) => error!("Failed to send RequestLidClosedSuspend: {}", e),
+                        }
+                    }
                 }
 
                 // Now that state is updated, re-apply the correct config
@@ -208,13 +226,6 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, ()> for WlDelegate {
         match event {
             zwlr_output_head_v1::Event::Name { name } => {
                 info!("!!! HEAD NAME EVENT: {} !!!", name);
-                // Ensure we have an entry for this head
-                if !state.temp_heads.contains_key(head) {
-                    let head_info = Rc::new(RefCell::new(HeadInfo::default()));
-                    state.temp_heads.insert(head.clone(), head_info);
-                }
-                let info_rc = state.temp_heads.get(head).unwrap().clone();
-                let mut info = info_rc.borrow_mut();
                 trace!("DEBUG: Head {:?} has name: {}", head.id(), name);
                 info.name = name.to_string();
             }
@@ -228,7 +239,11 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, ()> for WlDelegate {
             }
             zwlr_output_head_v1::Event::Mode { mode } => {
                 trace!("DEBUG: Head {:?} has mode: {:?}", head.id(), mode.id());
-                // Mode events will be handled in the mode dispatch
+                let mode_info = ModeInfo {
+                    wl_mode: Some(mode),
+                    ..Default::default()
+                };
+                info.modes.push(mode_info);
             }
             zwlr_output_head_v1::Event::Finished => {
                 trace!("DEBUG: Head {:?} finished (unplugged)", head.id());
@@ -238,9 +253,13 @@ impl Dispatch<zwlr_output_head_v1::ZwlrOutputHeadV1, ()> for WlDelegate {
             _ => {}
         }
     }
+    event_created_child!(WlDelegate, zwlr_output_head_v1::ZwlrOutputHeadV1, [
+        zwlr_output_head_v1::EVT_MODE_OPCODE => (zwlr_output_mode_v1::ZwlrOutputModeV1, ())
+    ]);
 }
 
 /// Handles events from a specific display mode
+
 impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, ()> for WlDelegate {
     fn event(
         state: &mut Self,
@@ -251,27 +270,38 @@ impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, ()> for WlDelegate {
         _qhandle: &QueueHandle<Self>,
     ) {
         // Find which head this mode belongs to
-        let head_info = state.temp_heads.values().find(|info| {
-            info.borrow().modes.iter().any(|m| m.wl_mode.as_ref() == Some(mode))
-        }).cloned();
+        let head_info_rc = match state.temp_heads.values().find(|info| {
+            info.borrow()
+                .modes
+                .iter()
+                .any(|m| m.wl_mode.as_ref() == Some(mode))
+        }) {
+            Some(info) => info.clone(),
+            None => {
+                // This can happen if events are out of order.
+                // We can't do anything without the parent head.
+                return;
+            }
+        };
 
-        if head_info.is_none() {
-            // This is a new mode, find the head that just announced it
-            // We'll add it on Finished event
-            return;
-        }
+        // Get a mutable borrow of the HeadInfo
+        let mut info = head_info_rc.borrow_mut();
 
-        let info_rc = head_info.unwrap();
-        let mut info = info_rc.borrow_mut();
-
-        // Find or create the ModeInfo for this mode
-        let mut mode_info = info
+        // Find the specific ModeInfo *mutably*
+        let mode_info = match info
             .modes
-            .iter()
+            .iter_mut()
             .find(|m| m.wl_mode.as_ref() == Some(mode))
-            .cloned()
-            .unwrap_or_default();
+        {
+            Some(m) => m,
+            None => {
+                // Should be impossible if Head::Mode event was processed correctly
+                warn!("Mode {:?} event received but not found in head's list", mode.id());
+                return;
+            }
+        };
 
+        // Now we modify the ModeInfo *in place*
         match event {
             zwlr_output_mode_v1::Event::Size { width, height } => {
                 trace!("DEBUG: Mode {:?} size: {}x{}", mode.id(), width, height);
@@ -284,15 +314,10 @@ impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, ()> for WlDelegate {
             }
             zwlr_output_mode_v1::Event::Finished => {
                 trace!("DEBUG: Mode {:?} finished", mode.id());
-                mode_info.wl_mode = Some(mode.clone());
-
-                // Remove old entry if it exists
-                info.modes.retain(|m| m.wl_mode.as_ref() != Some(mode));
-                // Add the new/updated one
-                info.modes.push(mode_info.clone());
-
+                // The mode is fully populated.
+                // If it's preferred, set it on the *parent* HeadInfo.
                 if mode_info.is_preferred {
-                    info.preferred_mode = Some(mode_info);
+                    info.preferred_mode = Some(mode_info.clone());
                 }
             }
             _ => {}
@@ -300,6 +325,52 @@ impl Dispatch<zwlr_output_mode_v1::ZwlrOutputModeV1, ()> for WlDelegate {
     }
 }
 
+
 // No-op implementations for configuration objects
-delegate_noop!(WlDelegate: zwlr_output_configuration_v1::ZwlrOutputConfigurationV1);
-delegate_noop!(WlDelegate: zwlr_output_configuration_head_v1::ZwlrOutputConfigurationHeadV1);
+
+// Handles events from the configuration object (e.g., Succeeded, Failed)
+impl Dispatch<zwlr_output_configuration_v1::ZwlrOutputConfigurationV1, ()> for WlDelegate {
+    fn event(
+        _state: &mut Self,
+        config: &zwlr_output_configuration_v1::ZwlrOutputConfigurationV1,
+        event: zwlr_output_configuration_v1::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &QueueHandle<Self>,
+    ) {
+        trace!("zwlr_output_configuration_v1 event: {:?}", event);
+        // When the config is applied, it's done, so we destroy it.
+        match event {
+            zwlr_output_configuration_v1::Event::Succeeded => {
+                debug!("Output configuration applied successfully.");
+                config.destroy();
+            }
+            zwlr_output_configuration_v1::Event::Failed => {
+                error!("Failed to apply output configuration.");
+                config.destroy();
+            }
+            zwlr_output_configuration_v1::Event::Cancelled => {
+                warn!("Output configuration cancelled.");
+                config.destroy();
+            }
+            _ => {}
+        }
+    }
+}
+
+
+// Handles events from the configuration *head* object.
+// This object has no events, but we provide an empty handler
+// to prevent any future panics.
+impl Dispatch<zwlr_output_configuration_head_v1::ZwlrOutputConfigurationHeadV1, ()> for WlDelegate {
+    fn event(
+        _state: &mut Self,
+        _config_head: &zwlr_output_configuration_head_v1::ZwlrOutputConfigurationHeadV1,
+        event: zwlr_output_configuration_head_v1::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &QueueHandle<Self>,
+    ) {
+        trace!("zwlr_output_configuration_head_v1 event: {:?}", event);
+    }
+}

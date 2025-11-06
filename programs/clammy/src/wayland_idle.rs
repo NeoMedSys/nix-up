@@ -3,7 +3,7 @@ use crate::config;
 use crate::wayland_manager::WlDelegate;
 use crate::{actions, wayland_output};
 use anyhow::Result;
-use log::{debug, error, info};
+use log::{debug, error, info, trace};
 use wayland_client::{delegate_noop, Connection, Dispatch, QueueHandle};
 use wayland_protocols::ext::idle_notify::v1::client::{
     ext_idle_notification_v1, ext_idle_notifier_v1,
@@ -30,8 +30,19 @@ pub fn create_idle_timers(delegate: &mut WlDelegate, qh: &QueueHandle<WlDelegate
     Ok(())
 }
 
-// --- Dispatch Implementations ---
-delegate_noop!(WlDelegate: ext_idle_notifier_v1::ExtIdleNotifierV1);
+
+impl Dispatch<ext_idle_notifier_v1::ExtIdleNotifierV1, ()> for WlDelegate {
+    fn event(
+        _state: &mut Self,
+        _notifier: &ext_idle_notifier_v1::ExtIdleNotifierV1,
+        event: ext_idle_notifier_v1::Event,
+        _data: &(),
+        _conn: &Connection,
+        _qhandle: &QueueHandle<Self>,
+    ) {
+        trace!("ext_idle_notifier_v1 event: {:?}", event);
+    }
+}
 
 impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegate {
     fn event(

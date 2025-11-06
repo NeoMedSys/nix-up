@@ -1,6 +1,7 @@
 #[derive(Debug)]
 pub enum DbusCommand {
     RequestSuspend,
+    RequestLidClosedSuspend,
 }
 
 #[derive(Debug)]
