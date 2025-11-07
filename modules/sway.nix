@@ -27,8 +27,13 @@
     };
   };
 
-  security.pam.services.swaylock = {};
-  security.pam.services.swaylock.fprintAuth = true;
+  security.pam.services.swaylock = {
+  text = ''
+    auth required pam_unix.so nullok
+    account required pam_unix.so
+    session required pam_unix.so
+  '';
+};
 
   # Ensure fprintd service is available and started
   systemd.services.fprintd.wantedBy = [ "multi-user.target" ];

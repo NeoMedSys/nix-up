@@ -26,11 +26,7 @@ in
     };
     kernelParams = [
       "mem_sleep_default=deep"
-      # REMOVED all manual IPU6 parameters - handled by hardware.ipu6
     ];
-    # REMOVED manual IPU6 kernel modules - handled by hardware.ipu6
-    # REMOVED manual IPU6 initrd modules - handled by hardware.ipu6  
-    # REMOVED manual IPU6 blacklisted modules - handled by hardware.ipu6
   };
   # ========================
   # LOCALIZATION & TIME
@@ -48,20 +44,42 @@ in
   # SERVICES
   # ========================
   services = {
-    hardware.bolt.enable = true;
+
+    dbus.enable = true;
+
+    # let clammy handle lid actions
+    logind = {
+      lidSwitch = "ignore";
+      lidSwitchDocked = "ignore";
+      lidSwitchExternalPower = "ignore";
+      extraConfig = ''
+      IdleAction = "ignore";
+      '';
+    };
+
     # Power Management
     tlp = {
       enable = true;
       settings = {
         RESTORE_DEVICE_STATE_ON_STARTUP = 1;
         DEVICES_TO_DISABLE_ON_STARTUP = "";
+        TLP_LID_SWITCH_AC = "ignore";
+        TLP_LID_SWITCH_BAT = "ignore";
       };
     };
     gnome.gnome-keyring.enable = true;
-    upower.enable = true;
+    # TLP is primary
+    upower.enable = false;
+
     # Security
-    opensnitch.enable = true;
+    opensnitch = {
+      enable = true;
+      settings = {
+        LogLevel = 3;
+      };
+    };
     fprintd.enable = true;
+
     # Audio
     pulseaudio.enable = false;
     pipewire = {
@@ -102,8 +120,16 @@ in
         return polkit.Result.YES;
         }
       });
+
+      polkit.addRule(function(action, subject) {
+        if (action.id == "org.freedesktop.login1.suspend" &&
+          subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+        }
+      });
     '';
   };
+
   # ========================
   # NETWORKING
   # ========================
@@ -298,6 +324,14 @@ in
         "XDG_CONFIG_DIRS=/etc"
       ];
     };
+
+    # this is for clamshell action with clammy..
+    tmpfiles.rules = [
+      # Disable lid switch as wakeup source to prevent suspend loops
+      "w /proc/acpi/wakeup - - - - LID0"
+    ];
+    services."systemd-rfkill@".enable = false;
+    sockets.systemd-rfkill.enable = false;
   };
   # ========================
   # SYSTEM SCRIPTS

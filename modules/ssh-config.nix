@@ -6,11 +6,11 @@ in
   # Enable OpenSSH daemon
   services.openssh = {
     enable = true;
+    ports = [ 7889 ];
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
       PubkeyAuthentication = true;
-      Port = 7889;
     };
   };
 

@@ -13,7 +13,7 @@
 
   outputs = { nixpkgs, flakehub, ... }@inputs:
   let
-    version = "1.0.0";
+    version = "1.1.0";
     userConfig = import ./user-config.nix;
     lib = nixpkgs.lib;
     

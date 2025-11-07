@@ -6,14 +6,13 @@
 
   hardware.nvidia = {
     modesetting.enable = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
     open = false;
     nvidiaSettings = true;
   };
 
   hardware.nvidia.prime = {
     offload.enable = true;
-    # sync.enable = true;
     intelBusId = userConfig.intelBusId;
     nvidiaBusId = userConfig.nvidiaBusId;
   };
