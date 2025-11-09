@@ -51,6 +51,7 @@ in
     gst_all_1.icamerasrc-ipu6
     gst_all_1.gst-libav
     libcamera
+    pkgs.pkgsi686Linux.nvidia-vaapi-driver
     xdg-desktop-portal-gtk
 
     # File manager and themes

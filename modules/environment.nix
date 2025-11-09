@@ -308,6 +308,13 @@ in
       user.email = userConfig.gitEmail;
     };
   };
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = false;
+    dedicatedServer.openFirewall = false;
+  };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
