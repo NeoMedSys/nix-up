@@ -9,6 +9,7 @@
     flakehub.url = "github:DeterminateSystems/fh";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    thunderbird-catppuccin.url = "github:catppuccin/thunderbird";
   };
 
   outputs = { nixpkgs, flakehub, ... }@inputs:

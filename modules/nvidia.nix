@@ -20,6 +20,7 @@
   environment = {
     systemPackages = with pkgs; [
       nvidia-vaapi-driver
+      libpulseaudio
     ];
     variables = {
       NVD_BACKEND = "direct";

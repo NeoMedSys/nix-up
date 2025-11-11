@@ -150,7 +150,7 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
                             active: info.active,
                         };
                         debug!("Assembled Monitor: {:?}", monitor);
-                        if info.name.starts_with("eDP") {
+                        if info.name.starts_with("eDP") || info.name.starts_with("LVDS") {
                             edp = Some(monitor);
                         } else {
                             externals.push(monitor);
@@ -160,6 +160,7 @@ impl Dispatch<zwlr_output_manager_v1::ZwlrOutputManagerV1, ()> for WlDelegate {
                     }
                 }
 
+                debug!("Raw monitor order from compositor: {:?}", externals.iter().map(|m| &m.name).collect::<Vec<_>>());
                 externals.sort_by(|a, b| a.name.cmp(&b.name));
                 info!("Parse complete: eDP={:?}, externals={:?}", edp, externals);
 
