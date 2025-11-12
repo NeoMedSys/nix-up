@@ -1,5 +1,37 @@
 {
   "nodes": {
+    "betterfox": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1761706852,
+        "narHash": "sha256-sZEgmCrAm0SnRoFmn8glScII07Kvpa6cYdC6jHHQmMI=",
+        "owner": "yokoffing",
+        "repo": "Betterfox",
+        "rev": "3b159ac8fbb3d5921db8ff1763aa51cff12ea1ec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yokoffing",
+        "repo": "Betterfox",
+        "type": "github"
+      }
+    },
+    "catppuccin-firefox": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1689695410,
+        "narHash": "sha256-8yZA3Amus00xORmxDJxgKmbH4zou+OpMfSYV7vMS4P8=",
+        "owner": "catppuccin",
+        "repo": "firefox",
+        "rev": "1aa345a3312f0a649068418679ceb81a9c599d36",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "firefox",
+        "type": "github"
+      }
+    },
     "crane": {
       "locked": {
         "lastModified": 1752946753,
@@ -129,6 +161,27 @@
       "original": {
         "owner": "DeterminateSystems",
         "repo": "fh",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1758463745,
+        "narHash": "sha256-uhzsV0Q0I9j2y/rfweWeGif5AWe0MGrgZ/3TjpDYdGA=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "3b955f5f0a942f9f60cdc9cacb7844335d0f21c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-25.05",
+        "repo": "home-manager",
         "type": "github"
       }
     },
@@ -269,8 +322,11 @@
     },
     "root": {
       "inputs": {
+        "betterfox": "betterfox",
+        "catppuccin-firefox": "catppuccin-firefox",
         "disko": "disko",
         "flakehub": "flakehub",
+        "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
         "sops-nix": "sops-nix",

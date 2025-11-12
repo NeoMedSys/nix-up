@@ -3,14 +3,6 @@ let
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
   sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
-
-  availableBrowsers = {
-    firefox = pkgs.firefox;
-  };
-
-  browserPackages = if userConfig != null
-    then map (browserName: availableBrowsers.${browserName}) (builtins.filter (browser: browser != "librewolf") userConfig.browsers)
-    else [ availableBrowsers.firefox ]; # fallback default
 in
 {
   # Global software packages to install
@@ -189,7 +181,7 @@ in
           fi
       fi
     '')
-  ] ++ browserPackages;
+  ];
 
   # This registers the fonts with your system so applications can find them.
   fonts.packages = with pkgs; [

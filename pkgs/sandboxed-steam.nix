@@ -11,6 +11,8 @@ pkgs.stdenv.mkDerivation {
       --run 'mkdir -p "$HOME/.local/share/app-isolation/steam"; sleep 2' \
       --set STEAM_RUNTIME_PREFER_HOST_LIBRARIES "0" \
       --set STEAM_RUNTIME "1" \
+      --set HOSTNAME "research-workstation" \
+      --set USER "researcher" \
       --set STEAM_DISABLE_TELEMETRY "1" \
       --set __GL_SHADER_DISK_CACHE_PATH "$HOME/.local/share/app-isolation/steam/shader_cache" \
       --add-flags "-silent" \
@@ -22,7 +24,9 @@ pkgs.stdenv.mkDerivation {
       --set __GLX_VENDOR_LIBRARY_NAME "nvidia" \
       --set __GL_GSYNC_ALLOWED "1" \
       --set __GL_VRR_ALLOWED "1" \
-      --set STEAM_WEB_CLIENT_ARGS "--disable-gpu-sandbox --use-gl=desktop"
+      --set STEAM_WEB_CLIENT_ARGS "--disable-gpu-sandbox --use-gl=desktop" \
+      --unset LIBVA_DRIVER_NAME \
+      --unset VDPAU_DRIVER
 
     cat > $out/share/applications/steam.desktop << EOF
 [Desktop Entry]

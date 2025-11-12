@@ -225,7 +225,6 @@ in
       "gtk-4.0/gtk.css".text = ''
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
-      "librewolf/chrome/userChrome.css".source = "${inputs.self}/configs/librewolf/chrome/userChrome.css";
       # User avatars
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
       # Desktop Environment Configs - Wayland only

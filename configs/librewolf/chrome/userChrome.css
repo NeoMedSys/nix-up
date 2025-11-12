@@ -1,137 +1,212 @@
-/* --- COLOR & FONT VARIABLES --- */
-:root {
-  --bg-color: #2E3440;
-  --secondary-bg-color: #3B4252;
-  --fg-color: #ECEFF4;
-  --inactive-tab-color: #4C566A;
-  --accent-color: #88C0D0;
-  --hover-color: #B48EAD;
-  --glow-color: rgba(136, 192, 208, 0.7);
-  --font-family: "Fira Code", monospace;
+/* --- Catppuccin Mocha Theme --- */
+:root,
+:root[lwt-dark-theme-override="true"] {
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-pink: #f5c2e7;
+  --ctp-mauve: #cba6f7;
+  --ctp-red: #f38ba8;
+  --ctp-maroon: #eba0ac;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-teal: #94e2d5;
+  --ctp-sky: #89dceb;
+  --ctp-sapphire: #74c7ec;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+  --ctp-overlay2: #9399b2;
+  --ctp-overlay1: #7f849c;
+  --ctp-overlay0: #6c7086;
+  --ctp-surface2: #585b70;
+  --ctp-surface1: #45475a;
+  --ctp-surface0: #313244;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+  --ctp-accent: var(--ctp-mauve);
+  --ctp-accent-dark: var(--ctp-lavender);
+
+  --ctp-rosewater_10: #f5e0dc1a;
+  --ctp-flamingo_10: #f2cdcd1a;
+  --ctp-pink_10: #f5c2e71a;
+  --ctp-mauve_10: #cba6f71a;
+  --ctp-red_10: #f38ba81a;
+  --ctp-maroon_10: #eba0ac1a;
+  --ctp-peach_10: #fab3871a;
+  --ctp-yellow_10: #f9e2af1a;
+  --ctp-green_10: #a6e3a11a;
+  --ctp-teal_10: #94e2d51a;
+  --ctp-sky_10: #89dceb1a;
+  --ctp-sapphire_10: #74c7ec1a;
+  --ctp-blue_10: #89b4fa1a;
+  --ctp-lavender_10: #b4befe1a;
+  --ctp-text_10: #cdd6f41a;
+  --ctp-subtext1_10: #bac2de1a;
+  --ctp-subtext0_10: #a6adc81a;
+  --ctp-overlay2_10: #9399b21a;
+  --ctp-overlay1_10: #7f849c1a;
+  --ctp-overlay0_10: #6c70861a;
+  --ctp-surface2_10: #585b701a;
+  --ctp-surface1_10: #45475a1a;
+  --ctp-surface0_10: #3132441a;
+  --ctp-base_10: #1e1e2e1a;
+  --ctp-mantle_10: #1818251a;
+  --ctp-crust_10: #11111b1a;
+  --ctp-accent_10: var(--ctp-mauve_10);
+  --ctp-accent-dark_10: var(--ctp-lavender_10);
+
+  --tnot-bg-color: color-mix(in srgb, var(--ctp-base) 90%, transparent);
 }
 
-/* --- GLOBAL STYLES --- */
-#main-window, #navigator-toolbox {
-  background-color: var(--bg-color) !important;
-  color: var(--fg-color) !important;
+/* --- COMMON STYLES --- */
+
+/* Hide the tab separator */
+.tab-background {
+  border-right: none !important;
+  border-left: none !important;
+}
+.tabbrowser-tab::after,
+.tabbrowser-tab::before {
+  border: none !important;
+  box-shadow: none !important;
 }
 
-/* Target only the bookmarks placeholder message, not the whole toolbar */
+/* Tab bar */
+#TabsToolbar {
+  background-color: var(--ctp-base) !important;
+}
+#TabsToolbar-customization-target {
+  background-color: var(--ctp-base) !important;
+}
+
+.tab-background {
+  background-color: var(--ctp-surface0) !important;
+  border: 0 !important;
+  border-radius: 8px 8px 0 0 !important;
+  margin-inline: 2px !important;
+}
+.tab-background:hover {
+  background-color: var(--ctp-surface1) !important;
+}
+.tabbrowser-tab[selected] .tab-background {
+  background-color: var(--ctp-mantle) !important;
+  border-bottom: 2px solid var(--ctp-accent) !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+/* Tab text */
+.tabbrowser-tab {
+  color: var(--ctp-text) !important;
+}
+.tabbrowser-tab[selected] {
+  color: var(--ctp-accent) !important;
+  font-weight: 600;
+}
+.tabbrowser-tab:not([selected]):hover .tab-label {
+  color: var(--ctp-text) !important;
+}
+
+/* Navbar */
+#nav-bar {
+  background-color: var(--ctp-mantle) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* URL bar */
+#urlbar-background,
+#searchbar {
+  background-color: var(--ctp-surface0) !important;
+  border: 1px solid var(--ctp-surface2) !important;
+  border-radius: 8px !important;
+  color: var(--ctp-text) !important;
+}
+#urlbar[focused="true"] > #urlbar-background {
+  border-color: var(--ctp-accent) !important;
+  box-shadow: 0 0 0 4px var(--ctp-accent_10) !important;
+}
+#urlbar-input::placeholder {
+  color: var(--ctp-overlay0) !important;
+  opacity: 1 !important;
+}
+#urlbar-input,
+.urlbar-input-box {
+  color: var(--ctp-text) !important;
+}
+
+/* Sidebar */
+#sidebar-box {
+  background-color: var(--ctp-base) !important;
+  color: var(--ctp-text) !important;
+}
+#sidebar-header {
+  background-color: var(--ctp-mantle) !important;
+}
+.sidebar-splitter {
+  border-color: var(--ctp-surface0) !important;
+}
+
+/* Menus and Popups */
+menupopup,
+.panel-arrowcontent {
+  background-color: var(--ctp-base) !important;
+  border: 1px solid var(--ctp-surface2) !important;
+  color: var(--ctp-text) !important;
+}
+menuitem,
+menucaption {
+  color: var(--ctp-text) !important;
+}
+menuitem:hover,
+menuitem[hover="true"],
+.menuitem-iconic:hover,
+.menuitem-iconic[hover="true"] {
+  background-color: var(--ctp-surface1) !important;
+  color: var(--ctp-accent) !important;
+}
+menuseparator {
+  background-color: var(--ctp-surface1) !important;
+}
+
+/* Bookmarks Toolbar */
+#PersonalToolbar {
+  background-color: var(--ctp-mantle) !important;
+  color: var(--ctp-text) !important;
+}
+#PersonalToolbar .toolbarbutton-1 {
+  color: var(--ctp-text) !important;
+  border-radius: 8px !important;
+}
+#PersonalToolbar .toolbarbutton-1:hover {
+  background-color: var(--ctp-surface1) !important;
+}
+
+/* Hide the bookmarks bar "add bookmarks" text */
 #PersonalToolbar #bookmarks-toolbar-placeholder,
 #PersonalToolbar .bookmarks-toolbar-customize,
 #PlacesToolbarItems + .bookmarks-toolbar-customize {
   display: none !important;
 }
 
-/* Keep the toolbar visible but hide empty state message */
-#PersonalToolbar[customizing] .bookmarks-toolbar-customize {
-  display: none !important;
+/* about: pages */
+body.activity-stream,
+body.about-page {
+  background-color: var(--ctp-base) !important;
+  color: var(--ctp-text) !important;
 }
-
-/* --- TOOLBAR STYLING --- */
-#nav-bar {
-  background-color: var(--bg-color) !important;
-  border-bottom: 1px solid var(--secondary-bg-color) !important;
+.card, .card-grid {
+  background-color: var(--ctp-mantle) !important;
+  border-radius: 8px !important;
+  color: var(--ctp-text) !important;
 }
-
-/* Style all toolbar buttons */
-#nav-bar .toolbarbutton-1 {
-  background-color: var(--secondary-bg-color) !important;
-  color: var(--fg-color) !important;
-  border: 1px solid var(--inactive-tab-color) !important;
-  border-radius: 4px !important;
-  margin: 2px !important;
-}
-
-#nav-bar .toolbarbutton-1:hover {
-  background-color: var(--hover-color) !important;
-  border-color: var(--accent-color) !important;
-}
-
-/* --- URL BAR STYLING --- */
-#urlbar-background {
-  background-color: var(--secondary-bg-color) !important;
-  border: 1px solid var(--inactive-tab-color) !important;
-  border-radius: 6px !important;
-}
-
-#urlbar:focus-within > #urlbar-background {
-  border-color: var(--accent-color) !important;
-  box-shadow: 0 0 8px var(--glow-color) !important;
-}
-
-#urlbar-input-container {
-  color: var(--fg-color) !important;
-  font-family: var(--font-family) !important;
-}
-
-/* URL bar text */
-#urlbar-input {
-  color: var(--fg-color) !important;
-}
-
-/* --- FORCE WHITE TEXT EVERYWHERE --- */
-* {
-  color: var(--fg-color) !important;
-}
-
-/* Override specific elements that might have dark text */
-.tabbrowser-tab .tab-label,
-#urlbar-input,
-.urlbar-input-box,
-toolbarbutton label,
-menuitem label,
-.panel-arrowcontent {
-  color: var(--fg-color) !important;
-}
-
-/* --- TAB STYLING --- */
-.tabbrowser-tab {
-  color: var(--inactive-tab-color) !important;
-  font-family: var(--font-family) !important;
-}
-
-.tabbrowser-tab .tab-background {
-  background: var(--secondary-bg-color) !important;
-  border: none !important;
-  box-shadow: none !important;
-  border-radius: 8px 8px 0 0 !important;
-  margin: 0 2px !important;
-}
-
-.tabbrowser-tab[selected] .tab-background {
-  background: var(--bg-color) !important;
-  border-bottom: 2px solid var(--accent-color) !important;
-}
-
-.tabbrowser-tab[selected] .tab-label {
-  color: var(--accent-color) !important;
-  text-shadow: 0 0 5px var(--glow-color) !important;
-}
-
-.tabbrowser-tab:not([selected]):hover .tab-label {
-  color: var(--fg-color) !important; /* Use white instead of purple */
-  text-shadow: 0 0 3px rgba(0,0,0,0.8) !important; /* Add text shadow for contrast */
-}
-
-.tabbrowser-tab:not([selected]):hover .tab-background {
-  background-color: var(--hover-color) !important;
-  opacity: 0.5 !important; /* Reduce opacity so text stands out more */
-}
-
-/* --- MENU AND DROPDOWN STYLING --- */
-menupopup {
-  background-color: var(--secondary-bg-color) !important;
-  border: 1px solid var(--accent-color) !important;
-  border-radius: 4px !important;
-}
-
-menuitem {
-  color: var(--fg-color) !important;
-  background-color: transparent !important;
-}
-
-menuitem:hover {
-  background-color: var(--hover-color) !important;
-  color: var(--fg-color) !important;
+.search-wrapper .search-input,
+.search-wrapper .search-button {
+  background-color: var(--ctp-surface0) !important;
+  border: 1px solid var(--ctp-surface2) !important;
+  border-radius: 8px !important;
+  color: var(--ctp-text) !important;
 }
