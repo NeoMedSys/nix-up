@@ -12,7 +12,7 @@
     # Core system modules
     "${inputs.self}/modules/environment.nix"
     "${inputs.self}/modules/system-packages.nix"
-    "${inputs.self}/modules/zsh.nix"
+    # "${inputs.self}/modules/zsh.nix"
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
     "${inputs.self}/modules/sway.nix"
@@ -57,6 +57,7 @@
     users = {
       "${userConfig.username}" = import ../home/default.nix;
     };
+    backupFileExtension = "backup";
   };
 
   # Enable flakes

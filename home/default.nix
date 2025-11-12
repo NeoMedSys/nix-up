@@ -18,6 +18,7 @@ in
   home.homeDirectory = "/home/${userConfig.username}";
 
   imports = [
+    ./zsh
   ] ++ lib.optionals (builtins.elem "firefox" userConfig.browsers) [
     ./firefox 
   ];
