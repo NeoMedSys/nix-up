@@ -196,7 +196,7 @@
           "ublock-badware"
           "ublock-privacy"
           "ublock-quick-fixes"
-V         "ublock-unbreak"
+          "ublock-unbreak"
           "easylist"
           "adguard-generic"
           "adguard-mobile"

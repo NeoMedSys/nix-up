@@ -103,6 +103,8 @@ in
     shell = pkgs.zsh;
     packages = with pkgs; [ tree ];
     homeMode = "0751";
+    # Home Manager Zsh conflict else
+    ignoreShellProgramCheck = true;
   };
   security = {
     sudo.extraRules = [{
@@ -307,8 +309,6 @@ in
       user.email = userConfig.gitEmail;
     };
   };
-
-  programs.zsh.enable = true;
 
   programs.direnv = {
     enable = true;

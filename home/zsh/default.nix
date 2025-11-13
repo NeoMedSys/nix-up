@@ -1,20 +1,84 @@
 { pkgs, ... }:
 
 {
+  programs.starship = {
+    enable = true;
+    settings = {
+      add_newline = false;
+      scan_timeout = 10;
+      format = "$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$python$nix_shell$kubectl$tofu\n$character";
+      directory = {
+        truncate_to_repo = false;
+        read_only = " ro";
+        style = "#57C7FF";
+      };
+      character = {
+        success_symbol = "[❯](#FF6AC1)";
+        error_symbol = "[❯](#FF5C57)";
+        vimcmd_symbol = "[❮](bright-green)";
+      };
+      git_branch = {
+        format = "[$branch]($style)";
+        symbol = "git ";
+        style = "242";
+      };
+      git_status = {
+        format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
+        style = "cyan";
+        conflicted = "​";
+        untracked = "​";
+        modified = "​";
+        staged = "​";
+        renamed = "​";
+        deleted = "​";
+        stashed = "≡";
+      };
+      git_state = {
+        format = ''\([$state( $progress_current/$progress_total)]($style)\) '';
+        style = "bright-black";
+      };
+      cmd_duration = {
+        format = "[$duration]($style) ";
+        style = "yellow";
+      };
+      nix_shell = {
+        symbol = "❄️ ";
+        format = "[$symbol]($style)";
+      };
+      python = {
+        format = "[$virtualenv]($style) ";
+        style = "bright-black";
+        symbol = "py ";
+      };
+      kubectl = {
+        symbol = "k8s ";
+        style = "cyan"; 
+      };
+      tofu = {
+        symbol = "tofu ";
+        style = "yellow";
+      };
+
+      cmake.symbol = "cmake ";
+      deno.symbol = "deno ";
+      docker_context.symbol = "docker ";
+      golang.symbol = "go ";
+      lua.symbol = "lua ";
+      nodejs.symbol = "nodejs ";
+      rust.symbol = "rs ";
+      sudo.symbol = "sudo ";
+    };
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    
-    # 1. This is the corrected option
-    syntaxHighlighting.enable = true; 
-
-    # This runs 'fastfetch' on login (this option was correct)
-    profileExtra = ''
-      fastfetch
-    '';
+    syntaxHighlighting.enable = true;
+    autosuggestion.enable = true; 
 
     "oh-my-zsh" = {
       enable = true;
+      theme = "";
       plugins = [
         "git"
         "z"
@@ -24,27 +88,29 @@
       ];
     };
 
-    # 2. This is the corrected option: initContent
-    initContent = ''
-      # This function creates a custom Powerlevel10k prompt segment.
-      # It checks for the '$IN_NIX_SHELL' variable, which is set by nix-shell.
-      prompt_nix_shell() {
-        if [[ -n "$IN_NIX_SHELL" ]]; then
-          p10k segment -f cyan -t '(pyenv)'
-        fi
-      }
-      # Add the custom function to the right-side of your prompt.
-      typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS
-      POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=(custom_prompt_nix_shell)
-      eval "$(direnv hook zsh)"
+    profileExtra = ''
+      fastfetch
+    '';
 
-      # This sources the powerlevel10k theme
-      source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+    initContent = ''
+      # 1. PATH FIX: Ensures Home Manager environment (including firefox) is loaded first
+      if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+        source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+      fi
+
+      # 2. HOOKS: Uses correct, escaped syntax for Direnv
+      eval "$(direnv hook zsh)"
+    '';
+
+    envExtra = ''
+      export FZF_DEFAULT_OPTS=" \
+      --color=bg+:#363a4f,bg:#24273a,spinner:#f4dbd6,hl:#ed8796 \
+      --color=fg:#cad3f5,header:#ed8796,info:#c6a0f6,pointer:#f4dbd6 \
+      --color=marker:#f4dbd6,fg+:#cad3f5,prompt:#c6a0f6,hl+:#ed8796"
     '';
 
     shellAliases = {
-      l = "ls -la";
-      ll = "ls -l";
+      # --- YOUR ALIASES (KEPT) ---
       update = "sudo nixos-rebuild switch --flake";
       g = "git";
       gs = "git status";
@@ -56,6 +122,13 @@
       n = "nvim";
       d = "docker";
       SS = "sudo systemctl";
+
+      l = "${pkgs.eza}/bin/eza -lh --icons=auto";
+      ll = "${pkgs.eza}/bin/eza -lha --icons=auto --sort=name --group-directories-first";
+      ls = "${pkgs.eza}/bin/eza -1 --icons=auto";
+      tree = "${pkgs.eza}/bin/eza --icons=auto --tree";
+      grep = "grep --color=always";
+      pokemon = "pokego --random 1-8 --no-title";
     };
   };
 }
