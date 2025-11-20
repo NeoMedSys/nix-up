@@ -163,6 +163,10 @@
       ];
       adminSettings = {
         userFilters = lib.concatMapStrings (x: x + "\n") [
+          "@@||accounts.google.com^$document"
+          "@@||gsi.google.com^$script,xhr"
+          "@@||statsig.anthropic.com^"
+
           "twitch.tv##+js(twitch-videoad)"
           "||1337x.vpnonly.site"
         ];

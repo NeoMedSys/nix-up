@@ -6,7 +6,7 @@
     settings = {
       add_newline = false;
       scan_timeout = 10;
-      format = "$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$python$nix_shell$kubectl$tofu\n$character";
+      format = "$username$hostname$directory$git_branch$git_state$git_status$python$nix_shell$kubectl$tofu\n$character";
       directory = {
         truncate_to_repo = false;
         read_only = " ro";
@@ -89,10 +89,16 @@
     };
 
     profileExtra = ''
+      if [ -f /etc/profile ]; then
+        . /etc/profile
+      fi
       fastfetch
     '';
 
     initContent = ''
+      if [ -f /etc/profile ]; then
+        . /etc/profile
+      fi
       # 1. PATH FIX: Ensures Home Manager environment (including firefox) is loaded first
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
         source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"

@@ -18,7 +18,7 @@
     "${inputs.self}/modules/sway.nix"
     "${inputs.self}/modules/thunderbolt-ethernet.nix"
     "${inputs.self}/modules/notify.nix"
-    "${inputs.self}/modules/librewolf.nix"
+    # "${inputs.self}/modules/librewolf.nix"
     "${inputs.self}/modules/thunderbird.nix"
 
     # clamshell action
