@@ -50,14 +50,6 @@
         style = "bright-black";
         symbol = "py ";
       };
-      kubectl = {
-        symbol = "k8s ";
-        style = "cyan"; 
-      };
-      tofu = {
-        symbol = "tofu ";
-        style = "yellow";
-      };
 
       cmake.symbol = "cmake ";
       deno.symbol = "deno ";
@@ -69,6 +61,11 @@
       sudo.symbol = "sudo ";
     };
   };
+
+  home.packages = with pkgs; [
+    zsh-completions
+    nix-zsh-completions
+  ];
 
   programs.zsh = {
     enable = true;
@@ -116,7 +113,6 @@
     '';
 
     shellAliases = {
-      # --- YOUR ALIASES (KEPT) ---
       update = "sudo nixos-rebuild switch --flake";
       g = "git";
       gs = "git status";
@@ -134,7 +130,6 @@
       ls = "${pkgs.eza}/bin/eza -1 --icons=auto";
       tree = "${pkgs.eza}/bin/eza --icons=auto --tree";
       grep = "grep --color=always";
-      pokemon = "pokego --random 1-8 --no-title";
     };
   };
 }
