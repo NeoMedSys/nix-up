@@ -9,9 +9,20 @@
     flakehub.url = "github:DeterminateSystems/fh";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    thunderbird-catppuccin.url = "github:catppuccin/thunderbird";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin-firefox = {
+      url = "github:catppuccin/firefox";
+      flake = false;
+    };
+    betterfox = {
+      url = "github:yokoffing/Betterfox";
+      flake = false;
+    };
   };
 
-  outputs = { nixpkgs, flakehub, ... }@inputs:
+  outputs = { nixpkgs, flakehub, home-manager, ... }@inputs:
   let
     version = "1.1.0";
     userConfig = import ./user-config.nix;
@@ -27,6 +38,7 @@
           ./system/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
+          home-manager.nixosModules.home-manager
           ] ++ lib.optionals userConfig.vpn [
           inputs.sops-nix.nixosModules.sops
         ];

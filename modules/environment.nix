@@ -103,6 +103,8 @@ in
     shell = pkgs.zsh;
     packages = with pkgs; [ tree ];
     homeMode = "0751";
+    # Home Manager Zsh conflict else
+    ignoreShellProgramCheck = true;
   };
   security = {
     sudo.extraRules = [{
@@ -191,7 +193,7 @@ in
           4:
             command: "rofi -show window"
         threshold:
-          swipe: 0.4
+          swipe: 0.25
           pinch: 0.4
         interval:
           swipe: 0.8
@@ -225,7 +227,6 @@ in
       "gtk-4.0/gtk.css".text = ''
         @import url("${inputs.self}/configs/gtk-theme/gtk.css");
       '';
-      "librewolf/chrome/userChrome.css".source = "${inputs.self}/configs/librewolf/chrome/userChrome.css";
       # User avatars
       "user-avatars/king-${userConfig.username}.png".source = processedKing;
       # Desktop Environment Configs - Wayland only
@@ -308,6 +309,7 @@ in
       user.email = userConfig.gitEmail;
     };
   };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -332,6 +334,18 @@ in
     ];
     services."systemd-rfkill@".enable = false;
     sockets.systemd-rfkill.enable = false;
+  };
+
+  systemd.user.services.fusuma = {
+    description = "Fusuma Touchpad Gestures";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.fusuma}/bin/fusuma";
+      Restart = "always";
+      RestartSec = 2;
+    };
   };
   # ========================
   # SYSTEM SCRIPTS

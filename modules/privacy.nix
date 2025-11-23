@@ -202,19 +202,4 @@
 
   # Disable swap entirely
   zramSwap.enable = false;
-  
-  # Privacy-focused browser settings (for when browsers are launched)
-  programs.firefox = {
-    enable = false;
-    # If someone installs Firefox, these policies apply
-    policies = {
-      DisableTelemetry = true;
-      DisableFirefoxStudies = true;
-      DisablePocket = true;
-      DisableFirefoxAccounts = true;
-      OverrideFirstRunPage = "";
-      OverridePostUpdatePage = "";
-      DontCheckDefaultBrowser = true;
-    };
-  };
 }

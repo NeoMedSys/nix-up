@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use futures_util::stream::StreamExt;
-use log::{debug, error, info, warn};
+use log::{debug, error, info};
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 use std::time::Duration;
@@ -198,7 +198,5 @@ async fn main() -> Result<()> {
             }
         }
     }
-
-    warn!("D-Bus event stream ended. This should not happen.");
     Ok(())
 }
