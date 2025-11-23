@@ -1,7 +1,6 @@
 { config, pkgs, lib, inputs, userConfig, ... }:
 
 let
-  # --- BROWSER LOGIC ---
   availableBrowsers = {
     firefox = pkgs.firefox;
     librewolf = pkgs.librewolf;
@@ -29,6 +28,13 @@ in
   home.packages = [
     pkgs.eza
   ] ++ browserPackages;
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Amber";
+    size = 24;
+  };
 
   home.sessionVariables = {
     EDITOR = "nvim"; 

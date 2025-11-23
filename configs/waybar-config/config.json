@@ -20,7 +20,8 @@
         "custom/cpu",
         "custom/volume",
         "custom/battery",
-        "custom/clock"
+        "custom/clock",
+	"custom/security"
     ],
 
     "custom/launcher": {
@@ -29,6 +30,14 @@
         "on-click-right": "rofi -show run >/dev/null 2>&1 &",
         "tooltip": true,
         "tooltip-format": "Applications"
+    },
+
+  "custom/security": {
+        "exec": "if systemctl is-active --quiet nastyTechLords.service; then echo '{\"text\": \"🔄\", \"tooltip\": \"Scanning...\", \"class\": \"scanning\"}'; elif systemctl is-failed --quiet nastyTechLords.service; then echo '{\"text\": \"⚠️\", \"tooltip\": \"Security Issues Detected! Click for report.\", \"class\": \"critical\"}'; else echo '{\"text\": \"🛡️\", \"tooltip\": \"System Secure\", \"class\": \"safe\"}'; fi",
+        "return-type": "json",
+        "interval": 30,
+        "on-click": "alacritty --class floating -e sh -c 'ntl report; echo; read -p \"Press Enter to close...\"'",
+        "on-click-right": "alacritty --class floating -e sh -c 'sudo systemctl start nastyTechLords.service; tail -f /dev/null'"
     },
 
     "custom/music": {
