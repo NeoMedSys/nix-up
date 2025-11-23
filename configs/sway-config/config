@@ -166,13 +166,20 @@ input type:keyboard {
     xkb_options caps:escape,eurosign:e,grp:lalt_lshift_toggle
 }
 
+input type:touchpad {
+    click_method clickfinger
+    tap enabled             # Light tap acts as click
+    natural_scroll enabled  # Swiping down moves content down (reverse scrolling)
+    dwt enabled             # Disable touchpad while typing
+}
+
 output * bg ~/.config/sway/wallpaper.png fill
 
 # Autostart waybar
 exec_always sh -c 'pkill waybar; waybar &'
 exec_always opensnitch-ui >/dev/null 2>&1
 exec_always dunst
-exec_always fusuma
+# exec_always fusuma
 
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME SWAYSOCK

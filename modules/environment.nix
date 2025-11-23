@@ -193,7 +193,7 @@ in
           4:
             command: "rofi -show window"
         threshold:
-          swipe: 0.4
+          swipe: 0.25
           pinch: 0.4
         interval:
           swipe: 0.8
@@ -334,6 +334,18 @@ in
     ];
     services."systemd-rfkill@".enable = false;
     sockets.systemd-rfkill.enable = false;
+  };
+
+  systemd.user.services.fusuma = {
+    description = "Fusuma Touchpad Gestures";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.fusuma}/bin/fusuma";
+      Restart = "always";
+      RestartSec = 2;
+    };
   };
   # ========================
   # SYSTEM SCRIPTS
