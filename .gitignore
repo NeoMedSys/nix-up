@@ -15,3 +15,8 @@ user-config.nix
 system/hardware-configuration.nix
 modules/ssh-keys.nix
 steam_trace.log
+
+
+# Added by cargo
+
+/target

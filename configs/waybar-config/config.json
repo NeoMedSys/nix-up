@@ -68,7 +68,7 @@
 	"format": "{}",
 	"interval": 5,
 	"exec": "ethernet_device=$(nmcli -t -f device,type,state dev | grep 'ethernet:connected' | head -1 | cut -d: -f1); if [ -n \"$ethernet_device\" ]; then printf '\\uef44 Ethernet'; else wifi_ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes:' | cut -d: -f2); if [ -n \"$wifi_ssid\" ]; then printf '\\uf1eb %s' \"$wifi_ssid\"; else printf '\\uf1eb Connect'; fi; fi",
-	"on-click": "wifi-menu"
+	"on-click": "perseus-net"
     },
 
   "custom/bluetooth": {
