@@ -3,6 +3,8 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    syntaxHighlighting.enable = true;
+    enableBashCompletion = true; 
   };
+  
+  environment.pathsToLink = [ "/share/zsh" ];
 }
