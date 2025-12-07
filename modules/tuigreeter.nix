@@ -4,7 +4,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --greeting 'Welcome to Perseus' --cmd sway";
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-user-session --asterisks --greeting 'Welcome to Perseus' --cmd sway";
         user = "greeter";
       };
     };

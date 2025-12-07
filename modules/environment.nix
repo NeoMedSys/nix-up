@@ -23,10 +23,20 @@ in
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
+      timeout = 0;
     };
+    consoleLogLevel = 0;
+    initrd.verbose = false;
     kernelParams = [
-      "mem_sleep_default=deep"
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
     ];
+    plymouth.enable = true;
   };
   # ========================
   # LOCALIZATION & TIME
@@ -45,16 +55,22 @@ in
   # ========================
   services = {
 
+    fstrim = {
+        enable = true;
+        interval = "weekly";
+    };
+
     dbus.enable = true;
 
-    # let clammy handle lid actions
     logind = {
-      lidSwitch = "ignore";
-      lidSwitchDocked = "ignore";
-      lidSwitchExternalPower = "ignore";
-      extraConfig = ''
-      IdleAction = "ignore";
-      '';
+      settings = {
+        Login = {
+          HandleLidSwitch = "ignore";
+          HandleLidSwitchDocked = "ignore";
+          HandleLidSwitchExternalPower = "ignore";
+          IdleAction = "ignore";
+        };
+      };
     };
 
     # Power Management
@@ -238,12 +254,15 @@ in
   # ========================
   # NIX CONFIGURATION
   # ========================
+
   nixpkgs.config.allowUnfree = true;
+
   nix = {
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 30d";
+      options = "--delete-older-than 7d";
+      randomizedDelaySec = "14m";
     };
     settings = {
       auto-optimise-store = true;
@@ -326,6 +345,7 @@ in
         "XDG_CONFIG_DIRS=/etc"
       ];
     };
+    services.NetworkManager-wait-online.enable = false;
 
     # this is for clamshell action with clammy..
     tmpfiles.rules = [
@@ -340,6 +360,13 @@ in
     description = "Fusuma Touchpad Gestures";
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
+    path = with pkgs; [ 
+      swayfx
+      rofi 
+      coreutils
+      libinput
+      gnugrep
+    ];
     serviceConfig = {
       Type = "simple";
       ExecStart = "${pkgs.fusuma}/bin/fusuma";

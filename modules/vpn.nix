@@ -8,6 +8,10 @@
 
   networking.wg-quick.interfaces.mullvad = {
     configFile = "/etc/wireguard/mullvad.conf";
+    postUp = [''
+      ${pkgs.procps}/bin/sysctl -w net.ipv4.conf.all.src_valid_mark=1
+    ''];
+    autostart = true;
   };
 
   # Ensure the wg-quick service doesn't start automatically on boot.

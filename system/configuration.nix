@@ -47,7 +47,7 @@
   networking.hostName = userConfig.hostname;
 
   networking.hosts = {
-    "10.54.218.134" = [ "access.neomedsys.io" "neocoms.neomedsys.io" ];
+    "10.54.218.134" = [ "access.neomedsys.io" "neocoms.neomedsys.io" "auth.neomedsys.io"];
   };
 
   home-manager = {

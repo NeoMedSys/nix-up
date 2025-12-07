@@ -1,7 +1,7 @@
 { lib, ... }:
 {
-  # DNS Privacy with dnscrypt-proxy2
-  services.dnscrypt-proxy2 = {
+  # DNS Privacy with dnscrypt-proxy
+  services.dnscrypt-proxy = {
     enable = true;
     settings = {
       # Use multiple resolvers for redundancy
@@ -57,56 +57,71 @@
     
     # Additional firewall hardening
     firewall = {
-      enable = true;
+      enable = false;
       allowPing = false;
       logReversePathDrops = true;
     };
 
-    # declare all your raw & filter rules in nftables DSL
     nftables.ruleset = ''
-    table inet filter {
-      # This chain handles all incoming traffic
-      chain input {
-        type filter hook input priority 0; policy drop;
+      # --- TABLE 1: MANGLE (Traffic Control & OpenSnitch) ---
+      table inet mangle {
+        chain output {
+          type route hook output priority mangle; policy accept;
 
-        # Allow established and related connections (essential for return traffic)
-        ct state established,related accept
+          # [A] CRITICAL BYPASS: VPN INTERFACE
+          # Allow applications to talk to the VPN interface locally.
+          # Without this, OpenSnitch deadlocks the tunnel.
+          oifname "mullvad" accept
 
-        # Allow traffic on the loopback interface (localhost)
-        iifname "lo" accept
+          # [B] CRITICAL BYPASS: ENCRYPTED TRANSPORT
+          # Allow the encrypted "envelope" to leave your physical card.
+          # We allow both standard port (51820) and fallback (443).
+          ip daddr 45.129.56.67 accept comment "Bypass: VPN Endpoint IP"
+          udp dport { 51820, 443 } accept comment "Bypass: WireGuard Ports"
+          meta mark 0xca6c accept comment "Bypass: WireGuard fwmark"
 
-        # Allow incoming WireGuard traffic from Mullvad
-        udp dport 51820 accept
+          # [C] SYSTEM ALLOWLIST
+          oifname "lo" accept
+          meta l4proto { icmp, icmpv6 } accept
 
-        # Drop invalid packets
-        ct state invalid drop
+          # [D] OPENSNITCH QUEUE
+          # Everything else is queued for user approval.
+          meta l4proto != tcp ct state related,new queue flags bypass to 0
+          tcp flags & (fin | syn | rst | ack) == syn queue flags bypass to 0
+        }
       }
 
-      # This chain handles all outgoing traffic
-      chain output {
-        # The typo is corrected here from 'input' to 'output'
-        type filter hook output priority 0; policy accept;
+      # --- TABLE 2: FILTER (Security & Blocking) ---
+      table inet filter {
+        chain input {
+          type filter hook input priority filter; policy drop;
+
+          # 1. TRUSTED TRAFFIC
+          ct state established,related accept
+          iifname "lo" accept
+          iifname "mullvad" accept
+
+          # 2. VPN RETURN TRAFFIC
+          # Accept responses from the VPN server on both likely ports.
+          udp sport { 51820, 443 } accept
+          ip saddr 45.129.56.67 accept
+
+          # 3. LAN / DHCP
+          udp dport { 67, 68 } accept
+          ip6 daddr fe80::/64 udp dport 546 accept
+          
+          # 4. SSH / HTTPS / LOCAL DEV (Your open ports)
+          tcp dport { 7889, 443, 7775 } accept
+        }
+
+        chain output {
+          type filter hook output priority filter; policy accept;
+          jump opensnitch
+        }
+        
+        chain opensnitch {}
       }
-    }
-
-    # This table sends non-root traffic to OpenSnitch for inspection
-    table inet raw {
-      chain output {
-        type filter hook output priority -300; policy accept;
-
-        # This will queue all outbound traffic from non-root users for OpenSnitch
-        # If OpenSnitch isn't running, this can block traffic.
-        # this doesnt allow steam ->meta skuid != 0 queue num 0 bypass
-        # this works -> oifname != "lo" meta skuid != 0 queue num 0 bypass
-
-        # Queue traffic for OpenSnitch, unless it is:
-        #  - on the loopback interface ("lo")
-        #  - from the root user (UID 0)
-        #  - standard DNS traffic (UDP port 53)
-        oifname != "lo" skuid != 0 udp dport != 53 queue num 0 bypass
-      }
-    }
-  '';
+    '';
   };
   
   # Fail2ban for intrusion prevention
@@ -173,6 +188,11 @@
     
     # Protection against SYN flood attacks
     "net.ipv4.tcp_syncookies" = 1;
+
+    # # Disable Strict Reverse Path Filtering.
+    # Essential for WireGuard to receive handshake packets on physical interface
+    "net.ipv4.conf.all.rp_filter" = 2;
+    "net.ipv4.conf.default.rp_filter" = 2;
     
     # Disable IPv6 if not needed
     # "net.ipv6.conf.all.disable_ipv6" = 1;
