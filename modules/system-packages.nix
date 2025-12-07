@@ -68,7 +68,7 @@ in
     wl-clipboard
     grim
     slurp
-    rofi-wayland
+    rofi
     xdg-desktop-portal
     xdg-desktop-portal-wlr
     waybar
@@ -112,7 +112,7 @@ in
     element-desktop
 
     # Privacy and security tools
-    dnscrypt-proxy2
+    dnscrypt-proxy
     opensnitch
     opensnitch-ui
 
@@ -123,10 +123,9 @@ in
 
     # System security auditing tools
     lynis
-    chkrootkit
 
     # Office and document tools
-    onlyoffice-bin
+    onlyoffice-desktopeditors
     zathura
     evince
     tectonic
@@ -177,7 +176,7 @@ in
     # Additional icon fonts for better brand logos
     material-design-icons
     material-icons
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     nerd-fonts.symbols-only # More comprehensive Nerd Fonts collection
     nerd-fonts.fira-code
     font-awesome_5

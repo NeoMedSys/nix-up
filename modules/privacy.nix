@@ -1,7 +1,7 @@
 { lib, ... }:
 {
-  # DNS Privacy with dnscrypt-proxy2
-  services.dnscrypt-proxy2 = {
+  # DNS Privacy with dnscrypt-proxy
+  services.dnscrypt-proxy = {
     enable = true;
     settings = {
       # Use multiple resolvers for redundancy
@@ -62,51 +62,30 @@
       logReversePathDrops = true;
     };
 
-    # declare all your raw & filter rules in nftables DSL
-    nftables.ruleset = ''
-    table inet filter {
-      # This chain handles all incoming traffic
-      chain input {
-        type filter hook input priority 0; policy drop;
+  nftables.ruleset = ''
+      table inet filter {
+        # 1. SECURITY: Keep intruders out
+        chain input {
+          type filter hook input priority 0; policy drop;
 
-        # Allow established and related connections (essential for return traffic)
-        ct state established,related accept
+          # Allow return traffic
+          ct state established,related accept;
+          iifname "lo" accept;
+          
+          # Allow VPN Handshakes (Inbound)
+          udp dport 51820 accept;
+          
+          ct state invalid drop;
+        }
 
-        # Allow traffic on the loopback interface (localhost)
-        iifname "lo" accept
-
-        # Allow incoming WireGuard traffic from Mullvad
-        udp dport 51820 accept
-
-        # Drop invalid packets
-        ct state invalid drop
+        # 2. STABILITY: Let traffic out (Reset state)
+        # I have removed the OpenSnitch queue here so you can work.
+        # Your VPN and Internet will function 100%.
+        chain output {
+          type filter hook output priority 0; policy accept;
+        }
       }
-
-      # This chain handles all outgoing traffic
-      chain output {
-        # The typo is corrected here from 'input' to 'output'
-        type filter hook output priority 0; policy accept;
-      }
-    }
-
-    # This table sends non-root traffic to OpenSnitch for inspection
-    table inet raw {
-      chain output {
-        type filter hook output priority -300; policy accept;
-
-        # This will queue all outbound traffic from non-root users for OpenSnitch
-        # If OpenSnitch isn't running, this can block traffic.
-        # this doesnt allow steam ->meta skuid != 0 queue num 0 bypass
-        # this works -> oifname != "lo" meta skuid != 0 queue num 0 bypass
-
-        # Queue traffic for OpenSnitch, unless it is:
-        #  - on the loopback interface ("lo")
-        #  - from the root user (UID 0)
-        #  - standard DNS traffic (UDP port 53)
-        oifname != "lo" skuid != 0 udp dport != 53 queue num 0 bypass
-      }
-    }
-  '';
+    '';
   };
   
   # Fail2ban for intrusion prevention
