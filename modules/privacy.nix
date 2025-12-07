@@ -57,33 +57,69 @@
     
     # Additional firewall hardening
     firewall = {
-      enable = true;
+      enable = false;
       allowPing = false;
       logReversePathDrops = true;
     };
 
-  nftables.ruleset = ''
-      table inet filter {
-        # 1. SECURITY: Keep intruders out
-        chain input {
-          type filter hook input priority 0; policy drop;
-
-          # Allow return traffic
-          ct state established,related accept;
-          iifname "lo" accept;
-          
-          # Allow VPN Handshakes (Inbound)
-          udp dport 51820 accept;
-          
-          ct state invalid drop;
-        }
-
-        # 2. STABILITY: Let traffic out (Reset state)
-        # I have removed the OpenSnitch queue here so you can work.
-        # Your VPN and Internet will function 100%.
+    nftables.ruleset = ''
+      # --- TABLE 1: MANGLE (Traffic Control & OpenSnitch) ---
+      table inet mangle {
         chain output {
-          type filter hook output priority 0; policy accept;
+          type route hook output priority mangle; policy accept;
+
+          # [A] CRITICAL BYPASS: VPN INTERFACE
+          # Allow applications to talk to the VPN interface locally.
+          # Without this, OpenSnitch deadlocks the tunnel.
+          oifname "mullvad" accept
+
+          # [B] CRITICAL BYPASS: ENCRYPTED TRANSPORT
+          # Allow the encrypted "envelope" to leave your physical card.
+          # We allow both standard port (51820) and fallback (443).
+          ip daddr 45.129.56.67 accept comment "Bypass: VPN Endpoint IP"
+          udp dport { 51820, 443 } accept comment "Bypass: WireGuard Ports"
+          meta mark 0xca6c accept comment "Bypass: WireGuard fwmark"
+
+          # [C] SYSTEM ALLOWLIST
+          oifname "lo" accept
+          meta l4proto { icmp, icmpv6 } accept
+
+          # [D] OPENSNITCH QUEUE
+          # Everything else is queued for user approval.
+          meta l4proto != tcp ct state related,new queue flags bypass to 0
+          tcp flags & (fin | syn | rst | ack) == syn queue flags bypass to 0
         }
+      }
+
+      # --- TABLE 2: FILTER (Security & Blocking) ---
+      table inet filter {
+        chain input {
+          type filter hook input priority filter; policy drop;
+
+          # 1. TRUSTED TRAFFIC
+          ct state established,related accept
+          iifname "lo" accept
+          iifname "mullvad" accept
+
+          # 2. VPN RETURN TRAFFIC
+          # Accept responses from the VPN server on both likely ports.
+          udp sport { 51820, 443 } accept
+          ip saddr 45.129.56.67 accept
+
+          # 3. LAN / DHCP
+          udp dport { 67, 68 } accept
+          ip6 daddr fe80::/64 udp dport 546 accept
+          
+          # 4. SSH / HTTPS / LOCAL DEV (Your open ports)
+          tcp dport { 7889, 443, 7775 } accept
+        }
+
+        chain output {
+          type filter hook output priority filter; policy accept;
+          jump opensnitch
+        }
+        
+        chain opensnitch {}
       }
     '';
   };
@@ -152,6 +188,11 @@
     
     # Protection against SYN flood attacks
     "net.ipv4.tcp_syncookies" = 1;
+
+    # # Disable Strict Reverse Path Filtering.
+    # Essential for WireGuard to receive handshake packets on physical interface
+    "net.ipv4.conf.all.rp_filter" = 2;
+    "net.ipv4.conf.default.rp_filter" = 2;
     
     # Disable IPv6 if not needed
     # "net.ipv6.conf.all.disable_ipv6" = 1;
