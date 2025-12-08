@@ -84,6 +84,7 @@ in
     # Entertainment - now handled by Flatpak
     sandboxed-spotify
     sandboxed-steam
+    mpv
 
     # Communication Apps - now handled by Flatpak
     sandboxed-slack
