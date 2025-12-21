@@ -16,7 +16,17 @@ system/hardware-configuration.nix
 modules/ssh-keys.nix
 steam_trace.log
 
+nixos-25.11.iso
 
-# Added by cargo
+vendor/expressvpn_3.83.0.2-1_amd64.deb
 
-/target
+# Rust build artifacts
+**/target/
+
+# Direnv environment
+.direnv/
+
+# Nix related
+result
+result-*
+

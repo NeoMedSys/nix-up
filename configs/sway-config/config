@@ -17,6 +17,7 @@ default_border none
 default_floating_border none
 floating_modifier $mod normal
 
+
 # Window colors (adapted from your i3 config)
 client.focused          #4c7899 #285577 #ffffff #2e9ef4   #285577
 client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
@@ -171,6 +172,8 @@ input type:touchpad {
     tap enabled             # Light tap acts as click
     natural_scroll enabled  # Swiping down moves content down (reverse scrolling)
     dwt enabled             # Disable touchpad while typing
+    middle_emulation disabled
+    tap_button_map lmr 
 }
 
 output * bg ~/.config/sway/wallpaper.png fill
@@ -179,8 +182,9 @@ output * bg ~/.config/sway/wallpaper.png fill
 exec_always sh -c 'pkill waybar; waybar &'
 exec_always opensnitch-ui >/dev/null 2>&1
 exec_always dunst
-# exec_always fusuma
+exec_always fusuma
 
 # add if waybar fails after reboot
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME SWAYSOCK
 exec_always clammy-start-script
+
