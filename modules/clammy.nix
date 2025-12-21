@@ -10,7 +10,8 @@ let
     systemctl --user import-environment --wait \
       WAYLAND_DISPLAY \
       XDG_RUNTIME_DIR \
-      DBUS_SESSION_BUS_ADDRESS
+      DBUS_SESSION_BUS_ADDRESS \
+      NIRI_SOCKET
 
     systemctl --user restart clammy.service
   '';

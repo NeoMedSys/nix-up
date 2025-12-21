@@ -4,7 +4,7 @@ use crate::wayland_manager::WlDelegate;
 use crate::{actions, wayland_output};
 use anyhow::Result;
 use log::{debug, error, info, trace};
-use wayland_client::{delegate_noop, Connection, Dispatch, QueueHandle};
+use wayland_client::{Connection, Dispatch, QueueHandle};
 use wayland_protocols::ext::idle_notify::v1::client::{
     ext_idle_notification_v1, ext_idle_notifier_v1,
 };
