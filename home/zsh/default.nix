@@ -130,6 +130,7 @@
       ls = "${pkgs.eza}/bin/eza -1 --icons=auto";
       tree = "${pkgs.eza}/bin/eza --icons=auto --tree";
       grep = "grep --color=always";
+      remote-deploy = "nixos-rebuild switch --flake .#neoaccess --target-host jon@192.168.5.113 --sudo --ask-sudo-password";
     };
   };
 }

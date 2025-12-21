@@ -116,6 +116,7 @@
 
         chain output {
           type filter hook output priority filter; policy accept;
+          ct state established,related accept
           jump opensnitch
         }
         

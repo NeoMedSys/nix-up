@@ -44,6 +44,8 @@ in
 
   systemd.user.services.clammy = {
     description = "Clammy - Clamshell mode daemon for Wayland";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "simple";
       ExecStart = "${clammy}/bin/clammy --verbose";

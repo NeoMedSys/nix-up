@@ -81,6 +81,11 @@ in
         DEVICES_TO_DISABLE_ON_STARTUP = "";
         TLP_LID_SWITCH_AC = "ignore";
         TLP_LID_SWITCH_BAT = "ignore";
+        WIFI_PWR_ON_AC = "off";
+        WIFI_PWR_ON_BAT = "off";
+        NATACPI_ENABLE = 1;
+        TPACPI_ENABLE = 1;
+        TPSMAPI_ENABLE = 1;
       };
     };
     gnome.gnome-keyring.enable = true;
