@@ -204,9 +204,9 @@ in
         XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
 
         // ===== SCREENSHOTS =====
-        Print { screenshot; }
-        Mod+Print { screenshot-screen; }
-        Mod+Shift+Print { screenshot-window; }
+        Print { screenshot-screen; }           // Full screen
+        Mod+Print { screenshot; }              // Region select (interactive)
+        Mod+Shift+Print { screenshot-window; } // Current window
 
         // ===== LOCK SCREEN =====
         Mod+L { spawn "sh" "-c" "${lockCommand}"; }

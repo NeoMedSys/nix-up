@@ -6,6 +6,7 @@ pub const LOCK_COMMAND: &[&str] = &[
     "dms",
     "ipc",
     "call",
+    "lock",
     "lock"
 ];
 
