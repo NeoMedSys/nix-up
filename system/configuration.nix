@@ -13,7 +13,7 @@
     "${inputs.self}/modules/system-packages.nix"
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
-    #"${inputs.self}/modules/sway.nix"
+    "${inputs.self}/modules/sway.nix"
     "${inputs.self}/modules/niri.nix"
     "${inputs.self}/modules/thunderbolt-ethernet.nix"
     "${inputs.self}/modules/notify.nix"

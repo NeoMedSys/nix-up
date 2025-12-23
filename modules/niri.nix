@@ -1,47 +1,276 @@
 { pkgs, userConfig, inputs, ... }:
+
+let
+  # Lock command matching your sway config
+  lockCommand = "${pkgs.swaylock-effects}/bin/swaylock -f --screenshots --clock --indicator --indicator-radius 120 --indicator-thickness 8 --effect-blur 7x5 --effect-vignette 0.5:0.5 --ring-color e94560 --key-hl-color 0f3460 --line-color 00000000 --inside-color 1a1a2e88 --separator-color 00000000 --grace 3 --fade-in 0.1";
+in
 {
   programs.niri.enable = true;
 
+  # Niri config in KDL format
   environment.etc."niri/config.kdl".text = ''
+    // =====================
+    // INPUT CONFIGURATION
+    // =====================
     input {
+        keyboard {
+            xkb {
+                layout "us,no"
+                options "caps:escape,eurosign:e,grp:lalt_lshift_toggle"
+            }
+        }
+
         touchpad {
             tap
+            natural-scroll
             dwt
-            middle-emulation false
+            click-method "clickfinger"
         }
+
+        mouse {
+            // accel-speed 0.0
+        }
+
+        // Hide cursor after 2 seconds of inactivity
+        // (niri doesn't have this yet, but leaving comment)
     }
 
-    output "eDP-1" {
-        scale 1.5
-    }
-
+    // =====================
+    // LAYOUT CONFIGURATION
+    // =====================
     layout {
-        gaps 12
+        gaps 8
+
         center-focused-column "never"
-        focus-ring {
-            width 3
-            active-color "#ca9ee6" // Mauve
-            inactive-color "#45475a"
+
+        preset-column-widths {
+            proportion 0.33333
+            proportion 0.5
+            proportion 0.66667
         }
+
+        default-column-width { proportion 1.0; }
+
+        focus-ring {
+            width 2
+            active-color "#5E81AC"
+            inactive-color "#4C566A"
+        }
+
+        border {
+            off
+        }
+        struts {
+          left 0
+          right 0
+          top 0
+          bottom 0
+      }
+    }
+
+    // =====================
+    // CURSOR CONFIGURATION
+    // =====================
+    cursor {
+        xcursor-theme "Bibata-Modern-Amber"
+        xcursor-size 18
+    }
+
+    // =====================
+    // WINDOW RULES
+    // =====================
+    window-rule {
+        // All windows get slight transparency when unfocused
+        match is-active=false
+        opacity 0.95
     }
 
     window-rule {
-        match { is-active false; }
-        opacity 0.85
+        // Floating windows class
+        match app-id="floating"
+        open-floating true
     }
 
+    window-rule {
+        match app-id=r#"firefox|librewolf"#
+        open-maximized true
+    }
+
+    window-rule {
+        geometry-corner-radius 10
+        clip-to-geometry true
+    }
+
+    // =====================
+    // KEY BINDINGS
+    // =====================
     binds {
+        // ===== BASIC ACTIONS =====
         Mod+Return { spawn "alacritty"; }
+        Mod+Shift+Q { close-window; }
+        Mod+Shift+C { spawn "sh" "-c" "niri msg action reload-config"; }
+        Mod+Shift+E { quit; }
+
+        // ===== APPLICATION LAUNCHERS =====
         Mod+D { spawn "rofi" "-show" "drun"; }
-        Mod+Q { close-window; }
-        Mod+Left  { focus-column-left; }
+        Mod+B { spawn "firefox"; }
+        Mod+C { spawn "slack"; }
+        Mod+M { spawn "nemo"; }
+        Mod+G { spawn "steam"; }
+
+        // ===== FOCUS (vim-style from your sway config) =====
+        // j=left, semicolon=right, k=down, i=up
+        Mod+J { focus-column-left; }
+        Mod+Semicolon { focus-column-right; }
+        Mod+K { focus-window-down; }
+        Mod+I { focus-window-up; }
+
+        // Arrow keys
+        Mod+Left { focus-column-left; }
         Mod+Right { focus-column-right; }
-        Mod+Shift+Left  { move-column-left; }
+        Mod+Down { focus-window-down; }
+        Mod+Up { focus-window-up; }
+
+        // ===== MOVE WINDOWS =====
+        Mod+Shift+J { move-column-left; }
+        Mod+Shift+Semicolon { move-column-right; }
+        Mod+Shift+K { move-window-down; }
+        Mod+Shift+I { move-window-up; }
+
+        // Arrow keys
+        Mod+Shift+Left { move-column-left; }
         Mod+Shift+Right { move-column-right; }
+        Mod+Shift+Down { move-window-down; }
+        Mod+Shift+Up { move-window-up; }
+
+        // ===== COLUMN MANAGEMENT =====
+        // Mod+H was splith in sway - in niri, consume window into column
+        Mod+H { consume-window-into-column; }
+        // Mod+V was splitv in sway - in niri, expel window from column
+        Mod+V { expel-window-from-column; }
+
+        // ===== LAYOUT =====
+        Mod+F { maximize-column; }
+        Mod+Shift+F { fullscreen-window; }
+        Mod+Shift+Space { toggle-window-floating; }
+        Mod+Space { switch-focus-between-floating-and-tiling; }
+
+        // Column width presets (similar to resize)
+        Mod+R { switch-preset-column-width; }
+        Mod+Shift+R { spawn "sudo" "systemctl" "reboot"; }
+
+        // ===== WORKSPACES =====
+        Mod+1 { focus-workspace 1; }
+        Mod+2 { focus-workspace 2; }
+        Mod+3 { focus-workspace 3; }
+        Mod+4 { focus-workspace 4; }
+        Mod+5 { focus-workspace 5; }
+        Mod+6 { focus-workspace 6; }
+        Mod+7 { focus-workspace 7; }
+        Mod+8 { focus-workspace 8; }
+        Mod+9 { focus-workspace 9; }
+        Mod+0 { focus-workspace 10; }
+
+        Mod+Shift+1 { move-column-to-workspace 1; }
+        Mod+Shift+2 { move-column-to-workspace 2; }
+        Mod+Shift+3 { move-column-to-workspace 3; }
+        Mod+Shift+4 { move-column-to-workspace 4; }
+        Mod+Shift+5 { move-column-to-workspace 5; }
+        Mod+Shift+6 { move-column-to-workspace 6; }
+        Mod+Shift+7 { move-column-to-workspace 7; }
+        Mod+Shift+8 { move-column-to-workspace 8; }
+        Mod+Shift+9 { move-column-to-workspace 9; }
+        Mod+Shift+0 { move-column-to-workspace 10; }
+
+        // Workspace navigation
+        Mod+Page_Down { focus-workspace-down; }
+        Mod+Page_Up { focus-workspace-up; }
+        Mod+Shift+Page_Down { move-column-to-workspace-down; }
+        Mod+Shift+Page_Up { move-column-to-workspace-up; }
+
+        // ===== MONITORS =====
+        Mod+Ctrl+Left { focus-monitor-left; }
+        Mod+Ctrl+Right { focus-monitor-right; }
+        Mod+Ctrl+Shift+Left { move-column-to-monitor-left; }
+        Mod+Ctrl+Shift+Right { move-column-to-monitor-right; }
+
+        // ===== MEDIA KEYS =====
+        XF86AudioRaiseVolume { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "+5%"; }
+        XF86AudioLowerVolume { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "-5%"; }
+        XF86AudioMute { spawn "pactl" "set-sink-mute" "@DEFAULT_SINK@" "toggle"; }
+
+        // ===== BRIGHTNESS =====
+        XF86MonBrightnessUp { spawn "brightnessctl" "set" "+5%"; }
+        XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+
+        // ===== SCREENSHOTS =====
+        Print { screenshot; }
+        Mod+Print { screenshot-screen; }
+        Mod+Shift+Print { screenshot-window; }
+
+        // ===== LOCK SCREEN =====
+        Mod+L { spawn "sh" "-c" "${lockCommand}"; }
+
+        // ===== POWER =====
+        XF86PowerOff { quit; }
     }
 
+    // =====================
+    // AUTOSTART
+    // =====================
     spawn-at-startup "waybar"
-    spawn-at-startup "swaybg -i ~/.config/sway/wallpaper.png -m fill"
+    spawn-at-startup "swaybg" "-i" "/home/${userConfig.username}/.config/sway/wallpaper.png" "-m" "fill"
+    spawn-at-startup "dunst"
+    spawn-at-startup "opensnitch-ui"
+    spawn-at-startup "fusuma"
     spawn-at-startup "clammy-start-session"
+
+    // Environment for portals
+    environment {
+        DISPLAY ":0"
+        XDG_CURRENT_DESKTOP "niri"
+        XDG_SESSION_TYPE "wayland"
+        XDG_SESSION_DESKTOP "niri"
+    }
+
+    // =====================
+    // MISC
+    // =====================
+    prefer-no-csd
+    
+    screenshot-path "~/screenshot-%Y%m%d-%H%M%S.png"
+
+    hotkey-overlay {
+        skip-at-startup
+    }
+  '';
+
+  # XDG portal configuration for niri
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
+    config = {
+      niri = {
+        default = [ "gnome" "gtk" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+      };
+    };
+  };
+
+  # PAM for swaylock
+  security.pam.services.swaylock = {
+    text = ''
+      auth required pam_unix.so nullok
+      account required pam_unix.so
+      session required pam_unix.so
+    '';
+  };
+
+  # Symlink config to user directory
+  system.userActivationScripts.niri-configs = ''
+    mkdir -p ~/.config/niri
+    ln -sf /etc/niri/config.kdl ~/.config/niri/config.kdl
+    cp ${inputs.self}/${userConfig.wallpaperPath} ~/.config/sway/wallpaper.png
   '';
 }
