@@ -54,7 +54,6 @@ in
   # SERVICES
   # ========================
   services = {
-
     fstrim = {
         enable = true;
         interval = "weekly";
@@ -181,6 +180,7 @@ in
       XCURSOR_SIZE = "24";
       GST_PLUGIN_PATH = "/run/current-system/sw/lib/gstreamer-1.0";
       PIPEWIRE_LATENCY = "256/48000";
+      QT_LOGGING_RULES = "qt.svg.warning=false;qt.qpa.wayland.warning=false";
     };
     etc = {
       "boltd.conf".text = ''

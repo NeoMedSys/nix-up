@@ -5,7 +5,6 @@ let
 
   # The wrapper will provide the PATH for our lock command.
   runtimeDeps = with pkgs; [
-    swaylock-effects
   ];
 in
 pkgs.rustPlatform.buildRustPackage {

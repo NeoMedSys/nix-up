@@ -15,6 +15,9 @@
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    dms.url = "github:AvengeMedia/DankMaterialShell";
+    dms.inputs.nixpkgs.follows = "nixpkgs";
+
     catppuccin-firefox = {
       url = "github:catppuccin/firefox";
       flake = false;
@@ -27,7 +30,7 @@
 
   outputs = { nixpkgs, flakehub, home-manager, ... }@inputs:
   let
-    version = "1.2.0"; 
+    version = "1.2.0";
     userConfig = import ./user-config.nix;
     lib = nixpkgs.lib;
 
@@ -41,6 +44,13 @@
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
           home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = { inherit inputs userConfig; };
+            };
+          }
           ] ++ lib.optionals userConfig.vpn [
           inputs.sops-nix.nixosModules.sops
         ];

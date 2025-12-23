@@ -6,7 +6,15 @@ pkgs.stdenv.mkDerivation {
   nativeBuildInputs = [ pkgs.makeWrapper ];
   dontUnpack = true;
   installPhase = ''
-    mkdir -p $out/bin $out/share/applications
+    mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/scalable/apps
+    
+    # Copy icon from spotify package
+    if [ -f "${pkgs.spotify}/share/icons/hicolor/scalable/apps/spotify.svg" ]; then
+      cp "${pkgs.spotify}/share/icons/hicolor/scalable/apps/spotify.svg" $out/share/icons/hicolor/scalable/apps/
+    elif [ -f "${pkgs.spotify}/share/pixmaps/spotify.png" ]; then
+      cp "${pkgs.spotify}/share/pixmaps/spotify.png" $out/share/icons/hicolor/scalable/apps/spotify.svg
+    fi
+    
     # Create the spotify wrapper with GPU access
     makeWrapper ${pkgs.systemd}/bin/systemd-run $out/bin/spotify \
       --run 'mkdir -p "$HOME/.local/share/app-isolation/spotify"' \
@@ -21,6 +29,7 @@ pkgs.stdenv.mkDerivation {
       --set HOSTNAME "research-workstation" \
       --set USER "researcher" \
       --set SPOTIFY_DISABLE_TELEMETRY "1"
+    
     # Create desktop file
     cat > $out/share/applications/spotify.desktop << EOF
 [Desktop Entry]
@@ -28,7 +37,7 @@ Type=Application
 Name=Spotify
 Comment=Spotify Music Player (Privacy-focused)
 Exec=$out/bin/spotify %u
-Icon=spotify
+Icon=$out/share/icons/hicolor/scalable/apps/spotify.svg
 Terminal=false
 Categories=AudioVideo;Audio;Player;
 StartupWMClass=Spotify

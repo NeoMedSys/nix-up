@@ -8,6 +8,7 @@
     ({ ... }: {
       _module.args = { inherit userConfig; };
     })
+    inputs.dms.nixosModules.default
     # Core system modules
     "${inputs.self}/modules/environment.nix"
     "${inputs.self}/modules/system-packages.nix"

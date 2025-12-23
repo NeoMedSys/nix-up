@@ -53,8 +53,8 @@ in
 
         focus-ring {
             width 2
-            active-color "#5E81AC"
-            inactive-color "#4C566A"
+            active-color "#CAD3F5"
+            inactive-color "#5B6078" 
         }
 
         border {
@@ -218,9 +218,7 @@ in
     // =====================
     // AUTOSTART
     // =====================
-    spawn-at-startup "waybar"
-    spawn-at-startup "swaybg" "-i" "/home/${userConfig.username}/.config/sway/wallpaper.png" "-m" "fill"
-    spawn-at-startup "dunst"
+    spawn-at-startup "dms" "run" 
     spawn-at-startup "opensnitch-ui"
     spawn-at-startup "fusuma"
     spawn-at-startup "clammy-start-session"

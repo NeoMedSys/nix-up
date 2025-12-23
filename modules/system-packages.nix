@@ -4,6 +4,7 @@ let
   sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
   sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
   perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
+  dms = inputs.dms.packages.${pkgs.system}.default;
 in
 {
   # Global software packages to install
@@ -17,6 +18,8 @@ in
     vscodium
 
     # System utilities
+    dms
+    quickshell
     direnv
     btop
     jq
@@ -59,20 +62,13 @@ in
     mdcat
     networkmanagerapplet
     gammastep
-    dunst
 
     # Wayland-specific tools
-    swayfx
-    swayidle
-    swaybg
     wl-clipboard
     grim
     slurp
-    rofi
     xdg-desktop-portal
     xdg-desktop-portal-wlr
-    waybar
-    swaylock-effects
     sweet # GTK theme
 
     # Network and Bluetooth GUI tools

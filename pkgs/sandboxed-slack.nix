@@ -1,12 +1,16 @@
 { pkgs, ... }:
+
 pkgs.stdenv.mkDerivation {
   name = "sandboxed-slack-wayland";
   version = "1.0";
   nativeBuildInputs = [ pkgs.makeWrapper ];
   dontUnpack = true;
   installPhase = ''
-    mkdir -p $out/bin $out/share/applications
-    # Create the slack wrapper
+    mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/scalable/apps
+    
+    cp ${pkgs.slack}/share/icons/hicolor/scalable/apps/slack.svg $out/share/icons/hicolor/scalable/apps/ || \
+    cp ${pkgs.slack}/share/pixmaps/slack.png $out/share/icons/hicolor/scalable/apps/slack.svg || true
+    
     makeWrapper ${pkgs.systemd}/bin/systemd-run $out/bin/slack \
       --run 'mkdir -p "$HOME/.local/share/app-isolation/slack"' \
       --add-flags "--user --scope -p MemoryHigh=4G -p MemoryMax=6G" \
@@ -27,14 +31,15 @@ pkgs.stdenv.mkDerivation {
       --set XDG_SESSION_TYPE "wayland" \
       --set XDG_CURRENT_DESKTOP "sway" \
       --set XDG_RUNTIME_DIR "/run/user/1001"
-    # Create desktop file for URL handler registration
+    
+    # Create desktop file with correct icon path
     cat > $out/share/applications/slack.desktop << EOF
 [Desktop Entry]
 Type=Application
 Name=Slack
 Comment=Slack Desktop App (Privacy-focused)
 Exec=$out/bin/slack %u
-Icon=slack
+Icon=$out/share/icons/hicolor/scalable/apps/slack.svg
 Terminal=false
 MimeType=x-scheme-handler/slack;
 Categories=Network;InstantMessaging;
