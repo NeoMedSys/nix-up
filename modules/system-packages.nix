@@ -69,6 +69,7 @@ in
     slurp
     xdg-desktop-portal
     xdg-desktop-portal-wlr
+    xwayland-satellite
     sweet # GTK theme
 
     # Network and Bluetooth GUI tools

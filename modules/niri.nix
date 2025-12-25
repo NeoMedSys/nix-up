@@ -47,6 +47,7 @@ in
             proportion 0.33333
             proportion 0.5
             proportion 0.66667
+            proportion 1.0
         }
 
         default-column-width { proportion 1.0; }
@@ -74,6 +75,8 @@ in
     cursor {
         xcursor-theme "Bibata-Modern-Amber"
         xcursor-size 18
+        hide-after-inactive-ms 2000
+        hide-when-typing true
     }
 
     // =====================
@@ -110,6 +113,9 @@ in
         Mod+Shift+Q { close-window; }
         Mod+Shift+C { spawn "sh" "-c" "niri msg action reload-config"; }
         Mod+Shift+E { quit; }
+
+        // ===== VPN =====
+        Mod+Shift+V { spawn "mullvad-toggle"; }
 
         // ===== APPLICATION LAUNCHERS =====
         Mod+D { spawn "rofi" "-show" "drun"; }
@@ -222,6 +228,7 @@ in
     spawn-at-startup "opensnitch-ui"
     spawn-at-startup "fusuma"
     spawn-at-startup "clammy-start-session"
+    spawn-at-startup "xwayland-satellite"
 
     // Environment for portals
     environment {

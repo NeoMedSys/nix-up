@@ -1,17 +1,29 @@
 { pkgs, userConfig, inputs, ... }:
 
 {
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${inputs.dms.packages.${pkgs.system}.default}/bin/dms greeter";
-        user = "greeter";
-      };
-    };
+  imports = [
+    inputs.dms.nixosModules.greeter
+  ];
+
+  services.fprintd.enable = true;
+
+  security.pam.services = {
+    greetd.fprintAuth = true;
+    login.fprintAuth = true;
+    dms-greeter.fprintAuth = true;
+    
+    greetd.nodelay = true;
+    login.nodelay = true;
+    dms-greeter.nodelay = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    niri
-  ];
+  programs.dankMaterialShell.greeter = {
+    enable = true;
+    compositor.name = "niri";
+    configHome = "/home/${userConfig.username}";
+    logs = {
+      save = true;
+      path = "/tmp/dms-greeter.log";
+    };
+  };
 }
