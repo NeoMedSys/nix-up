@@ -124,24 +124,23 @@ in
         Mod+M { spawn "nemo"; }
         Mod+G { spawn "steam"; }
 
-        // ===== FOCUS (vim-style from your sway config) =====
-        // j=left, semicolon=right, k=down, i=up
-        Mod+J { focus-column-left; }
-        Mod+Semicolon { focus-column-right; }
-        Mod+K { focus-window-down; }
-        Mod+I { focus-window-up; }
+        // ===== FOCUS (neovim hjkl) =====
+        Mod+H { focus-column-left; }
+        Mod+J { focus-window-down; }
+        Mod+K { focus-window-up; }
+        Mod+L { focus-column-right; }
 
-        // Arrow keys
+        // Arrow keys (keep as backup)
         Mod+Left { focus-column-left; }
         Mod+Right { focus-column-right; }
         Mod+Down { focus-window-down; }
         Mod+Up { focus-window-up; }
 
         // ===== MOVE WINDOWS =====
-        Mod+Shift+J { move-column-left; }
-        Mod+Shift+Semicolon { move-column-right; }
-        Mod+Shift+K { move-window-down; }
-        Mod+Shift+I { move-window-up; }
+        Mod+Shift+H { move-column-left; }
+        Mod+Shift+J { move-window-down; }
+        Mod+Shift+K { move-window-up; }
+        Mod+Shift+L { move-column-right; }
 
         // Arrow keys
         Mod+Shift+Left { move-column-left; }
@@ -150,10 +149,8 @@ in
         Mod+Shift+Up { move-window-up; }
 
         // ===== COLUMN MANAGEMENT =====
-        // Mod+H was splith in sway - in niri, consume window into column
-        Mod+H { consume-window-into-column; }
-        // Mod+V was splitv in sway - in niri, expel window from column
-        Mod+V { expel-window-from-column; }
+        Mod+Comma { consume-window-into-column; }
+        Mod+Period { expel-window-from-column; }
 
         // ===== LAYOUT =====
         Mod+F { maximize-column; }
@@ -161,7 +158,7 @@ in
         Mod+Shift+Space { toggle-window-floating; }
         Mod+Space { switch-focus-between-floating-and-tiling; }
 
-        // Column width presets (similar to resize)
+        // Column width presets
         Mod+R { switch-preset-column-width; }
         Mod+Shift+R { spawn "sudo" "systemctl" "reboot"; }
 
@@ -210,12 +207,12 @@ in
         XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
 
         // ===== SCREENSHOTS =====
-        Print { screenshot-screen; }           // Full screen
-        Mod+Print { screenshot; }              // Region select (interactive)
-        Mod+Shift+Print { screenshot-window; } // Current window
+        Print { screenshot-screen; }
+        Mod+Print { screenshot; }
+        Mod+Shift+Print { screenshot-window; }
 
-        // ===== LOCK SCREEN =====
-        Mod+L { spawn "sh" "-c" "${lockCommand}"; }
+        // ===== LOCK SCREEN (DMS) =====
+        Mod+Ctrl+L { spawn "dms" "ipc" "call" "lock" "lock"; }  // MOVED from Mod+L
 
         // ===== POWER =====
         XF86PowerOff { quit; }
@@ -228,7 +225,7 @@ in
     spawn-at-startup "opensnitch-ui"
     spawn-at-startup "fusuma"
     spawn-at-startup "clammy-start-session"
-    spawn-at-startup "xwayland-satellite"
+    spawn-at-startup "Xwayland" ":0"
 
     // Environment for portals
     environment {
