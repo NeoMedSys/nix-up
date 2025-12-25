@@ -41,6 +41,7 @@ in
     layout {
         gaps 8
 
+        background-color "#1a1a2e"
         center-focused-column "never"
 
         preset-column-widths {

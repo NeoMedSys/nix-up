@@ -3,7 +3,7 @@
 {
   home-manager.users.${userConfig.username} = {
     home.file.".config/DankMaterialShell/settings.json".text = builtins.toJSON {
-      blurredWallpaperLayer = true; 
+      blurredWallpaperLayer = false; 
       currentThemeName = "blue";
       use24HourClock = true;
       cornerRadius = 12;
