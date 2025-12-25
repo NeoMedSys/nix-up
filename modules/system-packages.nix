@@ -25,7 +25,6 @@ in
     jq
     fastfetch
     fzf
-    fusuma
     libinput
     ripgrep
     tmux

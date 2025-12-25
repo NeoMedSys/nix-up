@@ -8,19 +8,31 @@
   services.fprintd.enable = true;
 
   security.pam.services = {
-    greetd.fprintAuth = true;
-    login.fprintAuth = true;
-    dms-greeter.fprintAuth = true;
-    
-    greetd.nodelay = true;
-    login.nodelay = true;
-    dms-greeter.nodelay = true;
+    greetd = {
+      fprintAuth = true;
+      nodelay = true;
+    };
+    login = {
+      fprintAuth = true;
+      nodelay = true;
+    };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /var/cache/greeter 0755 greeter greeter -"
+  ];
 
   programs.dankMaterialShell.greeter = {
     enable = true;
     compositor.name = "niri";
     configHome = "/home/${userConfig.username}";
+    
+    compositor.customConfig = ''
+      environment {
+        XDG_CACHE_HOME "/var/cache/greeter"
+      }
+    '';
+    
     logs = {
       save = true;
       path = "/tmp/dms-greeter.log";

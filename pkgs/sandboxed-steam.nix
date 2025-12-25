@@ -10,6 +10,7 @@ let
     : ''${XDG_RUNTIME_DIR:=/run/user/$(id -u)}
     : ''${PULSE_SERVER:=unix:$XDG_RUNTIME_DIR/pulse/native}
     : ''${WAYLAND_DISPLAY:=wayland-1}
+    : ''${DISPLAY:=$(ls /tmp/.X11-unix/ | sed 's/X/:/g' | head -1)}
     : ''${DISPLAY:=:0}
 
     # 3. Launch via systemd-run

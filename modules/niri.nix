@@ -223,9 +223,7 @@ in
     // =====================
     spawn-at-startup "dms" "run" 
     spawn-at-startup "opensnitch-ui"
-    spawn-at-startup "fusuma"
     spawn-at-startup "clammy-start-session"
-    spawn-at-startup "Xwayland" ":0"
 
     // Environment for portals
     environment {
