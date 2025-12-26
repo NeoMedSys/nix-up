@@ -1,61 +1,29 @@
-use crate::state::State;
-use crate::wayland_manager::WlDelegate;
-use crate::wayland_output::{find_head_by_name, find_preferred_mode};
-use anyhow::Result;
-use log::{debug, info, warn};
-use wayland_client::QueueHandle;
-use wayland_protocols_wlr::output_management::v1::client::zwlr_output_configuration_v1;
+use log::{debug, info, error};
 
-/// Applies a lid-open configuration (eDP on, externals on)
-pub fn apply_lid_open_config(
-    state: &State,
-    delegate: &WlDelegate,
-    config: &zwlr_output_configuration_v1::ZwlrOutputConfigurationV1,
-    qh: &QueueHandle<WlDelegate>,
-) -> Result<()> {
-    info!("Applying lid open mode configuration...");
-    let mut x_offset = 0;
-
-    // 1. Enable and position eDP leftmost
-    if let Some(edp_monitor) = &state.edp_name {
-        if let Some(head) = find_head_by_name(delegate, &edp_monitor.name) {
-            if let Some(mode) = find_preferred_mode(delegate, head) {
-                debug!(
-                    "Enabling eDP: {} at x=0 with mode {}x{}",
-                    edp_monitor.name, mode.width, mode.height
-                );
-                let config_head = config.enable_head(head, qh, ());
-                config_head.set_mode(&mode.wl_mode.unwrap());
-                config_head.set_position(0, 0);
-                x_offset += mode.width;
-            } else {
-                warn!("Could not find preferred mode for eDP '{}'", edp_monitor.name);
-            }
-        } else {
-            warn!("Could not find eDP head named '{}' to enable.", edp_monitor.name);
-        }
+pub fn apply_lid_open_config(_state: &crate::state::State) -> anyhow::Result<()> {
+    use niri_ipc::socket::Socket;
+    use niri_ipc::{Request, OutputAction};
+    
+    info!("Applying lid open config: turning on eDP-1");
+    
+    let mut socket = Socket::connect().map_err(|e| {
+        error!("Failed to connect to niri socket: {}", e);
+        anyhow::anyhow!("Socket connect failed: {}", e)
+    })?;
+    
+    debug!("Connected to niri socket, sending OutputAction::On for eDP-1");
+    
+    let reply = socket.send(Request::Output {
+        output: "eDP-1".to_string(),
+        action: OutputAction::On,
+    })?;
+    
+    match &reply {
+        Ok(response) => info!("niri replied OK: {:?}", response),
+        Err(e) => error!("niri replied with error: {}", e),
     }
-
-    // 2. Position external monitors after eDP
-    for monitor in &state.external_monitors {
-        if let Some(head) = find_head_by_name(delegate, &monitor.name) {
-            if let Some(mode) = find_preferred_mode(delegate, head) {
-                debug!(
-                    "Enabling external monitor: {} at x={} with mode {}x{}",
-                    monitor.name, x_offset, mode.width, mode.height
-                );
-                let config_head = config.enable_head(head, qh, ());
-                config_head.set_mode(&mode.wl_mode.unwrap());
-                config_head.set_position(x_offset, 0);
-                x_offset += mode.width;
-            } else {
-                warn!("Could not find preferred mode for monitor '{}'", monitor.name);
-            }
-        } else {
-            warn!("Could not find head for monitor '{}'", monitor.name);
-        }
-    }
-
-    config.apply();
+    
+    reply.map_err(|e| anyhow::anyhow!("niri error: {}", e))?;
+    info!("eDP-1 turned on successfully");
     Ok(())
 }

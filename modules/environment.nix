@@ -54,7 +54,6 @@ in
   # SERVICES
   # ========================
   services = {
-
     fstrim = {
         enable = true;
         interval = "weekly";
@@ -174,13 +173,14 @@ in
       VISUAL = "nvim";
       GTK_THEME = "Juno:dark";
       MOZ_ENABLE_WAYLAND = "1";
-      XDG_CURRENT_DESKTOP = "sway";
+      XDG_CURRENT_DESKTOP = "niri";
       XDG_SESSION_TYPE = "wayland";
-      XDG_SESSION_DESKTOP = "sway";
+      XDG_SESSION_DESKTOP = "niri";
       XCURSOR_THEME = "Bibata-Modern-Amber";
       XCURSOR_SIZE = "24";
       GST_PLUGIN_PATH = "/run/current-system/sw/lib/gstreamer-1.0";
       PIPEWIRE_LATENCY = "256/48000";
+      QT_LOGGING_RULES = "qt.svg.warning=false;qt.qpa.wayland.warning=false";
     };
     etc = {
       "boltd.conf".text = ''
@@ -192,24 +192,24 @@ in
         swipe:
           3:
             left:
-              command: "swaymsg workspace next"
+              command: "niri workspace next"
             right:
-              command: "swaymsg workspace prev"
+              command: "niri workspace prev"
           4:
             up:
               command: "rofi -show drun"
             down:
-              command: "swaymsg '[con_id=__focused__] scratchpad show' || swaymsg 'workspace back_and_forth'"
+              command: "niri '[con_id=__focused__] scratchpad show' || niri 'workspace back_and_forth'"
             left:
-              command: "swaymsg workspace next"
+              command: "niri workspace next"
             right:
-              command: "swaymsg workspace prev"
+              command: "niri workspace prev"
         pinch:
           2:
             in:
-              command: "swaymsg '[con_id=__focused__] fullscreen toggle'"
+              command: "niri '[con_id=__focused__] fullscreen toggle'"
             out:
-              command: "swaymsg '[con_id=__focused__] floating toggle'"
+              command: "niri '[con_id=__focused__] floating toggle'"
         hold:
           4:
             command: "rofi -show window"
@@ -366,7 +366,7 @@ in
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     path = with pkgs; [ 
-      swayfx
+      niri
       rofi 
       coreutils
       libinput

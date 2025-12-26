@@ -1,21 +1,19 @@
 { pkgs, ... }:
 
 let
-  # We define the launcher script to handle the environment hand-off
   steam-launcher = pkgs.writeShellScriptBin "steam" ''
     # 1. Setup isolation directory
     ISOLATION_DIR="$HOME/.local/share/app-isolation/steam"
     mkdir -p "$ISOLATION_DIR/shader_cache"
-    
+
     # 2. Define standard audio/display variables if missing
     : ''${XDG_RUNTIME_DIR:=/run/user/$(id -u)}
     : ''${PULSE_SERVER:=unix:$XDG_RUNTIME_DIR/pulse/native}
     : ''${WAYLAND_DISPLAY:=wayland-1}
+    : ''${DISPLAY:=$(ls /tmp/.X11-unix/ | sed 's/X/:/g' | head -1)}
     : ''${DISPLAY:=:0}
 
     # 3. Launch via systemd-run
-    # We explicitly pass (-E) every critical variable to ensure the 
-    # scope inherits the GPU drivers and library paths correctly.
     exec ${pkgs.systemd}/bin/systemd-run \
       --user \
       --scope \
@@ -52,8 +50,15 @@ pkgs.stdenv.mkDerivation {
   dontUnpack = true;
 
   installPhase = ''
-    mkdir -p $out/bin $out/share/applications
-    
+    mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/scalable/apps
+
+    # Copy icon from steam package
+    if [ -f "${pkgs.steam}/share/icons/hicolor/scalable/apps/steam.svg" ]; then
+      cp "${pkgs.steam}/share/icons/hicolor/scalable/apps/steam.svg" $out/share/icons/hicolor/scalable/apps/
+    elif [ -f "${pkgs.steam}/share/pixmaps/steam.png" ]; then
+      cp "${pkgs.steam}/share/pixmaps/steam.png" $out/share/icons/hicolor/scalable/apps/steam.svg
+    fi
+
     # Install the launcher
     cp ${steam-launcher}/bin/steam $out/bin/steam
     chmod +x $out/bin/steam
@@ -65,7 +70,7 @@ Type=Application
 Name=Steam
 Comment=Steam Gaming Platform (Privacy-focused)
 Exec=$out/bin/steam %u
-Icon=steam
+Icon=$out/share/icons/hicolor/scalable/apps/steam.svg
 Terminal=false
 Categories=Game;Network;
 StartupWMClass=Steam

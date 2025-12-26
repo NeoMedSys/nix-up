@@ -8,12 +8,15 @@
     ({ ... }: {
       _module.args = { inherit userConfig; };
     })
+    inputs.dms.nixosModules.default
     # Core system modules
     "${inputs.self}/modules/environment.nix"
     "${inputs.self}/modules/system-packages.nix"
     "${inputs.self}/modules/nixvim.nix"
     "${inputs.self}/modules/ssh-config.nix"
     "${inputs.self}/modules/sway.nix"
+    "${inputs.self}/modules/niri.nix"
+    "${inputs.self}/modules/dms.nix"
     "${inputs.self}/modules/thunderbolt-ethernet.nix"
     "${inputs.self}/modules/notify.nix"
     "${inputs.self}/modules/zsh.nix"
@@ -32,7 +35,8 @@
     "${inputs.self}/modules/privacy.nix"
     "${inputs.self}/modules/techoverlord_protection.nix"
     "${inputs.self}/modules/app-telemetry-deny.nix"
-    "${inputs.self}/modules/tuigreeter.nix"
+    # "${inputs.self}/modules/tuigreeter.nix"
+    "${inputs.self}/modules/greetd.nix"
 
 
   # Conditionally import nvidia.nix based on the hasGPU flag
