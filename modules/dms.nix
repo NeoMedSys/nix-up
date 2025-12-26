@@ -9,6 +9,8 @@
       cornerRadius = 12;
       fontFamily = "Inter Variable";
       monoFontFamily = "Fira Code";
+      barOpacity = 0;
+      widgetOpacity = 54;
     };
   };
 }

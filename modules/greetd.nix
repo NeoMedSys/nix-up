@@ -11,6 +11,7 @@
     greetd = {
       fprintAuth = true;
       nodelay = true;
+      enableGnomeKeyring = false;
     };
     login = {
       fprintAuth = true;
