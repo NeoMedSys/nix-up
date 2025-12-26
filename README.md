@@ -21,9 +21,6 @@ Perseus is a fully declarative NixOS setup that combines **uncompromising privac
 5.  **Daily Apps**: Firefox/LibreWolf browser + Sandboxed Slack/Spotify/Steam
 6.  **Gaming**: Steam + NVIDIA drivers (if enabled) + GameMode + controller support
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8ec48a37-a0c3-4c76-8d18-b9ead35a5087" />
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ba326466-74ce-45eb-a042-8f52fd5f1d5e" />
 
 ## 🚀 Quick Start
 
