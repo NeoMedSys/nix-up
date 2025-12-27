@@ -9,7 +9,7 @@
 
   security.pam.services = {
     greetd = {
-      fprintAuth = true;
+      fprintAuth = false;
       nodelay = true;
       enableGnomeKeyring = false;
     };
