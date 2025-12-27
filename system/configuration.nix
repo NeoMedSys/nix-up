@@ -25,9 +25,6 @@
     # clamshell action
     "${inputs.self}/modules/clammy.nix"
 
-    # Desktop environment
-    "${inputs.self}/modules/gammastep.nix"
-
     # General programming languages
     "${inputs.self}/modules/gpl.nix"
 
@@ -35,9 +32,7 @@
     "${inputs.self}/modules/privacy.nix"
     "${inputs.self}/modules/techoverlord_protection.nix"
     "${inputs.self}/modules/app-telemetry-deny.nix"
-    # "${inputs.self}/modules/tuigreeter.nix"
     "${inputs.self}/modules/greetd.nix"
-
 
   # Conditionally import nvidia.nix based on the hasGPU flag
   ] ++ lib.optionals userConfig.hasGPU [

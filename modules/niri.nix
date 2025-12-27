@@ -1,14 +1,18 @@
 { pkgs, userConfig, inputs, ... }:
 
-let
-  # Lock command matching your sway config
-  lockCommand = "${pkgs.swaylock-effects}/bin/swaylock -f --screenshots --clock --indicator --indicator-radius 120 --indicator-thickness 8 --effect-blur 7x5 --effect-vignette 0.5:0.5 --ring-color e94560 --key-hl-color 0f3460 --line-color 00000000 --inside-color 1a1a2e88 --separator-color 00000000 --grace 3 --fade-in 0.1";
-in
 {
   programs.niri.enable = true;
 
   # Niri config in KDL format
   environment.etc."niri/config.kdl".text = ''
+    // =====================
+    // DMS INTEGRATION
+    // =====================
+    // Include DMS-managed configuration files
+    include "dms/colors.kdl"
+    include "dms/layout.kdl"
+    include "dms/binds.kdl"
+
     // =====================
     // INPUT CONFIGURATION
     // =====================
@@ -30,9 +34,6 @@ in
         mouse {
             // accel-speed 0.0
         }
-
-        // Hide cursor after 2 seconds of inactivity
-        // (niri doesn't have this yet, but leaving comment)
     }
 
     // =====================
@@ -41,7 +42,8 @@ in
     layout {
         gaps 8
 
-        background-color "#1a1a2e"
+        // IMPORTANT: transparent for DMS overview wallpaper integration
+        background-color "transparent"
         center-focused-column "never"
 
         preset-column-widths {
@@ -56,7 +58,7 @@ in
         focus-ring {
             width 2
             active-color "#CAD3F5"
-            inactive-color "#5B6078" 
+            inactive-color "#5B6078"
         }
 
         border {
@@ -68,6 +70,21 @@ in
           top 0
           bottom 0
       }
+    }
+
+    // =====================
+    // LAYER RULES (DMS Integration)
+    // =====================
+    // Place quickshell wallpaper on overview
+    layer-rule {
+        match namespace="^quickshell$"
+        place-within-backdrop true
+    }
+
+    // Place blurred wallpaper on overview (if blur enabled)
+    layer-rule {
+        match namespace="dms:blurwallpaper"
+        place-within-backdrop true
     }
 
     // =====================
@@ -105,6 +122,29 @@ in
         clip-to-geometry true
     }
 
+    // Open DMS windows as floating by default
+    window-rule {
+        match app-id=r#"org.quickshell$"#
+        open-floating true
+    }
+
+    // GNOME apps styling
+    window-rule {
+        match app-id=r#"^org\.gnome\."#
+        draw-border-with-background false
+        geometry-corner-radius 12
+        clip-to-geometry true
+    }
+
+    // Terminal apps - no borders
+    window-rule {
+        match app-id=r#"^org\.wezfurlong\.wezterm$"#
+        match app-id="Alacritty"
+        match app-id="com.mitchellh.ghostty"
+        match app-id="kitty"
+        draw-border-with-background false
+    }
+
     // =====================
     // KEY BINDINGS
     // =====================
@@ -118,8 +158,25 @@ in
         // ===== VPN =====
         Mod+Shift+V { spawn "mullvad-toggle"; }
 
-        // ===== APPLICATION LAUNCHERS =====
-        Mod+D { spawn "rofi" "-show" "drun"; }
+        // ===== DMS APPLICATION LAUNCHERS =====
+        Mod+Space hotkey-overlay-title="Application Launcher" {
+            spawn "dms" "ipc" "call" "spotlight" "toggle";
+        }
+        Mod+D { spawn "dms" "ipc" "call" "spotlight" "toggle"; }
+        Mod+V hotkey-overlay-title="Clipboard Manager" {
+            spawn "dms" "ipc" "call" "clipboard" "toggle";
+        }
+        Mod+Comma hotkey-overlay-title="Settings" {
+            spawn "dms" "ipc" "call" "settings" "focusOrToggle";
+        }
+        Mod+N hotkey-overlay-title="Notification Center" {
+            spawn "dms" "ipc" "call" "notifications" "toggle";
+        }
+        Mod+Y hotkey-overlay-title="Browse Wallpapers" {
+            spawn "dms" "ipc" "call" "dankdash" "wallpaper";
+        }
+
+        // ===== OTHER APP LAUNCHERS =====
         Mod+B { spawn "firefox"; }
         Mod+C { spawn "slack"; }
         Mod+M { spawn "nemo"; }
@@ -150,14 +207,14 @@ in
         Mod+Shift+Up { move-window-up; }
 
         // ===== COLUMN MANAGEMENT =====
-        Mod+Comma { consume-window-into-column; }
-        Mod+Period { expel-window-from-column; }
+        Mod+Period { consume-window-into-column; }
+        Mod+Slash { expel-window-from-column; }
 
         // ===== LAYOUT =====
         Mod+F { maximize-column; }
         Mod+Shift+F { fullscreen-window; }
         Mod+Shift+Space { toggle-window-floating; }
-        Mod+Space { switch-focus-between-floating-and-tiling; }
+        Mod+Tab { switch-focus-between-floating-and-tiling; }
 
         // Column width presets
         Mod+R { switch-preset-column-width; }
@@ -198,14 +255,24 @@ in
         Mod+Ctrl+Shift+Left { move-column-to-monitor-left; }
         Mod+Ctrl+Shift+Right { move-column-to-monitor-right; }
 
-        // ===== MEDIA KEYS =====
-        XF86AudioRaiseVolume { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "+5%"; }
-        XF86AudioLowerVolume { spawn "pactl" "set-sink-volume" "@DEFAULT_SINK@" "-5%"; }
-        XF86AudioMute { spawn "pactl" "set-sink-mute" "@DEFAULT_SINK@" "toggle"; }
+        // ===== MEDIA KEYS (via DMS) =====
+        XF86AudioRaiseVolume allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "increment" "3";
+        }
+        XF86AudioLowerVolume allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "decrement" "3";
+        }
+        XF86AudioMute allow-when-locked=true {
+            spawn "dms" "ipc" "call" "audio" "mute";
+        }
 
-        // ===== BRIGHTNESS =====
-        XF86MonBrightnessUp { spawn "brightnessctl" "set" "+5%"; }
-        XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+        // ===== BRIGHTNESS (via DMS) =====
+        XF86MonBrightnessUp allow-when-locked=true {
+            spawn "dms" "ipc" "call" "brightness" "increment" "5" "";
+        }
+        XF86MonBrightnessDown allow-when-locked=true {
+            spawn "dms" "ipc" "call" "brightness" "decrement" "5" "";
+        }
 
         // ===== SCREENSHOTS =====
         Print { screenshot-screen; }
@@ -213,7 +280,9 @@ in
         Mod+Shift+Print { screenshot-window; }
 
         // ===== LOCK SCREEN (DMS) =====
-        Mod+Ctrl+L { spawn "dms" "ipc" "call" "lock" "lock"; }  // MOVED from Mod+L
+        Mod+Alt+L hotkey-overlay-title="Lock Screen" {
+            spawn "dms" "ipc" "call" "lock" "lock";
+        }
 
         // ===== POWER =====
         XF86PowerOff { quit; }
@@ -222,9 +291,12 @@ in
     // =====================
     // AUTOSTART
     // =====================
-    spawn-at-startup "dms" "run" 
+    spawn-at-startup "dms" "run"
     spawn-at-startup "opensnitch-ui"
     spawn-at-startup "clammy-start-session"
+
+    // Clipboard history (for DMS clipboard widget)
+    spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
 
     // Environment for portals
     environment {
@@ -232,13 +304,16 @@ in
         XDG_CURRENT_DESKTOP "niri"
         XDG_SESSION_TYPE "wayland"
         XDG_SESSION_DESKTOP "niri"
+        QT_QPA_PLATFORM "wayland"
+        ELECTRON_OZONE_PLATFORM_HINT "auto"
+        QT_QPA_PLATFORMTHEME "gtk3"
     }
 
     // =====================
     // MISC
     // =====================
     prefer-no-csd
-    
+
     screenshot-path "~/screenshot-%Y%m%d-%H%M%S.png"
 
     hotkey-overlay {
@@ -259,7 +334,7 @@ in
     };
   };
 
-  # PAM for swaylock
+  # PAM for swaylock (backup if DMS lock fails)
   security.pam.services.swaylock = {
     text = ''
       auth required pam_unix.so nullok
@@ -268,10 +343,22 @@ in
     '';
   };
 
-  # Symlink config to user directory
-  system.userActivationScripts.niri-configs = ''
+  # Create DMS config directories and placeholder kdl files
+  # These will be populated by DMS at runtime
+  system.userActivationScripts.niri-dms-configs = ''
+    mkdir -p ~/.config/niri/dms
     mkdir -p ~/.config/niri
+    
+    # Create placeholder kdl files if they don't exist
+    # DMS will populate these with actual values
+    touch ~/.config/niri/dms/colors.kdl
+    touch ~/.config/niri/dms/layout.kdl
+    touch ~/.config/niri/dms/binds.kdl
+    
+    # Symlink main config
     ln -sf /etc/niri/config.kdl ~/.config/niri/config.kdl
-    cp ${inputs.self}/${userConfig.wallpaperPath} ~/.config/sway/wallpaper.png
+    
+    # Copy wallpaper
+    cp ${inputs.self}/${userConfig.wallpaperPath} ~/.config/sway/wallpaper.png 2>/dev/null || true
   '';
 }
