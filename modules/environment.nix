@@ -89,7 +89,7 @@ in
     };
     gnome.gnome-keyring.enable = true;
     # TLP is primary
-    upower.enable = false;
+    upower.enable = true;
 
     # Security
     opensnitch = {

@@ -1,4 +1,4 @@
-{ pkgs, userConfig, ... }:
+{ pkgs, userConfig, inputs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -7,23 +7,7 @@
   ];
 
   home-manager.users.${userConfig.username} = {
-    # DMS settings - these will be written to settings.json
-    # Note: DMS reads this file at startup. If you change settings via UI,
-    # they will be saved here and override these defaults on next login.
-    home.file.".config/DankMaterialShell/settings.json".text = builtins.toJSON {
-      # Appearance
-      barOpacity = 0;
-      widgetOpacity = 54;
-      cornerRadius = 12; 
-      blurredWallpaperLayer = false;
-
-      currentThemeName = "blue";
-
-      fontFamily = "Inter Variable";
-      monoFontFamily = "Fira Code";
-
-      use24HourClock = true;
-    };
+    imports = [ inputs.danksearch.homeModules.dsearch ];
 
     home.activation.createDmsConfigDir = {
       after = [ "writeBoundary" ];
@@ -31,6 +15,20 @@
       data = ''
         mkdir -p $HOME/.config/DankMaterialShell
       '';
+    };
+
+    programs.dsearch.enable = true;
+    xdg.mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "text/html" = "firefox.desktop";
+        "x-scheme-handler/http" = "firefox.desktop";
+        "x-scheme-handler/https" = "firefox.desktop";
+        "x-scheme-handler/about" = "firefox.desktop";
+        "x-scheme-handler/unknown" = "firefox.desktop";
+        "application/xhtml+xml" = "firefox.desktop";
+        "application/pdf" = "firefox.desktop";
+      };
     };
   };
 }

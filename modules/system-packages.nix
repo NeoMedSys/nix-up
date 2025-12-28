@@ -35,6 +35,7 @@ in
     usbutils
     iw
     bolt
+    upower
     v4l-utils
     libcamera
 
@@ -61,14 +62,10 @@ in
     gnupg
     libnotify
     mdcat
-    networkmanagerapplet
-    gammastep
     xwayland-satellite
 
     # Wayland-specific tools
     wl-clipboard
-    grim
-    slurp
     xdg-desktop-portal
     xdg-desktop-portal-wlr
     sweet # GTK theme

@@ -10,10 +10,12 @@
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+
     flakehub.url = "github:DeterminateSystems/fh";
+
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-    thunderbird-catppuccin.url = "github:catppuccin/thunderbird";
+
 
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -21,6 +23,10 @@
     dms.url = "github:AvengeMedia/DankMaterialShell";
     dms.inputs.nixpkgs.follows = "nixpkgs";
 
+    danksearch.url = "github:AvengeMedia/danksearch";
+    danksearch.inputs.nixpkgs.follows = "nixpkgs";
+
+    thunderbird-catppuccin.url = "github:catppuccin/thunderbird";
     catppuccin-firefox = {
       url = "github:catppuccin/firefox";
       flake = false;
@@ -33,7 +39,7 @@
 
   outputs = { nixpkgs, flakehub, home-manager, ... }@inputs:
   let
-    version = "1.2.0";
+    version = "1.3.0";
     userConfig = import ./user-config.nix;
     lib = nixpkgs.lib;
 
