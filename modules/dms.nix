@@ -9,13 +9,6 @@
   home-manager.users.${userConfig.username} = {
     imports = [ inputs.danksearch.homeModules.dsearch ];
 
-    home.activation.createDmsConfigDir = {
-      after = [ "writeBoundary" ];
-      before = [ ];
-      data = ''
-        mkdir -p $HOME/.config/DankMaterialShell
-      '';
-    };
 
     programs.dsearch.enable = true;
     xdg.mimeApps = {

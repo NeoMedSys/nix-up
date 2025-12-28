@@ -38,6 +38,7 @@ in
     upower
     v4l-utils
     libcamera
+    networkmanagerapplet
 
     # ipu6
     gst_all_1.gstreamer
@@ -144,6 +145,10 @@ in
     fira-code-symbols
     papirus-icon-theme
     bibata-cursors
+    adwaita-icon-theme
+    hicolor-icon-theme
+
+    libayatana-appindicator
 
     # Pandoc and live MD rendering script
     pandoc
