@@ -6,6 +6,7 @@ let
   perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
   dms = inputs.dms.packages.${pkgs.system}.default;
   dgop = inputs.dgop.packages.${pkgs.system}.default;
+  ntl-tray = pkgs.callPackage ../pkgs/ntl-tray.nix {};
 in
 {
   # Global software packages to install
@@ -39,6 +40,7 @@ in
     v4l-utils
     libcamera
     networkmanagerapplet
+    ntl-tray
 
     # ipu6
     gst_all_1.gstreamer

@@ -4,7 +4,7 @@ let
 
   ntlCli = pkgs.writeShellScriptBin "ntl" ''
     #!/usr/bin/env bash
-    
+
     GREEN='\033[0;32m'
     YELLOW='\033[1;33m'
     BLUE='\033[0;34m'
@@ -24,12 +24,13 @@ let
         echo -e "  ''${BLUE}status''${NC}           Show daemon status"
         echo -e "  ''${BLUE}report''${NC}           View latest audit summary"
         echo -e "  ''${BLUE}logs''${NC}             Follow live system logs"
+        echo -e "  ''${BLUE}tray''${NC}             Output JSON for system tray"
         echo ""
     }
 
     case "$1" in
         run)
-            echo -e "''${GREEN}🛡️  Starting NastyTechLords Audit...''${NC}"
+            echo -e "''${GREEN}󰒘 Starting NastyTechLords Audit...''${NC}"
             if [ "$2" = "--full" ]; then
                 sudo $BINARY --full --verbose
             else
@@ -44,7 +45,6 @@ let
             if [ -f "$LOG_DIR/latest-summary.txt" ]; then
                 cat "$LOG_DIR/latest-summary.txt"
             else
-                # Fallback to finding the newest log
                 LATEST=$(ls -t $LOG_DIR/audit-*.log 2>/dev/null | head -1)
                 if [ -n "$LATEST" ]; then
                     cat "$LATEST"
@@ -56,12 +56,31 @@ let
         logs)
             sudo journalctl -u nastyTechLords -f
             ;;
+        tray)
+            # JSON output for system tray integration
+            if ! systemctl is-active --quiet nastyTechLords.timer; then
+                echo '{"icon": "󰦞", "status": "inactive"}'
+                exit 0
+            fi
+            if [ ! -f "$LOG_DIR/latest-summary.txt" ]; then
+                echo '{"icon": "󰔟", "status": "pending"}'
+                exit 0
+            fi
+            CRITICAL=$(grep -c "^\[CRITICAL\]" "$LOG_DIR/latest-summary.txt" 2>/dev/null || echo "0")
+            WARNING=$(grep -c "^\[WARNING\]" "$LOG_DIR/latest-summary.txt" 2>/dev/null || echo "0")
+            if [ "$CRITICAL" -gt 0 ]; then
+                echo "{\"icon\": \"󰀦\", \"status\": \"critical\", \"critical\": $CRITICAL, \"warning\": $WARNING}"
+            elif [ "$WARNING" -gt 0 ]; then
+                echo "{\"icon\": \"󰀪\", \"status\": \"warning\", \"critical\": 0, \"warning\": $WARNING}"
+            else
+                echo '{"icon": "󰒘", "status": "ok", "critical": 0, "warning": 0}'
+            fi
+            ;;
         *)
             show_help
             ;;
     esac
-  '';
-  
+  ''
   uid = toString config.users.users.${userConfig.username}.uid;
 in
 {

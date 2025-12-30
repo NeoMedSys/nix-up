@@ -116,7 +116,14 @@
 
         chain output {
           type filter hook output priority filter; policy accept;
+
           ct state established,related accept
+          # [NEW] BLOCK DIRECT DNS LEAKS - force all DNS through localhost
+          udp dport 53 ip daddr != 127.0.0.1 drop comment "Block DNS leak: IPv4"
+          tcp dport 53 ip daddr != 127.0.0.1 drop comment "Block DNS leak: IPv4 TCP"
+          udp dport 53 ip6 daddr != ::1 drop comment "Block DNS leak: IPv6"
+          tcp dport 53 ip6 daddr != ::1 drop comment "Block DNS leak: IPv6 TCP"
+
           jump opensnitch
         }
         

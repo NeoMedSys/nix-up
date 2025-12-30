@@ -5,6 +5,7 @@ use crate::Args;
 use anyhow::Result;
 use std::fs;
 use std::net::ToSocketAddrs;
+use std::process::Command;
 
 pub struct PrivacyScanner;
 
@@ -20,6 +21,9 @@ impl Scanner for PrivacyScanner {
 
         // 3. HARDWARE TRACKING CHECK
         check_mac_privacy(report);
+
+        // 4. [NEW] RUNTIME DNS LEAK CHECK
+        check_runtime_dns_leaks(report);
 
         Ok(())
     }
@@ -96,6 +100,56 @@ fn check_mac_privacy(report: &mut Report) {
                 "Tracking", 
                 "WiFi MAC Address randomization does not appear to be enforced in global config."
             );
+        }
+    }
+}
+
+
+fn check_runtime_dns_leaks(report: &mut Report) {
+    report.increment_checked();
+
+    // Check if any process has connections to external DNS (port 53)
+    // This catches apps that bypass /etc/resolv.conf
+    if let Ok(output) = Command::new("ss")
+        .args(["-tunp", "state", "established"])
+        .output()
+    {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        for line in stdout.lines() {
+            // Look for connections to port 53 that aren't localhost
+            if line.contains(":53") 
+                && !line.contains("127.0.0.1:53") 
+                && !line.contains("[::1]:53")
+                && !line.contains("127.0.0.53:53") // systemd-resolved
+            {
+                report.add_issue(
+                    ScanLevel::Critical,
+                    "DNSLeak",
+                    &format!("Active DNS connection bypassing localhost: {}", line.trim())
+                );
+            }
+        }
+    }
+
+    // Check for processes with open UDP sockets to port 53
+    if let Ok(output) = Command::new("ss")
+        .args(["-unp"])
+        .output()
+    {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        for line in stdout.lines() {
+            if line.contains(":53") 
+                && !line.contains("127.0.0.1:53") 
+                && !line.contains("[::1]:53")
+                && !line.contains("127.0.0.53:53")
+                && !line.contains("*:53") // dnscrypt-proxy listening
+            {
+                report.add_issue(
+                    ScanLevel::Warning,
+                    "DNSLeak",
+                    &format!("Process with external DNS socket: {}", line.trim())
+                );
+            }
         }
     }
 }
