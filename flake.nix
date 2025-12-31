@@ -26,11 +26,17 @@
     danksearch.url = "github:AvengeMedia/danksearch";
     danksearch.inputs.nixpkgs.follows = "nixpkgs";
 
+    oisd = {
+      url = "https://big.oisd.nl/domainswild";
+      flake = false;
+    };
+
     thunderbird-catppuccin.url = "github:catppuccin/thunderbird";
     catppuccin-firefox = {
       url = "github:catppuccin/firefox";
       flake = false;
     };
+
     betterfox = {
       url = "github:yokoffing/Betterfox";
       flake = false;
