@@ -33,6 +33,8 @@
     "${inputs.self}/modules/techoverlord_protection.nix"
     "${inputs.self}/modules/app-telemetry-deny.nix"
     "${inputs.self}/modules/greetd.nix"
+    "${inputs.self}/modules/usb.nix"
+    "${inputs.self}/modules/firejail.nix"
 
   # Conditionally import nvidia.nix based on the hasGPU flag
   ] ++ lib.optionals userConfig.hasGPU [

@@ -20,6 +20,12 @@ in
   "privacy.userContext.ui.enabled" = true;
   "privacy.userContext.longPressBehavior" = 2;
 
+  "media.peerconnection.enabled" = false;
+  "media.peerconnection.ice.default_address_only" = true;
+  "media.peerconnection.ice.no_host" = true;
+  "network.dns.echconfig.enabled" = true;
+  "network.dns.use_https_rr_as_altsvc" = true;
+
   # Smooth Scroll
   "general.smoothScroll" = true;
   "general.smoothScroll.lines.durationMaxMS" = 125;
