@@ -76,7 +76,7 @@
           # [B] CRITICAL BYPASS: ENCRYPTED TRANSPORT
           # Allow the encrypted "envelope" to leave your physical card.
           # We allow both standard port (51820) and fallback (443).
-          ip daddr 45.129.56.67 accept comment "Bypass: VPN Endpoint IP"
+          # ip daddr 45.129.56.67 accept comment "Bypass: VPN Endpoint IP"
           udp dport { 51820, 443 } accept comment "Bypass: WireGuard Ports"
           meta mark 0xca6c accept comment "Bypass: WireGuard fwmark"
 
@@ -104,7 +104,7 @@
           # 2. VPN RETURN TRAFFIC
           # Accept responses from the VPN server on both likely ports.
           udp sport { 51820, 443 } accept
-          ip saddr 45.129.56.67 accept
+          # ip saddr 45.129.56.67 accept
 
           # 3. LAN / DHCP
           udp dport { 67, 68 } accept
@@ -116,14 +116,6 @@
 
         chain output {
           type filter hook output priority filter; policy accept;
-
-          ct state established,related accept
-          # [NEW] BLOCK DIRECT DNS LEAKS - force all DNS through localhost
-          udp dport 53 ip daddr != 127.0.0.1 drop comment "Block DNS leak: IPv4"
-          tcp dport 53 ip daddr != 127.0.0.1 drop comment "Block DNS leak: IPv4 TCP"
-          udp dport 53 ip6 daddr != ::1 drop comment "Block DNS leak: IPv6"
-          tcp dport 53 ip6 daddr != ::1 drop comment "Block DNS leak: IPv6 TCP"
-
           jump opensnitch
         }
         

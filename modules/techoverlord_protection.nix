@@ -80,7 +80,7 @@ let
             show_help
             ;;
     esac
-  ''
+  '';
   uid = toString config.users.users.${userConfig.username}.uid;
 in
 {
