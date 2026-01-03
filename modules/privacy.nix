@@ -1,5 +1,6 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, inputs, ... }:
 let
+  blocklist_txt = pkgs.writeText "blocklist.txt" (builtins.readFile inputs.oisd);
   StateDirName = "dnscrypt-proxy";
   StatePath = "/var/lib/${StateDirName}";
 in
@@ -30,14 +31,12 @@ in
 
   systemd.services.dnscrypt-proxy2.serviceConfig.StateDirectory = StateDirName;
 
-  # Configure NetworkManager to use dnscrypt-proxy
   networking = {
     nftables.enable = true;
     networkmanager = {
       insertNameservers = [ "127.0.0.1" "::1" ];
       dns = "none";
 
-      # MAC address randomization
       wifi.macAddress = "stable";
       ethernet.macAddress = "stable";
       settings = {
@@ -90,7 +89,6 @@ in
     '';
   };
 
-  # Fail2ban for intrusion prevention
   services.fail2ban = {
     enable = true;
     maxretry = 3;
@@ -105,7 +103,6 @@ in
     '';
   };
 
-  # Disable telemetry in various applications
   environment.variables = {
     DOTNET_CLI_TELEMETRY_OPTOUT = "1";
     POWERSHELL_TELEMETRY_OPTOUT = "1";
@@ -116,7 +113,6 @@ in
     VSCODE_TELEMETRY_LEVEL = "off";
   };
 
-  # Kernel hardening
   boot.kernel.sysctl = {
     "net.ipv4.ip_forward" = 0;
     "net.ipv6.conf.all.forwarding" = 0;
@@ -132,20 +128,17 @@ in
     "net.ipv4.conf.default.rp_filter" = 2;
   };
 
-  # Disable unnecessary services
   services = {
     avahi.enable = false;
     geoclue2.enable = false;
     printing.browsing = false;
   };
 
-  # AppArmor
   security.apparmor = {
     enable = true;
     killUnconfinedConfinables = true;
   };
 
-  # No swap
   swapDevices = lib.mkForce [ ];
   zramSwap.enable = false;
 }
