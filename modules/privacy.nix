@@ -1,58 +1,28 @@
-{ lib, pkgs, inputs, ... }:
+{ lib, pkgs, ... }:
 let
-  blocklist_txt = pkgs.writeText "blocklist.txt" (builtins.readFile inputs.oisd);
   StateDirName = "dnscrypt-proxy";
   StatePath = "/var/lib/${StateDirName}";
 in
 {
-  # DNS Privacy with dnscrypt-proxy (ODoH)
   services.dnscrypt-proxy = {
     enable = true;
     settings = {
       listen_addresses = [ "127.0.0.1:53" "[::1]:53" ];
+      server_names = [ "cloudflare" "quad9-doh-ip4-port443-nofilter-pri" ];
 
-      # ODoH servers - relay sees IP but can't decrypt, resolver decrypts but only sees relay
-      server_names = [ "odoh-cloudflare" "odoh-crypto-sx" ];
-      odoh_servers = true;
-      dnscrypt_servers = false;
-
-      sources = {
-        odoh-servers = {
-          urls = [
-            "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/odoh-servers.md"
-            "https://download.dnscrypt.info/resolvers-list/v3/odoh-servers.md"
-          ];
-          cache_file = "${StatePath}/odoh-servers.md";
-          minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
-        };
-        odoh-relays = {
-          urls = [
-            "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/odoh-relays.md"
-            "https://download.dnscrypt.info/resolvers-list/v3/odoh-relays.md"
-          ];
-          cache_file = "${StatePath}/odoh-relays.md";
-          minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
-        };
+      sources.public-resolvers = {
+        urls = [ "https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md" ];
+        cache_file = "${StatePath}/public-resolvers.md";
+        minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
       };
 
-      anonymized_dns = {
-        skip_incompatible = true;
-        routes = [
-          { server_name = "odoh-cloudflare"; via = [ "odohrelay-crypto-sx" ]; }
-          { server_name = "odoh-crypto-sx"; via = [ "odohrelay-koki-ams" ]; }
-        ];
-      };
-
-      # Blocklist - ads/trackers/malware
       blocked_names.blocked_names_file = "${blocklist_txt}";
 
-      # Security
       require_dnssec = true;
       require_nolog = true;
       require_nofilter = false;
       timeout = 2500;
       keepalive = 30;
-
       ipv6_servers = true;
       block_ipv6 = false;
     };

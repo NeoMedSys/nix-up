@@ -37,6 +37,7 @@ jobs:
           }
           EOF
 
+      - run: nix flake update oisd
       - run: nix flake check
       - run: nix flake show
       - run: echo "=== user-config.nix content ===" && cat user-config.nix

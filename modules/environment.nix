@@ -7,7 +7,8 @@ let
       -gravity center -resize 96x96^ -extent 96x96 $out
   '';
   resolvConfForSandbox = pkgs.writeText "resolv.conf" ''
-    nameserver 127.0.0.1
+    nameserver 1.1.1.1
+    nameserver 8.8.8.8
   '';
 in
 {
