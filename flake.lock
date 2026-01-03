@@ -46,7 +46,47 @@
         "url": "https://flakehub.com/f/ipetkov/crane/0"
       }
     },
+    "danksearch": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1766814755,
+        "narHash": "sha256-iVZHhERnR07PMLSjVMW/72ah7ezyqaxdADmJQ8FdToU=",
+        "owner": "AvengeMedia",
+        "repo": "danksearch",
+        "rev": "2356124150c7a35a735d88a3d54a941b6cfe3a02",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "danksearch",
+        "type": "github"
+      }
+    },
     "dgop": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765838956,
+        "narHash": "sha256-A3a2ZfvjirX8VIdIPI+nAyukWs6vx4vet3fU0mpr7lU=",
+        "owner": "AvengeMedia",
+        "repo": "dgop",
+        "rev": "0ff697a4e3418966caa714c838fc73f1ef6ba59b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dgop",
+        "type": "github"
+      }
+    },
+    "dgop_2": {
       "inputs": {
         "nixpkgs": [
           "dms",
@@ -89,7 +129,7 @@
     },
     "dms": {
       "inputs": {
-        "dgop": "dgop",
+        "dgop": "dgop_2",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -363,6 +403,18 @@
         "type": "github"
       }
     },
+    "oisd": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-KY+xqXiLrT5yMRURAndbO4R66k0Dk/tAXC84SCTR4q4=",
+        "type": "file",
+        "url": "https://big.oisd.nl/domainswild"
+      },
+      "original": {
+        "type": "file",
+        "url": "https://big.oisd.nl/domainswild"
+      }
+    },
     "quickshell": {
       "inputs": {
         "nixpkgs": [
@@ -389,12 +441,15 @@
       "inputs": {
         "betterfox": "betterfox",
         "catppuccin-firefox": "catppuccin-firefox",
+        "danksearch": "danksearch",
+        "dgop": "dgop",
         "disko": "disko",
         "dms": "dms",
         "flakehub": "flakehub",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
         "nixvim": "nixvim",
+        "oisd": "oisd",
         "sops-nix": "sops-nix",
         "thunderbird-catppuccin": "thunderbird-catppuccin"
       }

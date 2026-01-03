@@ -2,7 +2,7 @@
 {
   programs.firefox = {
     enable = true;
-    package = pkgs.firefox; # Use the standard Firefox package
+    package = pkgs.firefox;
 
     policies = import ./policies.nix { inherit lib; };
 

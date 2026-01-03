@@ -5,6 +5,8 @@ let
   sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
   perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
   dms = inputs.dms.packages.${pkgs.system}.default;
+  dgop = inputs.dgop.packages.${pkgs.system}.default;
+  ntl-daemon = pkgs.callPackage ../pkgs/ntl-daemon.nix {};
 in
 {
   # Global software packages to install
@@ -19,6 +21,7 @@ in
 
     # System utilities
     dms
+    dgop
     quickshell
     direnv
     btop
@@ -33,8 +36,11 @@ in
     usbutils
     iw
     bolt
+    upower
     v4l-utils
     libcamera
+    networkmanagerapplet
+    ntl-daemon
 
     # ipu6
     gst_all_1.gstreamer
@@ -59,14 +65,10 @@ in
     gnupg
     libnotify
     mdcat
-    networkmanagerapplet
-    gammastep
     xwayland-satellite
 
     # Wayland-specific tools
     wl-clipboard
-    grim
-    slurp
     xdg-desktop-portal
     xdg-desktop-portal-wlr
     sweet # GTK theme
@@ -145,6 +147,11 @@ in
     fira-code-symbols
     papirus-icon-theme
     bibata-cursors
+    adwaita-icon-theme
+    hicolor-icon-theme
+    tela-icon-theme
+
+    libayatana-appindicator
 
     # Pandoc and live MD rendering script
     pandoc

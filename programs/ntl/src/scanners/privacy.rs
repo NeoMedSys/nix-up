@@ -5,6 +5,7 @@ use crate::Args;
 use anyhow::Result;
 use std::fs;
 use std::net::ToSocketAddrs;
+use std::process::Command;
 
 pub struct PrivacyScanner;
 
@@ -20,6 +21,9 @@ impl Scanner for PrivacyScanner {
 
         // 3. HARDWARE TRACKING CHECK
         check_mac_privacy(report);
+
+        // 4. [NEW] RUNTIME DNS LEAK CHECK
+        check_runtime_dns_leaks(report);
 
         Ok(())
     }
@@ -96,6 +100,62 @@ fn check_mac_privacy(report: &mut Report) {
                 "Tracking", 
                 "WiFi MAC Address randomization does not appear to be enforced in global config."
             );
+        }
+    }
+}
+
+
+fn check_runtime_dns_leaks(report: &mut Report) {
+    report.increment_checked();
+
+    // Check for established connections to port 53
+    if let Ok(output) = Command::new("ss")
+        .args(["-tunp", "state", "established"])
+        .output()
+    {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        for line in stdout.lines() {
+            let parts: Vec<&str> = line.split_whitespace().collect();
+            if parts.len() >= 5 {
+                let remote = parts[4];
+                if remote.ends_with(":53")
+                    && !remote.starts_with("127.0.0.1:")
+                    && !remote.starts_with("[::1]:")
+                    && !remote.starts_with("127.0.0.53:")
+                {
+                    report.add_issue(
+                        ScanLevel::Critical,
+                        "DNSLeak",
+                        &format!("Active DNS connection bypassing localhost: {}", line.trim())
+                    );
+                }
+            }
+        }
+    }
+
+    // Check for UDP sockets to port 53
+    if let Ok(output) = Command::new("ss")
+        .args(["-unp"])
+        .output()
+    {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        for line in stdout.lines() {
+            let parts: Vec<&str> = line.split_whitespace().collect();
+            if parts.len() >= 5 {
+                let remote = parts[4];
+                if remote.ends_with(":53")
+                    && !remote.starts_with("127.0.0.1:")
+                    && !remote.starts_with("[::1]:")
+                    && !remote.starts_with("127.0.0.53:")
+                    && !remote.starts_with("*:")
+                {
+                    report.add_issue(
+                        ScanLevel::Warning,
+                        "DNSLeak",
+                        &format!("Process with external DNS socket: {}", line.trim())
+                    );
+                }
+            }
         }
     }
 }

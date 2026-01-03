@@ -63,6 +63,22 @@
       "codewhisperer.aws.amazon.com"
       "ai.jetbrains.com"
       "ai-assistant.jetbrains.com"
+
+      # DoH/DoT bypass prevention - force apps to use system DNS
+      "mozilla.cloudflare-dns.com"
+      "dns.google"
+      "dns.google.com"
+      "cloudflare-dns.com"
+      "one.one.one.one"
+      "1dot1dot1dot1.cloudflare-dns.com"
+      "dns.quad9.net"
+      "dns9.quad9.net"
+      "dns10.quad9.net"
+      "dns11.quad9.net"
+      "doh.opendns.com"
+      "doh.cleanbrowsing.org"
+      "dns.adguard.com"
+      "dns.nextdns.io"
     ];
   };
 
