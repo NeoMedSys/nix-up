@@ -3,6 +3,7 @@ let
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
   sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
+  sandboxed-logseq = import ../pkgs/sandboxed-logseq.nix { inherit pkgs userConfig; };
   perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
   dms = inputs.dms.packages.${pkgs.system}.default;
   dgop = inputs.dgop.packages.${pkgs.system}.default;
@@ -124,6 +125,8 @@ in
     lynis
 
     # Office and document tools
+    rnote
+    sandboxed-logseq
     onlyoffice-desktopeditors
     zathura
     evince

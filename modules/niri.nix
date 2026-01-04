@@ -145,6 +145,15 @@
         draw-border-with-background false
     }
 
+    // logaseq
+    window-rule {
+        match app-id="logseq"
+        open-on-workspace "strategy"
+        open-maximized true
+        opacity 0.95
+    }
+
+
     // =====================
     // KEY BINDINGS
     // =====================
@@ -154,6 +163,7 @@
         Mod+Shift+Q { close-window; }
         Mod+Shift+C { spawn "sh" "-c" "niri msg action reload-config"; }
         Mod+Shift+E { quit; }
+        Mod+Shift+S { spawn "logseq"; }
 
         // ===== VPN =====
         Mod+Shift+V { spawn "mullvad-toggle"; }

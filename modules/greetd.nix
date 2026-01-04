@@ -23,7 +23,7 @@
     "d /var/cache/greeter 0755 greeter greeter -"
   ];
 
-  programs.dankMaterialShell.greeter = {
+  programs.dank-material-shell.greeter = {
     enable = true;
     compositor.name = "niri";
     configHome = "/home/${userConfig.username}";
