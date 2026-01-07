@@ -42,6 +42,8 @@ in
     libcamera
     networkmanagerapplet
     ntl-daemon
+    evtest
+    libinput
 
     # ipu6
     gst_all_1.gstreamer

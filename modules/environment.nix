@@ -85,6 +85,9 @@ in
         NATACPI_ENABLE = 1;
         TPACPI_ENABLE = 1;
         TPSMAPI_ENABLE = 1;
+        USB_AUTOSUSPEND_ON_AC = "off";
+        PCIE_ASPM_ON_AC = "performance";
+        USB_DENYLIST = "0bda:5487 0bda:5413 0bda:0487 0bda:0413";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -158,6 +161,20 @@ in
   networking = {
     networkmanager = {
       enable = true;
+      dispatcherScripts = [{
+        type = "basic";
+        source = pkgs.writeText "toggle-wifi" ''
+          INTERFACE=$1
+          ACTION=$2
+          if [ "$INTERFACE" = "enp5s0u2u4" ]; then
+            if [ "$ACTION" = "up" ]; then
+              ${pkgs.networkmanager}/bin/nmcli radio wifi off
+            elif [ "$ACTION" = "down" ]; then
+              ${pkgs.networkmanager}/bin/nmcli radio wifi on
+            fi
+          fi
+        '';
+      }];
     };
     firewall = {
       allowedTCPPorts = [ 7775 443 ];
