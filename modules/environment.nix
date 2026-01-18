@@ -35,6 +35,11 @@ in
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
+      "pci=realloc"
+      "pci=assign-busses"
+      "pci=hpbussize=0x40"
+      "pcie_aspm=off"
+      "pci=nocrs"
     ];
     plymouth.enable = true;
   };
@@ -87,7 +92,7 @@ in
         TPSMAPI_ENABLE = 1;
         USB_AUTOSUSPEND_ON_AC = "off";
         PCIE_ASPM_ON_AC = "performance";
-        USB_DENYLIST = "0bda:5487 0bda:5413 0bda:0487 0bda:0413";
+        # USB_DENYLIST = "0bda:5487 0bda:5413 0bda:0487 0bda:0413";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -122,7 +127,7 @@ in
   # ========================
   users.users.${userConfig.username} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" "input" ];
+    extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" "input" "adbusers" ];
     shell = pkgs.zsh;
     packages = with pkgs; [ tree ];
     homeMode = "0751";
@@ -179,6 +184,7 @@ in
     firewall = {
       allowedTCPPorts = [ 7775 443 ];
       allowedUDPPorts = [ 53 ];
+      checkReversePath = "loose";
     };
   };
   # ========================
@@ -355,6 +361,8 @@ in
     enable = true;
     nix-direnv.enable = true;
   };
+
+  programs.adb.enable = true;
   # ========================
   # SYSTEMD SERVICES
   # ========================

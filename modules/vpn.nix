@@ -14,8 +14,9 @@
     autostart = true;
   };
 
-  # Ensure the wg-quick service doesn't start automatically on boot.
-  systemd.services.wg-quick-mullvad.wantedBy = lib.mkForce [ ];
+  # Use this if debugging mullvad setup is necessary
+  # systemd.services.wg-quick-mullvad.wantedBy = lib.mkForce [ ];
+  systemd.services.wg-quick-mullvad.wantedBy = [ "multi-user.target" ];
 
   environment.systemPackages = with pkgs; [
     wireguard-tools

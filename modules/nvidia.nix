@@ -9,6 +9,8 @@
     package = config.boot.kernelPackages.nvidiaPackages.latest;
     open = false;
     nvidiaSettings = true;
+    powerManagement.enable = true;
+    powerManagement.finegrained = false;
   };
 
   hardware.nvidia.prime = {

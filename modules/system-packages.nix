@@ -3,6 +3,8 @@ let
   sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
   sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
   sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
+  sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
+  sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
   sandboxed-logseq = import ../pkgs/sandboxed-logseq.nix { inherit pkgs userConfig; };
   perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
   dms = inputs.dms.packages.${pkgs.system}.default;
@@ -85,6 +87,7 @@ in
     # Entertainment - now handled by Flatpak
     sandboxed-spotify
     sandboxed-steam
+    # sandboxed-stremio
     mpv
 
     # Communication Apps - now handled by Flatpak
@@ -129,6 +132,7 @@ in
     # Office and document tools
     rnote
     sandboxed-logseq
+    sandboxed-teams
     onlyoffice-desktopeditors
     zathura
     evince
@@ -160,6 +164,7 @@ in
 
     # Pandoc and live MD rendering script
     pandoc
+    wkhtmltopdf
     (pkgs.writeScriptBin "mdlive" ''
       #!/bin/bash
       FILE="$1"
