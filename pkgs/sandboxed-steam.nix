@@ -36,6 +36,9 @@ let
       -E "__GLX_VENDOR_LIBRARY_NAME=nvidia" \
       -E "__GL_GSYNC_ALLOWED=1" \
       -E "__GL_VRR_ALLOWED=1" \
+      -E "NIXOS_OZONE_WL=1" \
+      -E "STEAM_RUNTIME=1" \
+      -E "SDL_JOYSTICK_HIDAPI=1"
       ${pkgs.steam}/bin/steam \
         -silent \
         -noverifyfiles \

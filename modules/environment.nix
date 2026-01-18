@@ -42,6 +42,7 @@ in
       "pci=nocrs"
     ];
     plymouth.enable = true;
+    kernelModules = [ "hid-playstation" ];
   };
   # ========================
   # LOCALIZATION & TIME
@@ -92,7 +93,8 @@ in
         TPSMAPI_ENABLE = 1;
         USB_AUTOSUSPEND_ON_AC = "off";
         PCIE_ASPM_ON_AC = "performance";
-        # USB_DENYLIST = "0bda:5487 0bda:5413 0bda:0487 0bda:0413";
+        # if TLP auotsuspend controller
+        # USB_DENYLIST = "054c:0ce6 054c:0df2";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -324,6 +326,7 @@ in
       enable = true;
       enable32Bit = true;
     };
+    steam-hardware.enable = true;
   };
   # ========================
   # XDG PORTAL CONFIGURATION
