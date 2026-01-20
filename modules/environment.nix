@@ -40,9 +40,11 @@ in
       "pci=hpbussize=0x40"
       "pcie_aspm=off"
       "pci=nocrs"
+      "split_lock_detect=warn"
+      "bluetooth.disable_ertm=1"
     ];
     plymouth.enable = true;
-    kernelModules = [ "hid-playstation" ];
+    kernelModules = [ "hid-playstation" "uhid" "uinput" ];
   };
   # ========================
   # LOCALIZATION & TIME
@@ -123,6 +125,15 @@ in
     };
     # Bluetooth
     blueman.enable = true;
+    udev.extraRules = ''
+    # PS5 DualSense controller over USB
+    KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ce6", MODE="0660", TAG+="uaccess"
+    # PS5 DualSense Edge controller over USB
+    KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0df2", MODE="0660", TAG+="uaccess"
+    
+    # Ensure uinput is accessible for Steam
+    KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"
+  '';
   };
   # ========================
   # USERS & SECURITY
