@@ -5,11 +5,11 @@ let
   } ''
     convert ${inputs.self}/${userConfig.avatarPath} \
       -gravity center -resize 96x96^ -extent 96x96 $out
-  '';
+  '' ;
   resolvConfForSandbox = pkgs.writeText "resolv.conf" ''
     nameserver 1.1.1.1
     nameserver 8.8.8.8
-  '';
+  '' ;
 in
 {
   # Inject the resolv into the Nix build sandbox env
@@ -35,11 +35,25 @@ in
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
+
+      # PCI Resource Allocation Fixes
+      # We use use_crs to respect ACPI windows, but must provide realloc 
+      # to allow the kernel to move existing BARs to make room for the dock.
       "pci=realloc"
       "pci=assign-busses"
+      "pci=use_crs"
+      
+      # Thunderbolt Window Reservation
+      # hpmemsize/hpiosize allocates "empty" space in the PCI tree specifically 
+      # for hotplugged bridges like the WD19TB.
       "pci=hpbussize=0x40"
+      "pci=hpmemsize=2G"
+      "pci=hpiosize=128M"
+
+      # IOMMU/Thunderbolt Stability
+      "iommu=pt"
+      "usbcore.autosuspend=-1"
       "pcie_aspm=off"
-      "pci=nocrs"
       "split_lock_detect=warn"
       "bluetooth.disable_ertm=1"
     ];
@@ -95,8 +109,6 @@ in
         TPSMAPI_ENABLE = 1;
         USB_AUTOSUSPEND_ON_AC = "off";
         PCIE_ASPM_ON_AC = "performance";
-        # if TLP auotsuspend controller
-        # USB_DENYLIST = "054c:0ce6 054c:0df2";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -130,7 +142,7 @@ in
     KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0ce6", MODE="0660", TAG+="uaccess"
     # PS5 DualSense Edge controller over USB
     KERNEL=="hidraw*", ATTRS{idVendor}=="054c", ATTRS{idProduct}=="0df2", MODE="0660", TAG+="uaccess"
-    
+
     # Ensure uinput is accessible for Steam
     KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"
   '';
@@ -404,9 +416,9 @@ in
     description = "Fusuma Touchpad Gestures";
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
-    path = with pkgs; [ 
+    path = with pkgs; [
       niri
-      rofi 
+      rofi
       coreutils
       libinput
       gnugrep
