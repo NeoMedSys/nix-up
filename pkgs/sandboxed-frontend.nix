@@ -5,7 +5,6 @@ pkgs.writeShellScriptBin "jail-dev" ''
   mkdir -p "$ISOLATION_DIR"
 
   USER_ID=$(id -u)
-  GROUP_ID=$(id -g)
   
   echo "🛡️ Entering Frontend Jail..."
   echo "📍 Project Home: $ISOLATION_DIR"
@@ -45,7 +44,7 @@ pkgs.writeShellScriptBin "jail-dev" ''
     --setenv XDG_RUNTIME_DIR "/run/user/$USER_ID" \
     --setenv SHELL "/run/current-system/sw/bin/zsh" \
     --setenv ZSH "${pkgs.oh-my-zsh}/share/oh-my-zsh" \
-    --setenv IN_JAIL "1" \
+    --setenv IN_JAIL "JAILED" \
     --unsetenv SSH_AUTH_SOCK \
-    /run/current-system/sw/bin/zsh -c 'export PROMPT="🛡️ [JAIL] $PROMPT"; exec zsh'
+    /run/current-system/sw/bin/zsh
 ''

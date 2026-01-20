@@ -9,11 +9,10 @@
       # Added $env_var at the start of the format to show the jail status
       format = "$env_var$username$hostname$directory$git_branch$git_state$git_status$python$nix_shell$kubectl$tofu\n$character";
       
-      # The Jail Indicator: Only appears if IN_JAIL is set
       env_var.IN_JAIL = {
         variable = "IN_JAIL";
-        format = "[$symbol]($style) ";
-        symbol = "🛡️  [JAIL]";
+        # This format string ONLY renders if the variable is NOT empty
+        format = "[🛡️ $variable]($style) ";
         style = "bold red";
       };
 
