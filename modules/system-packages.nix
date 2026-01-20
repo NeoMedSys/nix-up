@@ -6,6 +6,7 @@ let
   sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
   sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
   sandboxed-logseq = import ../pkgs/sandboxed-logseq.nix { inherit pkgs userConfig; };
+  sandboxed-frontend = pkgs.callPackage ../pkgs/sandboxed-frontend.nix {};
   perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
   dms = inputs.dms.packages.${pkgs.system}.default;
   dgop = inputs.dgop.packages.${pkgs.system}.default;
@@ -161,6 +162,9 @@ in
     tela-icon-theme
 
     libayatana-appindicator
+
+    # Never trust anything a frontend developer makes
+    sandboxed-frontend
 
     # Pandoc and live MD rendering script
     pandoc

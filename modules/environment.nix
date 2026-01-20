@@ -27,7 +27,7 @@ in
     };
     consoleLogLevel = 0;
     initrd.verbose = false;
-    kernelParams = [
+    kernelParams = lib.mkForce [
       "quiet"
       "splash"
       "boot.shell_on_fail"
@@ -35,21 +35,15 @@ in
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
-
-      # PCI Resource Allocation Fixes
-      # We use use_crs to respect ACPI windows, but must provide realloc 
-      # to allow the kernel to move existing BARs to make room for the dock.
+      # PCI Resource Allocation - Consolidated
       "pci=realloc"
       "pci=assign-busses"
       "pci=use_crs"
-      
-      # Thunderbolt Window Reservation
-      # hpmemsize/hpiosize allocates "empty" space in the PCI tree specifically 
-      # for hotplugged bridges like the WD19TB.
+      "pcie_ports=native"
+      # Thunderbolt Window Reservation (Critical for WD19TB)
       "pci=hpbussize=0x40"
       "pci=hpmemsize=2G"
       "pci=hpiosize=128M"
-
       # IOMMU/Thunderbolt Stability
       "iommu=pt"
       "usbcore.autosuspend=-1"

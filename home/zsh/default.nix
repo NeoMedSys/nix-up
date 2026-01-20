@@ -6,7 +6,17 @@
     settings = {
       add_newline = false;
       scan_timeout = 10;
-      format = "$username$hostname$directory$git_branch$git_state$git_status$python$nix_shell$kubectl$tofu\n$character";
+      # Added $env_var at the start of the format to show the jail status
+      format = "$env_var$username$hostname$directory$git_branch$git_state$git_status$python$nix_shell$kubectl$tofu\n$character";
+      
+      # The Jail Indicator: Only appears if IN_JAIL is set
+      env_var.IN_JAIL = {
+        variable = "IN_JAIL";
+        format = "[$symbol]($style) ";
+        symbol = "🛡️  [JAIL]";
+        style = "bold red";
+      };
+
       directory = {
         truncate_to_repo = false;
         read_only = " ro";
@@ -25,12 +35,7 @@
       git_status = {
         format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
         style = "cyan";
-        conflicted = "​";
-        untracked = "​";
-        modified = "​";
-        staged = "​";
-        renamed = "​";
-        deleted = "​";
+        conflicted = "​"; untracked = "​"; modified = "​"; staged = "​"; renamed = "​"; deleted = "​";
         stashed = "≡";
       };
       git_state = {
@@ -71,7 +76,7 @@
     enable = true;
     enableCompletion = true;
     syntaxHighlighting.enable = true;
-    autosuggestion.enable = true; 
+    autosuggestion.enable = true;
 
     "oh-my-zsh" = {
       enable = true;
@@ -95,12 +100,9 @@
       if [ -f /etc/profile ]; then
         . /etc/profile
       fi
-      # 1. PATH FIX: Ensures Home Manager environment (including firefox) is loaded first
       if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
         source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
       fi
-
-      # 2. HOOKS: Uses correct, escaped syntax for Direnv
       eval "$(direnv hook zsh)"
     '';
 
@@ -123,6 +125,10 @@
       n = "nvim";
       d = "docker";
       SS = "sudo systemctl";
+
+      # JAIL ALIASES
+      jail = "jail-dev";
+      jail-nuke = "jail-dev && rm -rf .sandbox";
 
       l = "${pkgs.eza}/bin/eza -lh --icons=auto";
       ll = "${pkgs.eza}/bin/eza -lha --icons=auto --sort=name --group-directories-first";

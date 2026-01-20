@@ -4,22 +4,51 @@
     enable = true;
     globals.mapleader = " ";
     
-    # Colorscheme
     colorschemes.catppuccin.enable = true;
-    
-    # Built-in plugins
+
     plugins = {
       lualine.enable = true;
       nvim-tree.enable = true;
       web-devicons.enable = true;
       
+      lsp = {
+        enable = true;
+        servers = {
+          vtsls.enable = true;
+          eslint.enable = true;
+          tailwindcss.enable = true;
+          cssls.enable = true;
+          html.enable = true;
+          jsonls.enable = true;
+        };
+      };
+
+      conform-nvim = {
+        enable = true;
+        settings = {
+          format_on_save = {
+            lsp_fallback = true;
+            timeout_ms = 500;
+          };
+          formatters_by_ft = {
+            javascript = [ "prettier" ];
+            typescript = [ "prettier" ];
+            javascriptreact = [ "prettier" ];
+            typescriptreact = [ "prettier" ];
+            css = [ "prettier" ];
+            html = [ "prettier" ];
+            json = [ "prettier" ];
+          };
+        };
+      };
+
       telescope = {
         enable = true;
         keymaps = {
           "<leader>t" = "live_grep";
         };
       };
-      
+
       treesitter = {
         enable = true;
         settings = {
@@ -28,7 +57,7 @@
           indent.enable = true;
         };
       };
-      
+
       nvim-autopairs.enable = true;
 
       bufferline = {
@@ -53,8 +82,7 @@
         };
       };
     };
-    
-    # Extra plugins not available as built-in
+
     extraPlugins = with pkgs.vimPlugins; [
       vim-easymotion
       vim-surround
@@ -62,7 +90,7 @@
       vim-terraform
       lightline-bufferline
     ];
-    
+
     keymaps = [
       {
         mode = "n";
@@ -105,12 +133,11 @@
     ];
 
     extraConfigLua = ''
-      -- vim-markdown-composer settings
       vim.g.markdown_composer_browser = 'brave'
-      vim.g.markdown_composer_open_browser = 0  -- Don't auto-open
-      vim.g.markdown_composer_refresh_rate = 0  -- Realtime updates
+      vim.g.markdown_composer_open_browser = 0 
+      vim.g.markdown_composer_refresh_rate = 0 
       vim.g.markdown_composer_syntax_theme = 'github-dark'
-      -- Enable transparency
+
       vim.cmd("highlight Normal guibg=NONE ctermbg=NONE")
       vim.cmd("highlight NonText guibg=NONE ctermbg=NONE")
     '';
@@ -123,9 +150,9 @@
       swapfile = false;
       splitbelow = true;
       splitright = true;
-      # Add transparency (85% = 15 transparency value)
       winblend = 15;
       pumblend = 15;
+      termguicolors = true;
     };
   };
 }
