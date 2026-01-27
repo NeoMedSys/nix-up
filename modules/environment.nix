@@ -45,11 +45,11 @@ in
       "pci=hpmemsize=2G"
       "pci=hpiosize=128M"
       # IOMMU/Thunderbolt Stability
+      "intel_iommu=on"
       "iommu=pt"
-      "usbcore.autosuspend=-1"
-      "pcie_aspm=off"
       "split_lock_detect=warn"
       "bluetooth.disable_ertm=1"
+      "snd_sof_intel_hda_common.all_components_lib=1"
     ];
     plymouth.enable = true;
     kernelModules = [ "hid-playstation" "uhid" "uinput" ];
@@ -96,13 +96,14 @@ in
         DEVICES_TO_DISABLE_ON_STARTUP = "";
         TLP_LID_SWITCH_AC = "ignore";
         TLP_LID_SWITCH_BAT = "ignore";
-        WIFI_PWR_ON_AC = "off";
-        WIFI_PWR_ON_BAT = "off";
+        WIFI_PWR_ON_AC = "on";
+        WIFI_PWR_ON_BAT = "on";
         NATACPI_ENABLE = 1;
         TPACPI_ENABLE = 1;
         TPSMAPI_ENABLE = 1;
-        USB_AUTOSUSPEND_ON_AC = "off";
-        PCIE_ASPM_ON_AC = "performance";
+        USB_AUTOSUSPEND_ON_AC = "on";
+        USB_AUTOSUSPEND_ON_BAT = "on";
+        PCIE_ASPM_ON_AC = "powersave";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -302,8 +303,6 @@ in
   # NIX CONFIGURATION
   # ========================
 
-  nixpkgs.config.allowUnfree = true;
-
   nix = {
     gc = {
       automatic = true;
@@ -344,6 +343,7 @@ in
       enable32Bit = true;
     };
     steam-hardware.enable = true;
+    enableAllFirmware = true;
   };
   # ========================
   # XDG PORTAL CONFIGURATION

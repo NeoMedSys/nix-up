@@ -41,6 +41,7 @@ in
     iw
     bolt
     upower
+    powertop
     v4l-utils
     libcamera
     networkmanagerapplet

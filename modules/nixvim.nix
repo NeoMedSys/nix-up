@@ -3,14 +3,14 @@
   programs.nixvim = {
     enable = true;
     globals.mapleader = " ";
-    
+
     colorschemes.catppuccin.enable = true;
 
     plugins = {
       lualine.enable = true;
       nvim-tree.enable = true;
       web-devicons.enable = true;
-      
+
       lsp = {
         enable = true;
         servers = {
@@ -28,7 +28,7 @@
         settings = {
           format_on_save = {
             lsp_fallback = true;
-            timeout_ms = 500;
+            timeout_ms = 3000; # Increased from 500 to 3000 to prevent Prettier timeouts
           };
           formatters_by_ft = {
             javascript = [ "prettier" ];
@@ -134,8 +134,8 @@
 
     extraConfigLua = ''
       vim.g.markdown_composer_browser = 'brave'
-      vim.g.markdown_composer_open_browser = 0 
-      vim.g.markdown_composer_refresh_rate = 0 
+      vim.g.markdown_composer_open_browser = 0
+      vim.g.markdown_composer_refresh_rate = 0
       vim.g.markdown_composer_syntax_theme = 'github-dark'
 
       vim.cmd("highlight Normal guibg=NONE ctermbg=NONE")
