@@ -27,7 +27,7 @@ in
     };
     consoleLogLevel = 0;
     initrd.verbose = false;
-    kernelParams = lib.mkForce [
+    kernelParams = [
       "quiet"
       "splash"
       "boot.shell_on_fail"
