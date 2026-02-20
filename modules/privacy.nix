@@ -1,6 +1,6 @@
 { lib, pkgs, inputs, ... }:
 let
-  blocklist_txt = pkgs.writeText "blocklist.txt" (builtins.readFile inputs.oisd);
+  # blocklist_txt = pkgs.writeText "blocklist.txt" # (builtins.readFile inputs.oisd);
   StateDirName = "dnscrypt-proxy";
   StatePath = "/var/lib/${StateDirName}";
 in
@@ -17,7 +17,7 @@ in
         minisign_key = "RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3";
       };
 
-      blocked_names.blocked_names_file = "${blocklist_txt}";
+      # blocked_names.blocked_names_file = "${blocklist_txt}";
 
       require_dnssec = true;
       require_nolog = true;

@@ -3,7 +3,7 @@
 let
   teams-launcher = pkgs.writeShellScriptBin "teams" ''
     ISOLATION_DIR="$HOME/.local/share/app-isolation/teams"
-    mkdir -p "$ISOLATION_DIR"
+    mkdir -p "$ISOLATION_DIR"/.local/share/keyrings
 
     USER_ID=$(id -u)
     WAYLAND_SOCK=''${WAYLAND_DISPLAY:-wayland-0}
@@ -25,11 +25,14 @@ let
       --ro-bind /etc/ssl /etc/ssl \
       --ro-bind /etc/resolv.conf /etc/resolv.conf \
       --ro-bind /etc/machine-id /etc/machine-id \
+      --ro-bind-try /etc/passwd /etc/passwd \
+      --ro-bind-try /etc/dbus-1 /etc/dbus-1 \
+      --ro-bind-try /usr/share/dbus-1 /usr/share/dbus-1 \
+      --ro-bind-try /etc/static /etc/static \
       --dir /run/user/$USER_ID \
       --ro-bind-try /run/user/$USER_ID/$WAYLAND_SOCK /run/user/$USER_ID/$WAYLAND_SOCK \
       --ro-bind-try /run/user/$USER_ID/pulse /run/user/$USER_ID/pulse \
       --bind-try /run/user/$USER_ID/pipewire-0 /run/user/$USER_ID/pipewire-0 \
-      --ro-bind-try /run/user/$USER_ID/bus /run/user/$USER_ID/bus \
       --ro-bind /dev/dri /dev/dri \
       --ro-bind-try /dev/video0 /dev/video0 \
       --ro-bind-try /dev/video1 /dev/video1 \
@@ -37,15 +40,20 @@ let
       --setenv HOME "$HOME" \
       --setenv XDG_RUNTIME_DIR "/run/user/$USER_ID" \
       --setenv WAYLAND_DISPLAY "$WAYLAND_SOCK" \
-      --setenv DBUS_SESSION_BUS_ADDRESS "unix:path=/run/user/$USER_ID/bus" \
       --setenv XDG_SESSION_TYPE "wayland" \
       --setenv XDG_CURRENT_DESKTOP "sway" \
-      ${pkgs.teams-for-linux}/bin/teams-for-linux \
-        --ozone-platform=wayland \
-        --enable-features=UseOzonePlatform,WebRTCPipeWireCapturer \
-        --disable-features=WebRtcUsePortal \
-        --enable-wayland-ime \
-        "$@"
+      -- \
+      ${pkgs.dbus}/bin/dbus-run-session -- ${pkgs.bash}/bin/bash -c '
+        eval $(${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --start --components=secrets)
+        export GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
+        
+        exec ${pkgs.teams-for-linux}/bin/teams-for-linux \
+          --ozone-platform=wayland \
+          --enable-features=UseOzonePlatform,WebRTCPipeWireCapturer \
+          --disable-features=WebRtcUsePortal \
+          --enable-wayland-ime \
+          "$@"
+      ' -- "$@"
   '';
 in
 pkgs.stdenv.mkDerivation {
@@ -68,7 +76,7 @@ Type=Application
 Name=Teams (Prison)
 Comment=Microsoft Teams (Strict Bubblewrap Isolation)
 Exec=$out/bin/teams %u
-Icon=$out/share/icons/hicolor/scalable/apps/teams.svg
+Icon=teams
 Terminal=false
 MimeType=x-scheme-handler/msteams;
 Categories=Network;InstantMessaging;

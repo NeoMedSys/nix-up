@@ -4,17 +4,17 @@ let
 
   clammy-start-script = pkgs.writeShellScriptBin "clammy-start-session" ''
     #!${pkgs.bash}/bin/bash
-    
+
     # Wait for niri to fully initialize
     ${pkgs.coreutils}/bin/sleep 2
-    
+
     # Import environment and wait for completion
     ${pkgs.systemd}/bin/systemctl --user import-environment --wait \
       WAYLAND_DISPLAY \
       XDG_RUNTIME_DIR \
       DBUS_SESSION_BUS_ADDRESS \
       NIRI_SOCKET
-    
+
     ${pkgs.systemd}/bin/systemctl --user restart clammy.service
   '';
   # (clammy-dbus-policy remains the same)
@@ -47,10 +47,10 @@ in
   systemd.user.services.clammy = {
     description = "Clammy - Clamshell mode daemon for Wayland";
     partOf = [ "graphical-session.target" ];
-    
+
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${clammy}/bin/clammy --verbose";
+      ExecStart = "${clammy}/bin/clammy";
       Restart = "on-failure";
       RestartSec = "5s";
       PassEnvironment = "WAYLAND_DISPLAY NIRI_SOCKET XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS";

@@ -104,6 +104,11 @@ in
         USB_AUTOSUSPEND_ON_AC = "on";
         USB_AUTOSUSPEND_ON_BAT = "on";
         PCIE_ASPM_ON_AC = "powersave";
+        
+        # EXTREMELY IMPORTANT: Consolidated PCIe Denylist
+        # 0000:00:0d.2 / 0000:00:0d.3 = Thunderbolt controllers
+        # 01:00.0 = Nvidia GPU
+        RUNTIME_PM_DENYLIST = "0000:00:0d.2 0000:00:0d.3 01:00.0";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -224,6 +229,9 @@ in
       GST_PLUGIN_PATH = "/run/current-system/sw/lib/gstreamer-1.0";
       PIPEWIRE_LATENCY = "256/48000";
       QT_LOGGING_RULES = "qt.svg.warning=false;qt.qpa.wayland.warning=false";
+      
+      # Forces Wayland compositors to prioritize the Nvidia GPU (card0) over Intel (card1)
+      WLR_DRM_DEVICES = "/dev/dri/card0:/dev/dri/card1";
     };
     etc = {
       "boltd.conf".text = ''
