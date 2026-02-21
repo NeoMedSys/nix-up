@@ -68,9 +68,6 @@
       "mozilla.cloudflare-dns.com"
       "dns.google"
       "dns.google.com"
-      "cloudflare-dns.com"
-      "one.one.one.one"
-      "1dot1dot1dot1.cloudflare-dns.com"
       "dns.quad9.net"
       "dns9.quad9.net"
       "dns10.quad9.net"
@@ -89,7 +86,6 @@
     DOTNET_CLI_TELEMETRY_OPTOUT = "1";
     VSCODE_TELEMETRY_LEVEL = "off";
     NEXT_TELEMETRY_DISABLED = "1";
-    HOSTNAME = "research-workstation";
     ELECTRON_DISABLE_CRASH_REPORTER = "1";
     NPM_CONFIG_DISABLE_UPDATE_NOTIFIER = "true";
     ZOOM_DISABLE_TELEMETRY = "1";
@@ -100,8 +96,6 @@
     CURSOR_DISABLE_AI = "1";
     VSCODE_DISABLE_WORKSPACE_TRUST = "1";
     JETBRAINS_AI_DISABLED = "1";
-    OPENAI_API_KEY = "";
-    ANTHROPIC_API_KEY = "";
     DISABLE_OPENCOLLECTIVE = "1";
   };
 }

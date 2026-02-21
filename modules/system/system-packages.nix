@@ -1,16 +1,11 @@
-{ pkgs, userConfig ? null, flakehub, inputs, ... }:
+{pkgs, userConfig ? null, flakehub, inputs, ... }:
 let
-  sandboxed-slack = import ../pkgs/sandboxed-slack.nix { inherit pkgs; };
-  sandboxed-spotify = import ../pkgs/sandboxed-spotify.nix { inherit pkgs; };
-  sandboxed-steam = import ../pkgs/sandboxed-steam.nix { inherit pkgs; };
-  sandboxed-teams = import ../pkgs/sandboxed-teams.nix { inherit pkgs; };
-  sandboxed-stremio = import ../pkgs/sandboxed-stremio.nix { inherit pkgs; };
-  sandboxed-logseq = import ../pkgs/sandboxed-logseq.nix { inherit pkgs userConfig; };
-  sandboxed-frontend = pkgs.callPackage ../pkgs/sandboxed-frontend.nix {};
-  perseus-net = pkgs.callPackage ../pkgs/perseus-net.nix {};
+  sandboxed-logseq = import ../../packages/sandboxed-logseq.nix { inherit pkgs userConfig; };
+  sandboxed-frontend = pkgs.callPackage ../../packages/sandboxed-frontend.nix {};
+  perseus-net = pkgs.callPackage ../../packages/perseus-net.nix {};
   dms = inputs.dms.packages.${pkgs.system}.default;
   dgop = inputs.dgop.packages.${pkgs.system}.default;
-  ntl-daemon = pkgs.callPackage ../pkgs/ntl-daemon.nix {};
+  ntl-daemon = pkgs.callPackage ../../packages/ntl-daemon.nix {};
 in
 {
   # Global software packages to install
@@ -32,7 +27,6 @@ in
     jq
     fastfetch
     fzf
-    libinput
     ripgrep
     tmux
     ydotool
@@ -77,7 +71,6 @@ in
     # Wayland-specific tools
     wl-clipboard
     xdg-desktop-portal
-    xdg-desktop-portal-wlr
     sweet # GTK theme
 
     # Network and Bluetooth GUI tools
@@ -87,13 +80,11 @@ in
     alacritty
 
     # Entertainment - now handled by Flatpak
-    sandboxed-spotify
-    sandboxed-steam
     # sandboxed-stremio
     mpv
 
     # Communication Apps - now handled by Flatpak
-    sandboxed-slack
+    # sandboxed-slack
 
     # Gaming utilities
     gamemode
@@ -134,7 +125,7 @@ in
     # Office and document tools
     rnote
     sandboxed-logseq
-    sandboxed-teams
+    # sandboxed-teams
     onlyoffice-desktopeditors
     zathura
     evince

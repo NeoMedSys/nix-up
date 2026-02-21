@@ -1,6 +1,6 @@
 { pkgs, lib, inputs, ... }:
 let
-  clammy = pkgs.callPackage ../pkgs/clammy.nix { inherit inputs; };
+  clammy = pkgs.callPackage ../../packages/clammy.nix { inherit inputs; };
 
   clammy-start-script = pkgs.writeShellScriptBin "clammy-start-session" ''
     #!${pkgs.bash}/bin/bash

@@ -13,9 +13,10 @@
 
     flakehub.url = "github:DeterminateSystems/fh";
 
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
+
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
 
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -26,12 +27,8 @@
     danksearch.url = "github:AvengeMedia/danksearch";
     danksearch.inputs.nixpkgs.follows = "nixpkgs";
 
-    #oisd = {
-    #  url = "https://big.oisd.nl/domainswild";
-    #  flake = false;
-    #};
-
     thunderbird-catppuccin.url = "github:catppuccin/thunderbird";
+
     catppuccin-firefox = {
       url = "github:catppuccin/firefox";
       flake = false;
@@ -48,32 +45,32 @@
     version = "1.3.0";
     userConfig = import ./user-config.nix;
     lib = nixpkgs.lib;
-
-    mkSystem = { ... }:
-      nixpkgs.lib.nixosSystem {
+  in
+  {
+    nixosConfigurations = {
+      "${userConfig.hostname}" = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs version flakehub userConfig;
         };
         modules = [
-          ./system/configuration.nix
+          ./hosts/perseus/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
+          inputs.nix-flatpak.nixosModules.nix-flatpak
           home-manager.nixosModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = { inherit inputs userConfig; };
+              users.${userConfig.username} = import ./home/default.nix;
+              backupFileExtension = "backup";
             };
           }
-          ] ++ lib.optionals userConfig.vpn [
+        ] ++ lib.optionals userConfig.vpn [
           inputs.sops-nix.nixosModules.sops
         ];
       };
-  in
-  {
-    nixosConfigurations = {
-      "${userConfig.hostname}" = mkSystem {};
     };
   };
 }

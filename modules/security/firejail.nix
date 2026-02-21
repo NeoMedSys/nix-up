@@ -4,7 +4,7 @@
   programs.firejail = {
     enable = true;
     wrappedBinaries = {
-      firfox ={
+      firefox ={
         executable = "${pkgs.firefox}/bin/firefox";
         profile = "${pkgs.firejail}/etc/firejail/firefox.profile";
       };

@@ -1,6 +1,6 @@
 { pkgs, userConfig, config, ... }:
 let
-  nastyTechLords = pkgs.callPackage ../pkgs/ntl.nix {};
+  nastyTechLords = pkgs.callPackage ../../packages/ntl.nix {};
 
   ntlCli = pkgs.writeShellScriptBin "ntl" ''
     #!/usr/bin/env bash

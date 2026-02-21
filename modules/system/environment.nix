@@ -353,21 +353,7 @@ in
     steam-hardware.enable = true;
     enableAllFirmware = true;
   };
-  # ========================
-  # XDG PORTAL CONFIGURATION
-  # ========================
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
-    config = {
-      common = {
-        # Don't set default here - let sway.nix handle it
-        "org.freedesktop.impl.portal.Camera" = "gtk";
-        "org.freedesktop.impl.portal.Screenshot" = "wlr";
-        "org.freedesktop.impl.portal.ScreenCast" = "wlr";
-      };
-    };
-  };
+
   # ========================
   # VIRTUALIZATION
   # ========================

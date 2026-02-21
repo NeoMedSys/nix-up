@@ -49,10 +49,8 @@ pkgs.writeShellScriptBin "jail-dev" ''
     --chdir "$(pwd)" \
     --ro-bind-try "$HOME/.gitconfig" "$HOME/.gitconfig" \
     --ro-bind-try "$HOME/.ssh/known_hosts" "$HOME/.ssh/known_hosts" \
-    --ro-bind-try "$HOME/.ssh/id_ed25519" "$HOME/.ssh/id_ed25519" \
     --ro-bind-try "$HOME/.ssh/config" "$HOME/.ssh/config" \
-    --ro-bind-try "$HOME/.config" "$HOME/.config" \
-    --ro-bind-try "$HOME/.local/share" "$HOME/.local/share" \
+    --ro-bind-try "$HOME/.config/git" "$HOME/.config/git" \
     --ro-bind-try "$HOME/.zshrc" "$HOME/.zshrc" \
     --ro-bind-try "$HOME/.p10k.zsh" "$HOME/.p10k.zsh" \
     --setenv HOME "$HOME" \

@@ -368,8 +368,5 @@
     
     # Symlink main config
     ln -sf /etc/niri/config.kdl ~/.config/niri/config.kdl
-    
-    # Copy wallpaper
-    cp ${inputs.self}/${userConfig.wallpaperPath} ~/.config/sway/wallpaper.png 2>/dev/null || true
   '';
 }
