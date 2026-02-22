@@ -81,10 +81,13 @@ pub fn run_wayland_listener(
                 info!("Wayland thread: Received LidClosed command");
                 let mut guard = wl_delegate.state.lock().unwrap();
                 guard.lid_closed = true;
-                drop(guard); // Release lock before calling configure
-                let guard = wl_delegate.state.lock().unwrap();
-                if let Err(e) = wayland_output::configure_clamshell(&guard, &wl_delegate, &qh) {
-                    error!("Failed to configure clamshell: {}", e);
+                let has_externals = !guard.external_monitors.is_empty();
+                drop(guard);
+                if has_externals {
+                    let guard = wl_delegate.state.lock().unwrap();
+                    if let Err(e) = wayland_output::configure_clamshell(&guard, &wl_delegate, &qh) {
+                        error!("Failed to configure clamshell: {}", e);
+                    }
                 }
             }
             Ok(WaylandCommand::LidOpened) => {
