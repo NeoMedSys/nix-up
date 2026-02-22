@@ -1,8 +1,8 @@
-![CI/CD](https://github.com/NeoMedSys/perseus/actions/workflows/perseus.yaml/badge.svg)
-![Version](https://img.shields.io/github/v/tag/NeoMedSys/perseus)
-[![FlakeHub](https://img.shields.io/badge/flakehub-NeoMedSys/perseus-blue)](https://flakehub.com/flake/NeoMedSys/perseus)
+![CI/CD](https://github.com/NeoMedSys/nix-up/actions/workflows/nix-up.yaml/badge.svg)
+![Version](https://img.shields.io/github/v/tag/NeoMedSys/nix-up)
+[![FlakeHub](https://img.shields.io/badge/flakehub-NeoMedSys/nix--up-blue)](https://flakehub.com/flake/NeoMedSys/nix-up)
 
-# Perseus 🛡️
+# NixUp 🛡️
 
 A declarative, privacy-hardened NixOS configuration. Built for Wayland, aggressive application sandboxing, and local network control.
 
@@ -66,7 +66,7 @@ Both **LibreWolf** and **Firefox** are provisioned with declarative policies.
 ## Project Structure
 
 ```
-hosts/perseus/          # Machine-specific NixOS and hardware config
+hosts/default/          # Machine-specific NixOS and hardware config
 modules/
   apps/                 # Flatpak, LibreWolf, Thunderbird
   dev/                  # Language tooling, nixvim
@@ -86,28 +86,39 @@ secrets/                # sops-encrypted VPN config
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/NeoMedSys/perseus
-   cd perseus
+   git clone https://github.com/NeoMedSys/nix-up
+   cd nix-up
    ```
 
 2. Run the setup script **(required)**:
    ```bash
-   ./perseus.sh
+   ./setup.sh
    ```
-   Generates `user-config.nix` with your hardware flags, preferences, and coordinates. Sets up Git smudge/clean filters so personal data never reaches the remote.
+   Interactive wizard that detects hardware, lets you choose browsers, dev tools, Flatpak apps, and optional modules. Generates `user-config.nix` and sets up Git smudge/clean filters so personal data never reaches the remote. Copies `hardware-configuration.nix` automatically if found.
 
-3. Copy your hardware config:
-   ```bash
-   sudo cp /etc/nixos/hardware-configuration.nix hosts/perseus/
-   ```
-
-4. Build and install:
+3. Build and install:
    ```bash
    sudo nixos-install --flake .#<your-hostname>
    sudo reboot
    ```
 
 > **First install**: Set `hasGPU` and `vpn` to `false` in `user-config.nix`. Enable after first successful boot.
+
+### What's configurable
+
+Everything toggleable lives in `user-config.nix`:
+
+| Key | Type | Effect |
+|-----|------|--------|
+| `isLaptop` | bool | Enables clammy (idle/lock/suspend daemon) |
+| `hasGPU` | bool | NVIDIA drivers + Prime offloading |
+| `thunderbolt` | bool | Thunderbolt/dock support |
+| `vpn` | bool | Mullvad WireGuard + sops-nix secrets |
+| `email` | bool | Thunderbird |
+| `flatpakApps` | list | Which Flatpak apps to install (empty = no Flatpak) |
+| `browsers` | list | `"librewolf"`, `"firefox"`, or both |
+| `devTools` | list | `"python"`, `"go"`, `"rust"`, `"node"` |
+| `extraHosts` | attrset | Custom `/etc/hosts` entries |
 
 ### VPN Setup (Optional)
 
@@ -129,7 +140,7 @@ Requires `vpn = true;` in `user-config.nix`.
 
 ```bash
 nix flake update                                    # Update inputs
-sudo nixos-rebuild switch --flake .#perseus         # Rebuild
+sudo nixos-rebuild switch --flake .#<hostname>         # Rebuild
 sudo nixos-rebuild switch --rollback                # Rollback
 ntl report                                          # Security audit report
 ```
