@@ -1,7 +1,5 @@
 { config, pkgs, userConfig, ... }:
 {
-  nixpkgs.config.allowUnfree = true;
-
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # Force kernel parameters and early KMS for Wayland compatibility

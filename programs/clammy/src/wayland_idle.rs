@@ -97,6 +97,7 @@ impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegat
 
 				if is_dpms_off {
 					info!("Idle timer (DPMS Off) fired: IDLED");
+                                        state.state.lock().unwrap().displays_off = true;
 					if let Err(e) = wayland_output::dpms_off(state, qh) {
 						error!("Failed to turn displays off: {}", e);
 					}
@@ -123,6 +124,7 @@ impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegat
 				}
 
 				if is_dpms_off {
+                                        state.state.lock().unwrap().displays_off = false; 
 					info!("Idle timer (DPMS Off) fired: RESUMED");
 					if let Err(e) = wayland_output::dpms_on(state, qh) {
 						error!("Failed to turn displays on: {}", e);

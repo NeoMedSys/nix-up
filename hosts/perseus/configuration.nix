@@ -66,6 +66,7 @@
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs.config.allowUnfree = true;
 
   # NEVER change after initial install
   system.stateVersion = "25.05";
