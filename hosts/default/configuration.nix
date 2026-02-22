@@ -1,18 +1,10 @@
 { lib, inputs, userConfig, pkgs, ... }:
 {
   imports = [
-    # Hardware
-    "${inputs.self}/hosts/perseus/hardware-configuration.nix"
-
-    # Pass userConfig to all modules
+    "${inputs.self}/hosts/default/hardware-configuration.nix"
     ({ ... }: { _module.args = { inherit userConfig; }; })
-
-    # Shell integration
     inputs.dms.nixosModules.default
-
-    # ========================
-    # SYSTEM
-    # ========================
+    # ── Always loaded ──
     "${inputs.self}/modules/system/environment.nix"
     "${inputs.self}/modules/system/system-packages.nix"
     "${inputs.self}/modules/system/greetd.nix"
@@ -20,54 +12,34 @@
     "${inputs.self}/modules/system/dms.nix"
     "${inputs.self}/modules/system/zsh.nix"
     "${inputs.self}/modules/system/notify.nix"
-
-    # ========================
-    # HARDWARE
-    # ========================
-    "${inputs.self}/modules/hardware/thunderbolt-ethernet.nix"
-    "${inputs.self}/modules/hardware/clammy.nix"
-
-    # ========================
-    # SECURITY
-    # ========================
     "${inputs.self}/modules/security/privacy.nix"
     "${inputs.self}/modules/security/techoverlord_protection.nix"
     "${inputs.self}/modules/security/app-telemetry-deny.nix"
     "${inputs.self}/modules/security/firejail.nix"
     "${inputs.self}/modules/security/ssh-config.nix"
-
-    # ========================
-    # APPS
-    # ========================
-    "${inputs.self}/modules/apps/thunderbird.nix"
-    "${inputs.self}/modules/apps/flatpak.nix"
-
-    # ========================
-    # DEVELOPMENT
-    # ========================
     "${inputs.self}/modules/dev/nixvim.nix"
     "${inputs.self}/modules/dev/gpl.nix"
-
-  # Conditional: GPU
-  ] ++ lib.optionals userConfig.hasGPU [
+  # ── Conditional ──
+  ] ++ lib.optionals (userConfig.isLaptop or false) [
+    "${inputs.self}/modules/hardware/clammy.nix"
+  ] ++ lib.optionals (userConfig.thunderbolt or false) [
+    "${inputs.self}/modules/hardware/thunderbolt-ethernet.nix"
+  ] ++ lib.optionals (userConfig.hasGPU or false) [
     "${inputs.self}/modules/hardware/nvidia.nix"
-
-  # Conditional: VPN
-  ] ++ lib.optionals userConfig.vpn [
+  ] ++ lib.optionals (userConfig.vpn or false) [
     "${inputs.self}/modules/security/vpn.nix"
     "${inputs.self}/modules/security/secrets.nix"
+  ] ++ lib.optionals (userConfig.email or false) [
+    "${inputs.self}/modules/apps/thunderbird.nix"
+  ] ++ lib.optionals ((userConfig.flatpakApps or []) != []) [
+    "${inputs.self}/modules/apps/flatpak.nix"
   ];
 
-  # System identification
   networking.hostName = userConfig.hostname;
-  networking.hosts = {
-    "10.54.218.134" = [ "access.neomedsys.io" "neocoms.neomedsys.io" "auth.neomedsys.io" ];
-  };
+  networking.hosts = lib.mkIf (userConfig ? extraHosts) userConfig.extraHosts;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.config.allowUnfree = true;
-
-  # NEVER change after initial install
   system.stateVersion = "25.05";
 }

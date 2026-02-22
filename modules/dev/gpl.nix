@@ -5,7 +5,7 @@ let
 
   goPackages = with pkgs; [ go gopls ];
   rustPackages = with pkgs; [ rustc cargo rust-analyzer clippy ];
-  nextjsPackages = with pkgs; [ 
+  nodePkgs = with pkgs; [ 
     nodejs_22 
     nodePackages.pnpm 
     typescript
@@ -18,7 +18,7 @@ in
   environment.systemPackages =
     (lib.optionals (hasDevTool "go") goPackages) ++
     (lib.optionals (hasDevTool "rust") rustPackages) ++
-    (lib.optionals (hasDevTool "nextjs") nextjsPackages);
+    (lib.optionals (hasDevTool "node") nodePkgs);
 
   environment.variables = lib.mkMerge [
     (lib.mkIf (hasDevTool "go") {
@@ -29,13 +29,13 @@ in
       CARGO_HOME = "$HOME/.cargo";
       RUSTUP_HOME = "$HOME/.rustup";
     })
-    (lib.mkIf (hasDevTool "nextjs") {
+    (lib.mkIf (hasDevTool "node") {
       NODE_OPTIONS = "--max-old-space-size=8192";
       PNPM_HOME = "$HOME/.local/share/pnpm";
     })
   ];
 
-  environment.sessionVariables = lib.mkIf (hasDevTool "nextjs") {
+  environment.sessionVariables = lib.mkIf (hasDevTool "node") {
     PATH = [ "$HOME/.local/share/pnpm" ];
   };
 }

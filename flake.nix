@@ -1,5 +1,5 @@
 {
-  description = "Perseus - NixOS Laptop Configuration";
+  description = "Nix-Up - The friendly NixOS Laptop Configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
@@ -53,7 +53,7 @@
           inherit inputs version flakehub userConfig;
         };
         modules = [
-          ./hosts/perseus/configuration.nix
+          ./hosts/default/configuration.nix
           inputs.nixvim.nixosModules.nixvim
           inputs.disko.nixosModules.disko
           inputs.nix-flatpak.nixosModules.nix-flatpak

@@ -7,13 +7,7 @@
     { name = "flathub"; location = "https://dl.flathub.org/repo/flathub.flatpakrepo"; }
   ];
 
-  services.flatpak.packages = [
-    "com.slack.Slack"
-    "com.spotify.Client"
-    "com.valvesoftware.Steam"
-    "com.github.IsmaelMartinez.teams_for_linux"
-    "us.zoom.Zoom"
-  ];
+  services.flatpak.packages = userConfig.flatpakApps or [];
 
   # Ensure Flatpak apps appear in launcher
   environment.sessionVariables = {
