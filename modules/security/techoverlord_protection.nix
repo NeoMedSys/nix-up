@@ -1,4 +1,4 @@
-{ pkgs, userConfig, config, ... }:
+{ pkgs, inputs, userConfig, config, ... }:
 let
   nastyTechLords = pkgs.callPackage ../../packages/ntl.nix {};
 
@@ -84,9 +84,11 @@ let
   uid = toString config.users.users.${userConfig.username}.uid;
 in
 {
+
   environment.systemPackages = [
     nastyTechLords
-    ntlCli
+    pkgs.alacritty
+    pkgs.libnotify
   ];
 
   systemd.services.nastyTechLords = {
@@ -126,4 +128,21 @@ in
   ];
 
   users.users.${userConfig.username}.extraGroups = [ "wheel" ];
+
+  systemd.user.services.ntl-daemon = {
+    description = "NTL Security Monitor Daemon";
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    path = [
+      ntlCli
+      pkgs.alacritty
+    ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.callPackage ../../packages/ntl-daemon.nix {}}/bin/ntl-daemon";
+      Restart = "always";
+      RestartSec = 5;
+      Environment = [ "RUST_LOG=info" "NTL_POLL_INTERVAL=28800" ];
+    };
+  };
 }

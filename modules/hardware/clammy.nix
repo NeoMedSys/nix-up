@@ -54,6 +54,7 @@ in
       Restart = "on-failure";
       RestartSec = "5s";
       PassEnvironment = "WAYLAND_DISPLAY NIRI_SOCKET XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS";
+      Environment = "CLAMMY_IDLE_TIMEOUT_S=60 CLAMMY_SLEEP_TIMEOUT_S=60";
     };
   };
 }

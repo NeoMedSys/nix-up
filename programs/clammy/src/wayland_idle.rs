@@ -16,12 +16,12 @@ pub fn create_idle_timers(delegate: &mut WlDelegate, qh: &QueueHandle<WlDelegate
         info!("Creating idle timers...");
 
         // 1. DPMS timer
-        let dpms_timeout_ms = config::IDLE_TIMEOUT_S * 1000;
+        let dpms_timeout_ms = config::idle_timeout_s() * 1000;
         let dpms_timer = notifier.get_idle_notification(dpms_timeout_ms, seat, qh, ());
         delegate.idle_timer_dpms = Some(dpms_timer);
 
         // 2. Sleep timer (relative to DPMS)
-        let sleep_timeout_ms = (config::IDLE_TIMEOUT_S + config::SLEEP_TIMEOUT_S) * 1000;
+        let sleep_timeout_ms = (config::idle_timeout_s() + config::sleep_timeout_s()) * 1000;
         let sleep_timer = notifier.get_idle_notification(sleep_timeout_ms, seat, qh, ());
         delegate.idle_timer_sleep = Some(sleep_timer);
 

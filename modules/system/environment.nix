@@ -108,7 +108,7 @@ in
         # EXTREMELY IMPORTANT: Consolidated PCIe Denylist
         # 0000:00:0d.2 / 0000:00:0d.3 = Thunderbolt controllers
         # 01:00.0 = Nvidia GPU
-        RUNTIME_PM_DENYLIST = "0000:00:0d.2 0000:00:0d.3 01:00.0";
+        RUNTIME_PM_DENYLIST = "";
       };
     };
     gnome.gnome-keyring.enable = true;
@@ -331,11 +331,6 @@ in
     enable = true;
   };
   hardware = {
-    # Use NixOS's integrated IPU6 support - handles everything automatically
-    ipu6 = {
-      enable = true;
-      platform = "ipu6epmtl";  # Meteor Lake platform for your hardware
-    };
     bluetooth = {
       enable = true;
       powerOnBoot = true;
@@ -359,6 +354,7 @@ in
   # ========================
   virtualisation.docker = {
     enable = true;
+    enableOnBoot = false;
   };
   # ========================
   # PROGRAMS
@@ -418,6 +414,7 @@ in
       RestartSec = 2;
     };
   };
+
   # ========================
   # SYSTEM SCRIPTS
   # ========================

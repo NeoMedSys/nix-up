@@ -6,6 +6,7 @@ let
   dms = inputs.dms.packages.${pkgs.system}.default;
   dgop = inputs.dgop.packages.${pkgs.system}.default;
   ntl-daemon = pkgs.callPackage ../../packages/ntl-daemon.nix {};
+  niri-reaper = pkgs.callPackage ../../packages/niri-reaper.nix {};
 in
 {
   # Global software packages to install
@@ -40,6 +41,7 @@ in
     libcamera
     networkmanagerapplet
     ntl-daemon
+    niri-reaper
     evtest
     libinput
 
@@ -79,12 +81,7 @@ in
     # Terminal emulator
     alacritty
 
-    # Entertainment - now handled by Flatpak
-    # sandboxed-stremio
     mpv
-
-    # Communication Apps - now handled by Flatpak
-    # sandboxed-slack
 
     # Gaming utilities
     gamemode
@@ -125,7 +122,6 @@ in
     # Office and document tools
     rnote
     sandboxed-logseq
-    # sandboxed-teams
     onlyoffice-desktopeditors
     zathura
     evince
