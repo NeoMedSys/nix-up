@@ -1,7 +1,20 @@
-pub const IDLE_TIMEOUT_S: u32 = 300; // 5 minutes
-pub const SLEEP_TIMEOUT_S: u32 = 600; // 10 minutes (total 15 min to sleep)
-pub const LID_CLOSE_SUSPEND_DELAY_S: u64 = 20; // 20 seconds
+use std::env;
 
+pub fn idle_timeout_s() -> u32 {
+    env::var("CLAMMY_IDLE_TIMEOUT_S")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(300)
+}
+
+pub fn sleep_timeout_s() -> u32 {
+    env::var("CLAMMY_SLEEP_TIMEOUT_S")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(600)
+}
+
+pub const LID_CLOSE_SUSPEND_DELAY_S: u64 = 20;
 pub const LOCK_COMMAND: &[&str] = &[
     "dms",
     "ipc",
@@ -9,5 +22,4 @@ pub const LOCK_COMMAND: &[&str] = &[
     "lock",
     "lock"
 ];
-
 pub const WAYLAND_KEY: usize = 0;

@@ -1,13 +1,12 @@
-use log::{debug, error, info};
+use log::{error, info};
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::env;
 use std::process::Command;
-use std::sync::{Arc, Mutex};
-use zbus::{connection, interface, Connection};
+use std::thread;
+use std::time::Duration;
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, PartialEq)]
 struct NtlStatus {
-    icon: String,
     status: String,
     #[serde(default)]
     critical: u32,
@@ -15,142 +14,64 @@ struct NtlStatus {
     warning: u32,
 }
 
-impl Default for NtlStatus {
-    fn default() -> Self {
-        Self {
-            icon: "󰔟".to_string(),
-            status: "pending".to_string(),
-            critical: 0,
-            warning: 0,
-        }
-    }
-}
-
-fn update_status(status: &Arc<Mutex<NtlStatus>>) {
-    debug!("Running ntl tray...");
+fn poll_status() -> Option<NtlStatus> {
     match Command::new("ntl").arg("tray").output() {
         Ok(output) => {
-            if let Ok(stdout) = String::from_utf8(output.stdout) {
-                debug!("stdout: {}", stdout.trim());
-                if let Ok(new_status) = serde_json::from_str::<NtlStatus>(&stdout) {
-                    debug!("Parsed status: {:?}", new_status);
-                    let mut s = status.lock().unwrap();
-                    *s = new_status;
-                }
-            }
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            serde_json::from_str::<NtlStatus>(&stdout).ok()
         }
-        Err(e) => error!("Failed to run ntl tray: {}", e),
+        Err(e) => {
+            error!("Failed to run ntl tray: {}", e);
+            None
+        }
     }
 }
 
-struct StatusNotifierItem {
-    status: Arc<Mutex<NtlStatus>>,
-}
-
-#[interface(name = "org.kde.StatusNotifierItem")]
-impl StatusNotifierItem {
-    #[zbus(property)]
-    fn category(&self) -> String {
-        "SystemServices".to_string()
-    }
-
-    #[zbus(property)]
-    fn id(&self) -> String {
-        "ntl-daemon".to_string()
-    }
-
-    #[zbus(property)]
-    fn title(&self) -> String {
-        "NTL Security Monitor".to_string()
-    }
-
-    #[zbus(property)]
-    fn status(&self) -> String {
-        "Active".to_string()
-    }
-
-    #[zbus(property)]
-    fn icon_name(&self) -> String {
-        let status = self.status.lock().unwrap();
-        match status.status.as_str() {
-            "ok" => "security-high-symbolic",
-            "warning" => "security-medium-symbolic",
-            "critical" => "security-low-symbolic",
-            "inactive" => "security-low-symbolic",
-            _ => "dialog-question-symbolic",
-        }.to_string()
-    }
-
-    #[zbus(property)]
-    fn icon_theme_path(&self) -> String {
-        String::new()
-    }
-
-    #[zbus(property)]
-    fn menu(&self) -> zbus::zvariant::OwnedObjectPath {
-        zbus::zvariant::OwnedObjectPath::try_from("/MenuBar").unwrap()
-    }
-
-    fn activate(&self, _x: i32, _y: i32) {
-        info!("Tray icon activated");
-        let _ = Command::new("alacritty")
-            .args(["-e", "ntl", "report"])
-            .spawn();
-    }
-
-    fn secondary_activate(&self, _x: i32, _y: i32) {
-        info!("Tray icon secondary activated");
-        let _ = Command::new("alacritty")
-            .args(["-e", "ntl", "run"])
-            .spawn();
+fn notify(urgency: &str, title: &str, body: &str) {
+    if let Err(e) = Command::new("notify-send")
+        .args(["--urgency", urgency, "--icon", "dialog-warning", title, body])
+        .spawn()
+    {
+        error!("Failed to send notification: {}", e);
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() {
     env_logger::Builder::from_env(
-        env_logger::Env::default().default_filter_or("debug")
-    ).init();
+        env_logger::Env::default().default_filter_or("info"),
+    )
+    .init();
 
     info!("NTL Daemon starting...");
 
-    let status = Arc::new(Mutex::new(NtlStatus::default()));
-    update_status(&status);
-    info!("Status: {:?}", *status.lock().unwrap());
+    let interval_secs: u64 = env::var("NTL_POLL_INTERVAL")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or(28800);
+    info!("Poll interval: {}s", interval_secs);
 
-    let conn = Connection::session().await?;
-    info!("Connected to session bus");
+    let mut last: Option<NtlStatus> = None;
 
-    let sni = StatusNotifierItem {
-        status: status.clone(),
-    };
-
-    let object_path = "/StatusNotifierItem";
-    conn.object_server().at(object_path, sni).await?;
-    info!("Registered object at {}", object_path);
-
-    // Request a unique name
-    let well_known_name = format!("org.kde.StatusNotifierItem-{}-1", std::process::id());
-    conn.request_name(&*well_known_name).await?;
-    info!("Acquired name: {}", well_known_name);
-
-    // Register with the watcher
-    let watcher = conn.call_method(
-        Some("org.kde.StatusNotifierWatcher"),
-        "/StatusNotifierWatcher",
-        Some("org.kde.StatusNotifierWatcher"),
-        "RegisterStatusNotifierItem",
-        &(well_known_name.as_str()),
-    ).await;
-
-    match watcher {
-        Ok(_) => info!("Registered with StatusNotifierWatcher"),
-        Err(e) => error!("Failed to register with watcher: {}", e),
-    }
-
-    info!("Running event loop...");
     loop {
-        tokio::time::sleep(tokio::time::Duration::from_secs(300)).await;
-        update_status(&status);
+        if let Some(s) = poll_status() {
+            if last.as_ref() != Some(&s) {
+                info!("Status changed: {:?}", s);
+                match s.status.as_str() {
+                    "critical" => notify(
+                        "critical",
+                        "NTL Security Alert",
+                        &format!("{} critical, {} warning findings", s.critical, s.warning),
+                    ),
+                    "warning" => notify(
+                        "normal",
+                        "NTL Security Warning",
+                        &format!("{} warning findings", s.warning),
+                    ),
+                    _ => {}
+                }
+                last = Some(s);
+            }
+        }
+        thread::sleep(Duration::from_secs(interval_secs));
     }
 }

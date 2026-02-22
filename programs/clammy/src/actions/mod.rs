@@ -4,3 +4,4 @@ pub mod clamshell;
 pub mod dpms;
 pub mod lid_open;
 pub mod lock;
+pub mod dim;

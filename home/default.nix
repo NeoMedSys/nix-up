@@ -7,8 +7,6 @@ let
     brave = pkgs.brave;
   };
 
-  systemd.enable = true;
-
   browsersToInstall = lib.filter (name: name != "firefox") userConfig.browsers;
   browserPackages = map (browserName: availableBrowsers.${browserName}) browsersToInstall;
 

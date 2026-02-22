@@ -21,8 +21,10 @@ pub struct WlDelegate {
     pub state: SharedState,
     pub idle_notifier: Option<ext_idle_notifier_v1::ExtIdleNotifierV1>,
     pub seat: Option<wl_seat::WlSeat>,
+    pub idle_timer_dim_start: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub idle_timer_dpms: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub idle_timer_sleep: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
+    pub idle_timer_dpms_off: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub suspend_tx: TokioSender<DbusCommand>,
 }
 
@@ -37,7 +39,9 @@ pub fn run_wayland_listener(
         suspend_tx,
         idle_notifier: None,
         seat: None,
+        idle_timer_dim_start: None,
         idle_timer_dpms: None,
+        idle_timer_dpms_off: None,
         idle_timer_sleep: None,
     };
 
@@ -53,6 +57,8 @@ pub fn run_wayland_listener(
     if let Err(e) = wayland_idle::create_idle_timers(&mut wl_delegate, &qh) {
         error!("Failed to create idle timers: {}", e);
     }
+
+    event_queue.roundtrip(&mut wl_delegate)?;
 
     let poller = Poller::new()?;
     unsafe { poller.add(&conn.as_fd(), Event::readable(config::WAYLAND_KEY))?; }
@@ -75,10 +81,15 @@ pub fn run_wayland_listener(
                 info!("Wayland thread: Received LidClosed command");
                 let mut guard = wl_delegate.state.lock().unwrap();
                 guard.lid_closed = true;
-                drop(guard); // Release lock before calling configure
-                let guard = wl_delegate.state.lock().unwrap();
-                if let Err(e) = wayland_output::configure_clamshell(&guard, &wl_delegate, &qh) {
-                    error!("Failed to configure clamshell: {}", e);
+                let has_externals = guard.has_externals();
+                drop(guard);
+                if has_externals {
+                    let guard = wl_delegate.state.lock().unwrap();
+                    if let Err(e) = wayland_output::configure_clamshell(&guard, &wl_delegate, &qh) {
+                        error!("Failed to configure clamshell: {}", e);
+                    }
+                } else {
+                    info!("No externals, skipping eDP-1 off (suspend will handle it)");
                 }
             }
             Ok(WaylandCommand::LidOpened) => {
