@@ -4,6 +4,7 @@ let
   dms = inputs.dms.packages.${pkgs.system}.default;
   runtimeDeps = [
     dms 
+    pkgs.brightnessctl
     pkgs.quickshell
   ];
 in

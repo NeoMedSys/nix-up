@@ -15,10 +15,19 @@ pub fn create_idle_timers(delegate: &mut WlDelegate, qh: &QueueHandle<WlDelegate
         let seat = delegate.seat.as_ref().ok_or(anyhow::anyhow!("No seat available"))?;
         info!("Creating idle timers...");
 
+        // Dim timers (derived from DPMS timeout)
+        let dim_start_ms = config::idle_timeout_s().saturating_sub(10) * 1000;
+        let dim_start = notifier.get_idle_notification(dim_start_ms, seat, qh, ());
+        delegate.idle_timer_dim_start = Some(dim_start);
+
         // 1. DPMS timer
         let dpms_timeout_ms = config::idle_timeout_s() * 1000;
         let dpms_timer = notifier.get_idle_notification(dpms_timeout_ms, seat, qh, ());
         delegate.idle_timer_dpms = Some(dpms_timer);
+
+        let dpms_off_ms = config::idle_timeout_s() * 2 * 1000;
+        let dpms_off_timer = notifier.get_idle_notification(dpms_off_ms, seat, qh, ());
+        delegate.idle_timer_dpms_off = Some(dpms_off_timer);
 
         // 2. Sleep timer (relative to DPMS)
         let sleep_timeout_ms = (config::idle_timeout_s() + config::sleep_timeout_s()) * 1000;
@@ -55,6 +64,8 @@ impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegat
     ) {
         let is_dpms_timer = state.idle_timer_dpms.as_ref() == Some(notification);
         let is_sleep_timer = state.idle_timer_sleep.as_ref() == Some(notification);
+        let is_dim_start = state.idle_timer_dim_start.as_ref() == Some(notification);
+        let is_dpms_off = state.idle_timer_dpms_off.as_ref() == Some(notification);
 
         match event {
             ext_idle_notification_v1::Event::Idled => {
@@ -64,16 +75,30 @@ impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegat
                     return;
                 }
 
+                if is_dim_start {
+                    info!("Idle timer (Dim) fired: IDLED");
+                    if let Err(e) = actions::dim::start_gradual_dim(5, 10_000) {
+                        error!("Failed to start gradual dim: {}", e);
+                    }
+                }
+
                 if is_dpms_timer {
-                    info!("Idle timer (DPMS) fired: IDLED");
-                    // Point 3: Lock screen and turn displays off
+                    info!("Idle timer (Lock) fired: IDLED");
+                    if let Err(e) = actions::dim::restore() {
+                        error!("Failed to restore brightness for lock: {}", e);
+                    }
                     if let Err(e) = actions::lock::request_lock() {
                         error!("Failed to request lock on idle: {}", e);
                     }
+                }
+
+                if is_dpms_off {
+                    info!("Idle timer (DPMS Off) fired: IDLED");
                     if let Err(e) = wayland_output::dpms_off(state, qh) {
-                        error!("Failed to turn displays off on idle: {}", e);
+                        error!("Failed to turn displays off: {}", e);
                     }
                 }
+
                 if is_sleep_timer {
                     info!("Idle timer (Sleep) fired: IDLED");
                     // Point 3: Send command to main thread to suspend
@@ -93,6 +118,14 @@ impl Dispatch<ext_idle_notification_v1::ExtIdleNotificationV1, ()> for WlDelegat
                         }
                     }
                 }
+
+                if is_dim_start {
+                    info!("Idle timer (Dim) fired: RESUMED");
+                    if let Err(e) = actions::dim::restore() {
+                        error!("Failed to restore brightness: {}", e);
+                    }
+                }
+
                 if is_sleep_timer {
                     info!("Idle timer (Sleep) fired: RESUMED");
                 }

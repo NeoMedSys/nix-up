@@ -21,8 +21,10 @@ pub struct WlDelegate {
     pub state: SharedState,
     pub idle_notifier: Option<ext_idle_notifier_v1::ExtIdleNotifierV1>,
     pub seat: Option<wl_seat::WlSeat>,
+    pub idle_timer_dim_start: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub idle_timer_dpms: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub idle_timer_sleep: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
+    pub idle_timer_dpms_off: Option<ext_idle_notification_v1::ExtIdleNotificationV1>,
     pub suspend_tx: TokioSender<DbusCommand>,
 }
 
@@ -37,7 +39,9 @@ pub fn run_wayland_listener(
         suspend_tx,
         idle_notifier: None,
         seat: None,
+        idle_timer_dim_start: None,
         idle_timer_dpms: None,
+        idle_timer_dpms_off: None,
         idle_timer_sleep: None,
     };
 
@@ -53,6 +57,8 @@ pub fn run_wayland_listener(
     if let Err(e) = wayland_idle::create_idle_timers(&mut wl_delegate, &qh) {
         error!("Failed to create idle timers: {}", e);
     }
+
+    event_queue.roundtrip(&mut wl_delegate)?;
 
     let poller = Poller::new()?;
     unsafe { poller.add(&conn.as_fd(), Event::readable(config::WAYLAND_KEY))?; }
