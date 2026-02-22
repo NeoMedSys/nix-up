@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "nix-ip setup"
+echo "nix-up setup"
 echo "============"
 
 if [ -f user-config.nix ]; then
@@ -27,8 +27,8 @@ fi
 read -p "Username [$USER]: " USERNAME
 USERNAME=${USERNAME:-$USER}
 
-read -p "Hostname [nixip]: " HOSTNAME
-HOSTNAME=${HOSTNAME:-nixip}
+read -p "Hostname [nixup]: " HOSTNAME
+HOSTNAME=${HOSTNAME:-nixup}
 
 read -p "Full name (git): " GIT_NAME
 read -p "Email (git): " GIT_EMAIL
@@ -284,7 +284,7 @@ git config filter.userconfig.clean 'cat << "CLEAN"
 {
   # Identity
   username = "user";
-  hostname = "nixip";
+  hostname = "nixup";
   gitName = "user";
   gitEmail = "user@example.com";
 

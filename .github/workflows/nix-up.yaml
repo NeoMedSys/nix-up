@@ -1,4 +1,4 @@
-name: Perseus CI/CD
+name: Nix Up CI/CD
 on:
   pull_request:
     branches:
@@ -45,7 +45,7 @@ jobs:
       - run: echo "=== user-config.nix content ===" && cat user-config.nix
       - run: nix run nixpkgs#statix -- check .
       - run: nix run nixpkgs#deadnix -- .
-      - run: nix eval .#nixosConfigurations.perseus.config.system.build.toplevel
+      - run: nix eval .#nixosConfigurations.nixup.config.system.build.toplevel
   publish:
     if: github.event_name == 'release'
     needs: check
@@ -58,6 +58,6 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v9
       - uses: DeterminateSystems/flakehub-push@main
         with:
-          name: NeoMedSys/perseus
+          name: NeoMedSys/nixup
           tag: ${{ github.event.release.tag_name }}
           visibility: public
