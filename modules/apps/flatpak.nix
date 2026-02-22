@@ -54,7 +54,8 @@
         --device=dri \
         --nofilesystem=home \
         --nofilesystem=host \
-        --env=SPOTIFY_DISABLE_TELEMETRY=1
+        --env=SPOTIFY_DISABLE_TELEMETRY=1 \
+        --env=LIBGL_ALWAYS_SOFTWARE=1
 
       # --- STEAM ---
       ${pkgs.flatpak}/bin/flatpak override --system com.valvesoftware.Steam \
