@@ -36,6 +36,7 @@
         }
     }
 
+
     // =====================
     // LAYOUT CONFIGURATION
     // =====================
@@ -311,7 +312,6 @@
 
     // Environment for portals
     environment {
-        DISPLAY ":0"
         XDG_CURRENT_DESKTOP "niri"
         XDG_SESSION_TYPE "wayland"
         XDG_SESSION_DESKTOP "niri"

@@ -86,11 +86,14 @@
         --env=ZOOM_DISABLE_TELEMETRY=1 \
         --env=ZOOM_DISABLE_ANALYTICS=1
       # --- STREMIO (media streaming, v5 from flathub-beta) ---
+      # CEF requires X11 socket via xwayland-satellite
+      # server.js needs ~/.stremio-server for config and cache
       ${pkgs.flatpak}/bin/flatpak override --system com.stremio.Stremio \
         --socket=wayland \
         --socket=pulseaudio \
-        --nosocket=x11 \
+        --socket=x11 \
         --device=dri \
+        --filesystem=~/.stremio-server \
         --nofilesystem=home \
         --nofilesystem=host \
         --env=STREMIO_DISABLE_TELEMETRY=1
