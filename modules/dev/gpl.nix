@@ -18,7 +18,7 @@ in
   environment.systemPackages =
     (lib.optionals (hasDevTool "go") goPackages) ++
     (lib.optionals (hasDevTool "rust") rustPackages) ++
-    (lib.optionals (hasDevTool "nextjs") nextjsPackages);
+    (lib.optionals (hasDevTool "node") nextjsPackages);
 
   environment.variables = lib.mkMerge [
     (lib.mkIf (hasDevTool "go") {
@@ -29,7 +29,7 @@ in
       CARGO_HOME = "$HOME/.cargo";
       RUSTUP_HOME = "$HOME/.rustup";
     })
-    (lib.mkIf (hasDevTool "nextjs") {
+    (lib.mkIf (hasDevTool "node") {
       NODE_OPTIONS = "--max-old-space-size=8192";
       PNPM_HOME = "$HOME/.local/share/pnpm";
     })
