@@ -5,14 +5,11 @@
     { name = "flathub"; location = "https://dl.flathub.org/repo/flathub.flatpakrepo"; }
     { name = "flathub-beta"; location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo"; }
   ];
-  services.flatpak.packages = [
-    "com.slack.Slack"
-    "com.spotify.Client"
-    "com.valvesoftware.Steam"
-    "com.github.IsmaelMartinez.teams_for_linux"
-    "us.zoom.Zoom"
+
+  services.flatpak.packages = userConfig.flatpakApps ++ [
     { appId = "com.stremio.Stremio"; origin = "flathub-beta"; }
   ];
+
   # Ensure Flatpak apps appear in launcher
   environment.sessionVariables = {
     XDG_DATA_DIRS = [ "/var/lib/flatpak/exports/share" ];
