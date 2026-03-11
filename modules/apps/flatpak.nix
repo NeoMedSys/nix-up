@@ -37,7 +37,9 @@
         --nofilesystem=home \
         --nofilesystem=host \
         --talk-name=org.freedesktop.portal.Camera \
-        --env=SLACK_DISABLE_TELEMETRY=1
+        --env=SLACK_DISABLE_TELEMETRY=1 \
+        --env=ELECTRON_OZONE_PLATFORM_HINT=auto \
+        --env=ELECTRON_ENABLE_FEATURES=WebRTCPipeWireCapturer
       # --- SPOTIFY (audio only) ---
       ${pkgs.flatpak}/bin/flatpak override --system com.spotify.Client \
         --socket=wayland \
@@ -64,10 +66,14 @@
         --nosocket=x11 \
         --device=all \
         --filesystem=xdg-download \
+        --filesystem=xdg-run/pipewire-0 \
         --nofilesystem=home \
         --nofilesystem=host \
         --talk-name=org.freedesktop.portal.Camera \
-        --env=TEAMS_DISABLE_TELEMETRY=1
+        --env=TEAMS_DISABLE_TELEMETRY=1 \
+        --env=TEAMS_NO_BACKGROUND=1 \
+        --env=ELECTRON_OZONE_PLATFORM_HINT=auto \
+        --env=ELECTRON_ENABLE_FEATURES=WebRTCPipeWireCapturer
       # --- ZOOM (video calls, screen sharing) ---
       ${pkgs.flatpak}/bin/flatpak override --system us.zoom.Zoom \
         --socket=wayland \
@@ -81,7 +87,9 @@
         --nofilesystem=host \
         --talk-name=org.freedesktop.portal.Camera \
         --env=ZOOM_DISABLE_TELEMETRY=1 \
-        --env=ZOOM_DISABLE_ANALYTICS=1
+        --env=ZOOM_DISABLE_ANALYTICS=1 \
+        --env=ELECTRON_OZONE_PLATFORM_HINT=auto \
+        --env=ELECTRON_ENABLE_FEATURES=WebRTCPipeWireCapturer
       # --- STREMIO (media streaming, v5 from flathub-beta) ---
       # CEF requires X11 socket via xwayland-satellite
       # server.js needs ~/.stremio-server for config and cache

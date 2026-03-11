@@ -101,8 +101,8 @@ in
         NATACPI_ENABLE = 1;
         TPACPI_ENABLE = 1;
         TPSMAPI_ENABLE = 1;
-        USB_AUTOSUSPEND_ON_AC = "on";
-        USB_AUTOSUSPEND_ON_BAT = "on";
+        USB_AUTOSUSPEND_ON_AC = "off";
+        USB_AUTOSUSPEND_ON_BAT = "off";
         PCIE_ASPM_ON_AC = "powersave";
         
         # EXTREMELY IMPORTANT: Consolidated PCIe Denylist
