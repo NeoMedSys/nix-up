@@ -56,7 +56,10 @@
         --socket=x11 \
         --socket=pulseaudio \
         --device=all \
-        --filesystem=xdg-download
+        --filesystem=xdg-download \
+        --env=__NV_PRIME_RENDER_OFFLOAD=1 \
+        --env=__GLX_VENDOR_LIBRARY_NAME=nvidia \
+        --env=__VK_LAYER_NV_optimus=NVIDIA_only
       # --- TEAMS (video calls, screen sharing) ---
       ${pkgs.flatpak}/bin/flatpak override --system com.github.IsmaelMartinez.teams_for_linux \
         --socket=wayland \
