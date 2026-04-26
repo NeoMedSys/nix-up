@@ -157,6 +157,8 @@ in
     # Pandoc and live MD rendering script
     pandoc
     wkhtmltopdf
+    typst
+    tinymist
     (pkgs.writeScriptBin "mdlive" ''
       #!/bin/bash
       FILE="$1"

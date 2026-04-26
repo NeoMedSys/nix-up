@@ -7,8 +7,8 @@ let
       -gravity center -resize 96x96^ -extent 96x96 $out
   '' ;
   resolvConfForSandbox = pkgs.writeText "resolv.conf" ''
-    nameserver 1.1.1.1
-    nameserver 8.8.8.8
+    nameserver 127.0.0.1
+    nameserver ::1
   '' ;
 in
 {
@@ -92,7 +92,7 @@ in
     tlp = {
       enable = true;
       settings = {
-        RESTORE_DEVICE_STATE_ON_STARTUP = 1;
+        RESTORE_DEVICE_STATE_ON_STARTUP = 0;
         DEVICES_TO_DISABLE_ON_STARTUP = "";
         TLP_LID_SWITCH_AC = "ignore";
         TLP_LID_SWITCH_BAT = "ignore";
@@ -145,6 +145,7 @@ in
 
     # Ensure uinput is accessible for Steam
     KERNEL=="uinput", MODE="0660", GROUP="input", OPTIONS+="static_node=uinput"
+
   '';
   };
   # ========================
@@ -191,6 +192,7 @@ in
   networking = {
     networkmanager = {
       enable = true;
+      wifi.powersave = false;
       dispatcherScripts = [{
         type = "basic";
         source = pkgs.writeText "toggle-wifi" ''

@@ -103,6 +103,15 @@
         source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
       fi
       eval "$(direnv hook zsh)"
+
+      # compile typst and open PDF
+      tco() { typst compile "$1" && zathura "''${1%.typ}.pdf" & }
+
+      # md → pdf via typst engine  
+      mdpdf() { pandoc "$1" --pdf-engine=typst -o "''${1%.md}.pdf" }
+
+      # docx → md (lawyers sending Word docs)
+      docxmd() { pandoc "$1" -t markdown -o "''${1%.docx}.md" }
     '';
 
     envExtra = ''
@@ -124,6 +133,12 @@
       n = "nvim";
       d = "docker";
       SS = "sudo systemctl";
+
+      tc   = "typst compile";
+      tw   = "typst compile --watch";
+
+      topdf  = "pandoc --pdf-engine=typst -o";
+      todocx = "pandoc -o";
 
       # JAIL ALIASES
       jail = "jail-dev";

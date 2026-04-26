@@ -346,9 +346,10 @@
     };
   };
 
-  # PAM for swaylock (backup if DMS lock fails)
   security.pam.services.swaylock = {
     text = ''
+      auth [success=1 default=ignore] pam_exec.so quiet /run/current-system/sw/bin/check-docked
+      auth [success=done default=ignore] pam_fprintd.so
       auth required pam_unix.so nullok
       account required pam_unix.so
       session required pam_unix.so

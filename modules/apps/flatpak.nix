@@ -34,6 +34,7 @@
         --nosocket=x11 \
         --device=all \
         --filesystem=xdg-download \
+        --filesystem=xdg-run/pipewire-0 \
         --nofilesystem=home \
         --nofilesystem=host \
         --talk-name=org.freedesktop.portal.Camera \
@@ -105,5 +106,5 @@
         --nofilesystem=home \
         --nofilesystem=host \
         --env=STREMIO_DISABLE_TELEMETRY=1
-    '';
+      '';
 }

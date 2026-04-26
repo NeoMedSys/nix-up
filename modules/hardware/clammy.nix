@@ -17,7 +17,7 @@ let
 
     ${pkgs.systemd}/bin/systemctl --user restart clammy.service
   '';
-  # (clammy-dbus-policy remains the same)
+
   clammy-dbus-policy = pkgs.writeTextFile {
     name = "clammy-dbus-policy.conf";
     destination = "/share/dbus-1/system.d/clammy-policy.conf";
@@ -35,9 +35,24 @@ let
     '';
   };
 
+  # PAM helper: returns 0 (docked → skip fingerprint), 1 (undocked → try fingerprint)
+  check-docked = pkgs.writeShellScriptBin "check-docked" ''
+    DOCKED_FILE="/run/clammy/docked"
+    if [ -f "$DOCKED_FILE" ] && [ "$(<"$DOCKED_FILE")" = "1" ]; then
+      exit 0
+    fi
+    exit 1
+  '';
+
 in
 {
-  environment.systemPackages = [ clammy clammy-start-script ];
+  environment.systemPackages = [ clammy clammy-start-script check-docked ];
+
+  # Create /run/clammy for dock state file (world-writable so user service can update)
+  systemd.tmpfiles.rules = [
+    "d /run/clammy 0755 root root -"
+    "f /run/clammy/docked 0666 root root - 0"
+  ];
 
   services.dbus = {
     enable = true;

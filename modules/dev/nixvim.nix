@@ -20,6 +20,12 @@
           cssls.enable = true;
           html.enable = true;
           jsonls.enable = true;
+          tinymist = {
+            enable = true;
+            settings = {
+              formatterMode = "typstyle";
+            };
+          };
         };
       };
 
@@ -121,6 +127,12 @@
         mode = "n";
         key = "<leader>mp";
         action = "<Cmd>silent !pandoc % -s -o /tmp/preview.html && xdg-open /tmp/preview.html &<CR>";
+      }
+      {
+        mode = "n";
+        key = "<leader>tp";
+        action = "<Cmd>silent !typst compile % && zathura %:r.pdf &<CR>";
+        options.desc = "Typst Preview - compile and view PDF";
       }
       {
         mode = "n";
